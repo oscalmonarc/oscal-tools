@@ -1,0 +1,214 @@
+<% security_policies_array = SecurityPolicy.all.map { |policy| [policy.policy_version , policy.id] } %>
+ <%= form_for :overlay, { action: "compareOverlays", method: :get  }  do |f| %>
+	  <table>
+	   <tr>
+  	 		<td>Overlay Name </td>
+	 		<td> Fields </td>
+	 		<td>Previous</td>
+	 		<td>New </td>
+		</tr>
+	   <tr> 
+			<td>  </td>
+			<td> Security Policy </td>
+			<td><%= f.select :policy_1, options_for_select(@security_policies_array, @policy1) %></td>
+			<td><%= f.select :policy_2, options_for_select(@security_policies_array, @policy2) %></td>
+		</tr>
+	  	
+	 
+	  	<% if (@overlays != nil )
+		 		@overlays.each do |overlay|	%> 
+			 		<tr>
+			 			<td><%= overlay.name %> </td>
+			 				<% if (overlay.overlay_fields != nil)
+			 					overlay_fields = overlay.overlay_fields
+			 					if (overlay_fields.count > 1) %>
+			 						</tr>
+			 					<% end 
+			 						overlay_fields.each do |overlay_field|
+			 							if (overlay_fields.count > 1) %>
+			 								<tr>
+			 									<td></td>
+			 							<% end 
+				 						select_option1 = "#{overlay_field.full_name}_1"
+				 						select_option2 = "#{overlay_field.full_name}_2"
+										overlay_selected1 = nil
+										overlay_selected2 = nil
+										if (params[:overlay] != nil)
+											if (params[:overlay][select_option1] != nil)
+												overlay_selected1 = params[:overlay][select_option1]
+												@selected_options1 << {overlay_field_option: overlay_selected1}
+				 							end
+				 							
+				 							if (params[:overlay][select_option2] != nil) 
+												overlay_selected2 = params[:overlay][select_option2]
+												@selected_options2 << {overlay_field_option: overlay_selected2}
+				 							end 
+				 						end %>
+				 						<td> <%= overlay_field.name %> </td> 
+				 						<td> <%= f.select select_option1, options_for_select(overlay_field.select_options, overlay_selected1)  %> </td>
+				 						<td> <%= f.select select_option2, options_for_select(overlay_field.select_options, overlay_selected2)  %> </td>
+										<% if (overlay_fields.count > 1) %>
+						 					</tr>
+					 					<% end %>
+									<% end %>
+			 				<% end %>
+			 			</td>
+					</tr>		
+		 		<% end %>
+		 
+		 <% end %>
+		<tr>
+			<td> Is this an National Security System?</td>
+			<td><%= f.check_box("nss", {checked: @nss_option}) %> </td>
+	 		<td></td>
+			<td><%= f.submit "Find" %></td>
+		</tr>
+	</table>
+<% end %>
+ 
+<% if (@selected_options1 != nil) && (@selected_options2 != nil) 
+	nss = false
+	if (params[:overlay] != nil) && (params[:overlay][:nss] != nil)
+		nss = true
+	end
+	
+	controls_1 = ControlOverlay.find_control_options(@selected_options1, @policy1)
+	aggrigated_controls_1 = ControlOverlay.aggrigate_controls(controls_1, nss)
+	
+	controls_2 = ControlOverlay.find_control_options(@selected_options2, @policy2)
+	aggrigated_controls_2 = ControlOverlay.aggrigate_controls(controls_2, nss)
+	
+	if (aggrigated_controls_1 != nil) && ( aggrigated_controls_1.count >0 )
+	
+		full_list_1 = [] 
+		aggrigated_controls_1[:full_list].each do |tmp_control|
+			full_list_1 << tmp_control[:control]
+		end
+
+
+		full_list_2 = [] 
+		aggrigated_controls_2[:full_list].each do |tmp_control|
+			full_list_2 << tmp_control[:control]
+		end
+
+	
+		required_controls = aggrigated_controls_1[:add_controls]
+		remove_controls = aggrigated_controls_1[:remove_controls]
+		
+		
+		tmpcontrol= SecurityControl.new
+		complete_list = []
+		complete_group_list = tmpcontrol.combine_groups(full_list_1, full_list_2, @policy1, @policy2)
+		
+		results = tmpcontrol.analyze_control_groups(complete_group_list)
+		full_list = results[:full_list]
+		new_controls = results[:new_controls]
+		removed_controls = results[:removed_controls]
+		remain_controls = results[:remain_controls]
+		
+		
+		con_value = "1"
+		int_value = "2"
+		avail_value = "3"
+		
+		if (full_list.count == 0) && ( aggrigated_controls_1.count  == 0 ) && (params[:overlay] != nil) %>
+			<strong style="color: red"> Data was not imported, please import overlays for the selected overlay and policy. <Br></strong>
+		<% else 
+			content_for :title, "Overlay Baseline Controls with Overlays Rev-#{@policy} C-#{con_value} I-#{int_value} A-#{avail_value}"
+		end
+	else
+	full_list = []
+	
+	end	
+end
+%>
+
+ 
+ <% if (full_list != nil) && (full_list.count >0 ) %>
+ <h3>
+	 <div class="btn-group pull-right">
+	 	<table>
+			<tr>
+				<td><button id="new" class="btn btn-default filter">New - <%= new_controls %></button></td>
+	    		<td><button id="removed" class="btn btn-default filter">Removed - <%= removed_controls %></button></td>
+	    		<td><button id="remain" class="btn btn-default filter">Remain - <%= remain_controls %></button></td>
+	    		<td><button id="total" class="btn btn-default filter">Total - <%= full_list.count %></button></td>
+	    	</tr>
+	    	
+	    </table>
+	</div>
+</h3>
+ <table id="myDataTable"  class="table table-striped table-bordered"  style="width:100%">  
+ 	<thead>  
+ 		<tr>
+ 			<th>Control ID</th>
+ 			<th>Title</th>
+ 			<th>Control Implementations </th>
+ 			<th>Status</th>
+ 		</tr>
+ 	</thead> 
+ 	<tbody>
+ 	<% full_list.each do |control|
+ 		%><tr>
+ 			<td><%= control[:url] %></td>
+ 			<td><%= control[:title] %></td>
+ 			<td>
+	 			<% implementations = ControlImplementation.unique_control_implementations(control[:control]) 
+	 			if has_data?(implementations)
+	 			%> <table>
+	 				<thead>
+		 				<tr>
+		 					<td>Component</td>
+		 					<td width = "20%">Domain </td>
+		 					<td>Inheritance</td>
+		 					<td>Method </td>
+		 				</tr>
+	 				</thead>
+	 				<tbody>
+	 					<% counter = 0 
+		 				implementations.each do |the_method| 
+		 				counter = counter + 1
+		 				%>
+		 				
+		 					<tr>
+		 						<td><%= the_method[:component].html_safe %> </td>
+		 						<td><% if (the_method[:domain_environment] != nil ) %> <%= the_method[:domain_environment].html_safe %> <% end %></td> 
+		 						<td><%= the_method[:inheritance_type] %> </td>
+		 						<td><%= show_more(the_method[:implementation_method], counter) %></td>
+		 					</tr>
+		 				<% end %>
+	 				</tbody>
+	 				</table>
+	 			<% end %>
+ 			</td>	
+ 			<td><%= control[:status] %> </td>
+ 		</tr> <%
+ 	end
+ 	%>
+ 	</tbody>
+ </table> <%
+end %> 	
+
+<script>
+    $(document).ready(function() {
+	    myDataTable = $('#myDataTable').DataTable( {
+			"aaSorting": [],
+	    	dom: 'Bfrtip',
+	        buttons: [
+	            'copy', 'csv', 'excel', 'pdf', 'print'
+	        ]
+	    } );
+	    $('#total').on('click', function () {
+	    	myDataTable.column(3).search("").draw();
+		});
+		$('#new').on('click', function () {
+		    myDataTable.column(3).search("new" ).draw();
+		});
+		$('#removed').on('click', function () {
+		    myDataTable.column(3).search("removed" ).draw();
+		});
+		$('#remain').on('click', function () {
+		    myDataTable.column(3).search("remain" ).draw();
+		});
+	} );
+</script>

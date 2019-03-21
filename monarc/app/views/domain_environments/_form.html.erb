@@ -1,0 +1,81 @@
+<%= form_with(model: domain_environment, local: true) do |form| %>
+  <% if domain_environment.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(domain_environment.errors.count, "error") %> prohibited this domain_environment from being saved:</h2>
+
+      <ul>
+      <% domain_environment.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= form.label :name %>
+    <%= form.text_field :name %>
+  </div>
+
+  <div class="field">
+    <%= form.label :description %>
+    <%= form.text_field :description %>
+  </div>
+  <div class="field">
+    <%= form.label :region %>
+    <%= form.text_field :region %>
+  </div>
+  <div class="field">
+    <%= form.label :location %>
+    <%= form.text_field :location %>
+  </div>
+
+
+  <div class="field">
+    <% tmparray = DomainEnvironment.all.map { |domain| [domain.name , domain.id] }
+    	domain_array = []
+    	domain_array << ["", nil]
+    	tmparray.each do |tmp|
+    		domain_array << tmp
+    	end
+     %>
+    <%= form.label "Parent domain" %>
+    <%= form.select :parent_id, options_for_select(domain_array  , domain_environment.parent_id) %>
+
+    
+  </div>
+    <div class="field">
+    <% classifications_array = DataClassification.all.map { |classification| [classification.name , classification.id] } %>
+    <%= form.label :data_classification_id %>
+    <%= form.select :data_classification_id, options_for_select(classifications_array  , domain_environment.data_classification_id) %>
+
+    
+  </div>
+
+  <div class="field">
+  	<% 
+  	provider_id = nil 
+  	show_select = true
+  	if (domain_environment.provider_id != nil)
+  		provider_id = domain_environment.provider_id
+  	elsif ( params[:provider_id] != nil)
+  		provider = Provider.find(params[:provider_id])
+  		if (has_data?(provider))  %>
+  			<%= form.hidden_field :provider_id, value: provider.id %> <%
+  			show_select = false
+  		end
+  	end
+  	
+  	if (show_select) %>
+  	    <%= form.label :provider_id %>
+	    <% provider_array = Provider.all.map { |provider| [provider.name , provider.id] } %>
+	    <%= form.select :provider_id, options_for_select(provider_array , provider_id) %> <%
+	 end %>
+	    
+  </div>
+  
+
+<br><br>  
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<% end %>

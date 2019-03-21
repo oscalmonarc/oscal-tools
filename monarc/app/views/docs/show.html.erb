@@ -1,0 +1,54 @@
+<p>
+  <strong>Name:</strong>
+  <%= @doc.name %>
+</p>
+
+<p>
+  <strong>Description:</strong>
+  <%= @doc.description %>
+</p>
+
+<p>
+  <strong>File Type:</strong>
+  <%= @doc.file_type %>
+</p>
+
+<p>
+  <strong>Url:</strong>
+  <%= @doc.url %>
+</p>
+
+<p>
+  <strong>Date File was Created:</strong>
+  <%= @doc.source_date.strftime('%Y-%m-%d') if @doc.source_date %>
+</p>
+
+<p>
+  <strong>Last Imported</strong>
+  <%= @doc.imported.strftime('%Y-%m-%d %H:%M:%S')  if @doc.imported%>
+  <% if (@doc.grab_action_url != nil) %>  
+			<%= button_to "Import", @doc.grab_action_url, method: :get %>
+  <% end %>
+</p>
+
+<p>
+  <strong>Security policy:</strong>
+  <%= @doc.security_policy.policy_version %>
+</p>
+<p>
+  <strong>File:</strong>
+  	
+  	<%= link_to @doc.the_doc.filename, rails_blob_path(@doc.the_doc, disposition: 'attachment') %>
+</p>
+<% if (@doc.declarations_id != nil) %>
+<p>
+  <strong>Declaration File:</strong>
+  	<%= link_to @doc.declaration.filename, rails_blob_path(@doc.declaration, disposition: 'attachment') %>
+</p>  
+<% end %>
+<p> 
+	
+		
+
+<%= link_to 'Edit', edit_doc_path(@doc) %> |
+<%= link_to 'Back', docs_path %>

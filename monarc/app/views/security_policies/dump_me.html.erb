@@ -1,0 +1,53 @@
+Warning about to dump....
+ 	ParamValue <%= ParamValue.all.size  %><br> 
+    Param <%= Param.all.size  %><br>
+    Item <%= Item.all.size  %><br>
+    RelatedRef <%= RelatedRef.all.size  %><br>
+    AssessmentObject <%= AssessmentObject.all.size  %><br>
+    Assessment <%= Assessment.all.size  %><br>
+    Guidance <%= Guidance.all.size  %><br>
+    Objective <%= Objective.all.size  %><br>
+    Statement <%= Statement.all.size  %><br>
+    Requirement <%= Requirement.all.size  %><br>
+    SecurityControl <%= SecurityControl.all.size  %><br>
+    SecurityControlFamily <%= SecurityControlFamily.all.size %> <br>
+    SecurityPolicy <%= SecurityPolicy.all.size %>  <br> 
+    
+    
+ 	<% 
+ 	#the_SP = SecurityPolicy.includes(:security_control_families, {security_control_families: :security_controls}, {security_controls: :params},	{security_controls: :related_controls}, {security_controls: {statements: :items}}, {security_controls: :guidances}, {security_controls: :assessments}, {security_controls: :objectives}, {security_controls: :related_refs} ).where(name: params[:policy_name], version: params[:version]).first
+ 	the_SP = SecurityPolicy.where(name: params[:policy_name], version: params[:version]).first
+    
+    if (the_SP != nil)
+    	%> the_SP = SecurityPolicy.find(params[:id]) -  <%= the_SP.inspect %><br> <%
+    	#the_SP.destroy
+    	
+    	the_SP.security_controls.destroy_all
+    	the_SP.security_control_families.destroy_all
+    	
+    	#the_SP.security_controls.statements.items.destroy
+    	#the_SP.security_controls.statements.destroy
+    	#the_SP.security_controls.params.param_values.destory
+    	#the_SP.security_controls.params.destory
+    	
+    	
+    	
+    	%> the_SP.destroy <br>  <%= the_SP.inspect %><%
+    else 
+    	%> Your already deleted <br><%
+    end %>
+    
+    After doing stuff....<br><br>
+	ParamValue <%= ParamValue.all.size  %><br> 
+    Param <%= Param.all.size  %><br>
+    Item <%= Item.all.size  %><br>
+    RelatedRef <%= RelatedRef.all.size  %><br>
+    AssessmentObject <%= AssessmentObject.all.size  %><br>
+    Assessment <%= Assessment.all.size  %><br>
+    Guidance <%= Guidance.all.size  %><br>
+    Objective <%= Objective.all.size  %><br>
+    Statement <%= Statement.all.size  %><br>
+    Requirement <%= Requirement.all.size  %><br>
+    SecurityControl <%= SecurityControl.all.size  %><br>
+    SecurityControlFamily <%= SecurityControlFamily.all.size %> <br>
+    SecurityPolicy <%= SecurityPolicy.all.size %>  <br> 

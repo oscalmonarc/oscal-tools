@@ -1,0 +1,753 @@
+<% # encoding: utf-8 %>
+<% cache render_async_cache_key(request.path), :skip_digest => true do %>
+	<%= button_to 'All Docs', docs_path, method: :get  %><br>
+	<% require 'open-uri' 
+	path = @doc.grab_file_path
+	
+	@doc.imported = Time.current
+	@doc.save
+	the_policy = @doc.security_policy
+	version = the_policy.version
+	policy_name = the_policy.name
+	provider = Provider.find_or_create_by(name: "NIST")
+ 	@policy4 = nil
+	@policy4 = SecurityPolicy.where(version: "4", name: "SP800-53", provider: provider).first
+	@stored_refs = []
+	@stored_related_controls = []
+	
+	def base_az(num)
+		  # temp variable for converting base
+		  temp = num
+		
+		  # the base 26 (az) number
+		  az = ''
+		
+		  while temp > 0
+		
+		    # get the remainder and convert to a letter
+		    num26 = temp % 26
+		    temp /= 26
+		
+		    # offset for lack of "0"
+		    temp -= 1 if num26 == 0
+		
+		    az = (num26).to_s(26).tr('0-9a-p', 'ZA-Y') + az
+		  end
+		
+		  return az
+	end
+	
+	def clean_up
+		if (@stored_related_controls != nil) && (@stored_related_controls.count > 0)
+			tmp_refs = @stored_related_controls
+			@stored_related_controls = []
+			
+			tmp_refs.each do |ref|
+				
+				create_related_control(ref[:owner_object], ref[:related_control], ref[:the_policy], ref[:reason], ref[:type])
+			end
+		end
+	end
+	
+	def letter_sequence(n)
+	   return n.to_s(26).each_char.map {|i| ('A'..'Z').to_a[i.to_i(26)]}.join
+	end
+	
+	def create_related(related, the_sc, the_policy, the_object)
+		object_id = the_object.id
+		object_type = the_object.class
+		object_type = object_type.to_s.downcase
+		
+		related_controls = related.split(" <br>")
+		related_controls.each do |related1|
+			checkParam(related1, the_sc)
+			related_controls = related1.split(",")
+			related_controls.each do |related_control|
+				
+				related_control = related_control.strip
+				related_control = related_control.gsub ".", ""
+				related_control = related_control.gsub "s:", ""
+				related_control = related_control.gsub ": ", ""
+				related_control = related_control.gsub " ", ""
+				related_control = related_control.gsub "s: ", ""
+				
+				create_related_control(the_object, related_control, the_policy, "related", "guidance")
+			end
+		end
+	end
+	
+	def regex_is_number? string
+	  no_commas =  string.gsub(',', '')
+	  matches = no_commas.match(/-?\d+(?:\.\d+)?/)
+	  if !matches.nil? && matches.size == 1 && matches[0] == no_commas
+	    true
+	  else
+	    false
+	  end
+	end
+	def create_relatedrefs(theSentance, security_control, requirement)
+		theSentance = theSentance.gsub ";", ","
+		theSentance = theSentance.gsub "800-61:", "800-61,"
+		
+		theSentance = theSentance.gsub "800- ", "800-"
+		pattern = /(FIPS )([0-9]+\-[0-9]+)/
+		theSentance = theSentance.gsub(pattern) {$1 + "Publication " + $2} 
+		theSentance = theSentance.gsub "Memoranda", "Memorandum"
+		theSentance = theSentance.gsub "FIPS Publications", "FIPS Publication"
+		theSentance = theSentance.gsub "GUIDANCE/MEDIA_DESTRUCTION_GUIDANCE", "mitigation_guidance/media_destruction_guidance"
+		theSentance = theSentance.gsub "DCID 6/9", "ICD 705"
+		theSentance = theSentance.gsub "Web: ", "http://"
+		theSentance = theSentance.gsub "C.F.R. Part 5 Subpart C (5 C.F.R 930.301)", "C.F.R. Part 5 Subpart C (5 C.F.R. 930.301)"
+	
+		tempRefs = theSentance.split " <br> "
+		tempRefs.each do |thisRef|
+			refs = thisRef.split ","
+			refs.each do |ref|
+				checkParam(ref, security_control)
+				if !(ref.include? "References: None") 
+				
+					ref = ref.gsub "References: ", ""
+					ref = ref.strip
+					ref = ref.gsub(/ APPENDIX [A-Z-]+/,'')
+					ref = ref.gsub "NIST Publication " ,''
+					ref = ref.gsub(/\.$/, '')
+					ref = ref.gsub "800-39. <br>", "800-39"
+					
+					ref = ref.gsub "http://TSP.NCS.GOV", "telecommunications-service-priority-tsp"
+					ref = ref.gsub "HSPD 12","HSPD-12"
+					ref = ref.gsub "CFR","C.F.R."
+					
+					the_ref = Ref.where(title: ref).first
+					
+					if (the_ref == nil)
+						the_ref = Ref.where('title like ?', "%#{ref}").first	
+						if (the_ref == nil)
+							createRef = false
+							
+							if (ref == "OMB Memorandum 03-22")
+								ref_url = "https://www.whitehouse.gov/wp-content/uploads/2017/11/203-M-03-22-OMB-Guidance-for-Implementing-the-Privacy-Provisions-of-the-E-Government-Act-of-2002-1.pdf"
+								createRef = true
+							elsif (ref == "5 CFR 731.106(a)")
+								ref_url = "https://www.ecfr.gov/cgi-bin/text-idx?SID=3a6ca07029b27e80c1abcbadea908fc9&mc=true&node=pt5.2.731&rgn=div5#se5.2.731_1106"
+								createRef = true
+							elsif (ref == "http://CSRC.NIST.GOV/PCIG/CIG.HTML")  
+								ref_url = "https://web.archive.provider/web/20040206102720/http://CSRC.NIST.GOV/PCIG/CIG.HTMl"
+								createRef = true
+							elsif (ref == "http://WWW.CIO.GOV/EAUTHENTICATION")
+								ref_url = "https://web.archive.provider/web/20090321065815/http://WWW.CIO.GOV/EAUTHENTICATION"
+								createRef = true
+							elsif (ref == "http://WWW.FSAM.GOV")
+								ref_url = "https://web.archive.provider/web/20120123090146/http://www.fsam.gov"
+								createRef = true
+							else(ref == "OMB Memorandum 02-01")
+								ref_url = "https://web.archive.provider/web/20170108085255/https://www.whitehouse.gov/omb/memoranda_m02-01"
+								createRef = true
+							end
+							
+							if (createRef)
+								last_ref = Ref.order("created_at").last
+								if (last_ref != nil)
+									the_last_ref_id = last_ref.ref_id
+									last_ref_id = the_last_ref_id.gsub("ref","")
+									last_ref_id = last_ref_id.to_i
+									last_ref_id = last_ref_id + 1
+									ref_id = "ref#{last_ref_id}"
+								else
+									ref_id = 100
+								end	
+									the_ref = Ref.find_or_create_by(ref_id: ref_id, title: ref, url: ref_url)
+								
+							end
+						end
+					end
+					
+					the_related_ref = RelatedRef.find_or_create_by(owner_object_type: "SecurityControl", owner_object_id: security_control.id, 
+						object_id: the_ref.id, object_type: "Ref", title: the_ref.title, rel: "reference")
+				end
+			end
+		end
+	end
+	
+	def create_related_control(owner_object, related_control, the_policy, reason, type)
+		if (type == "guidance")
+			type = "Guidance"
+		elsif (type == "securitycontrol")
+			type = "SecurityControl"
+		end
+		
+		the_control = SecurityControl.where(control_id: related_control, security_policy_id: the_policy.id).first
+		
+		if (the_control == nil)
+		  
+			tmp_ref = {owner_object: owner_object, related_control: related_control, the_policy: the_policy, reason: reason, type: type} 
+			@stored_related_controls << tmp_ref  	
+		else
+			the_related_ref = RelatedRef.find_or_create_by(owner_object_type: type, owner_object_id: owner_object.id, 
+				object_id: the_control.id, object_type: "SecurityControl", title: the_control.control_id, rel: reason)
+		end
+
+	end
+	
+	def create_statement_items(sentances, parentStatementID, the_sc)
+		parentItemLetter = nil
+		the_letter = ""
+		parent_item = false
+		parentItem = nil
+
+		sentances.each do |theSentance| 
+		theSentance = theSentance.strip
+	
+			
+			if (the_sc.control_class == "SP800-53-enhancement")
+				theSentance = theSentance.gsub "(i)", "a."
+				theSentance = theSentance.gsub "(ii)", "b."
+				theSentance = theSentance.gsub "(iii)", "c."
+				theSentance = theSentance.gsub "(iv)", "d."
+				theSentance = theSentance.gsub "(v)", "e."
+			else
+				theSentance = theSentance.gsub "(i)", "1."
+				theSentance = theSentance.gsub "(ii)", "2."
+				theSentance = theSentance.gsub "(iii)", "3."
+				theSentance = theSentance.gsub "(iv)", "4."
+				theSentance = theSentance.gsub "(v)", "5."
+				theSentance = theSentance.gsub "(vi)", "6."
+				
+			end
+	
+			
+
+			checkParam(theSentance, the_sc)
+			
+			if (theSentance.starts_with?('q','w','e','r','t','y','u','i','o','p','a','s','d','f','g','h','j','k','l','z','x','c','v','b','n','m')) 
+				parent_item = true	
+			else
+				theSentance = theSentance.gsub (/^\((\d)\)/) {$1}
+				parent_item = false	 	
+			end
+			
+			the_letter = theSentance[0,1]
+			abv = the_sc.control_id
+			newabv = abv.gsub (/([A-Z]+)/) { |str| str.downcase }
+			
+		 	if (regex_is_number? the_letter)
+		 		the_letter ="#{parentItemLetter}.#{the_letter}" 
+			else
+				parentItemLetter = the_letter
+			end
+			
+			item_id = "#{newabv}_smt_#{the_letter}"
+			item_name = "#{abv}#{the_letter}."
+			
+				
+			pattern = /((([a-z]+)\.|([0-9]+)) )/
+			description = theSentance.gsub (pattern), ""
+		 	
+		 	if(parent_item)
+		 		tmp_item = Item.find_or_create_by(item_id: item_id, name: item_name, description: description, statement_id: parentStatementID)
+				parentItem = tmp_item
+				parent_item = true
+			else
+				tmp_item = Item.find_or_create_by(item_id: item_id, name: item_name, description: description, statement_id: parentStatementID, parent: parentItem)
+			end
+		end
+	end
+	
+	def checkParam(theSentance, the_sc)
+		if (theSentance.include?("[Param:"))
+			theSentance = theSentance.split("[Param:")
+			counter = 0
+			paramsize = theSentance.size
+			if (theSentance[1] != nil)
+				theSentance.each do |param|
+					if (counter > 0)
+						param = theSentance[counter]
+						param = param.gsub (/].+/), ""
+						the_param = Param.find_or_create_by(description: param, security_control: the_sc)
+					end
+				counter = counter + 1
+				end
+			end 
+		end
+	end
+	
+	def create_statement(theSentance, the_sc)
+
+		sentances = theSentance.split("<br>")
+		the_statement = nil
+		sentances.each do |thisSentance|
+			
+			checkParam(thisSentance, the_sc)
+			statement = thisSentance.gsub "Statement:",""
+			the_statement = Statement.find_or_create_by(security_control: the_sc, description: statement)
+			sentances.shift
+			break
+		end
+		create_statement_items(sentances, the_statement.id, the_sc)
+		
+	end
+	
+	def create_enhancement(enhancement, the_sc)
+	%> Trying to create enhancement  <%= enhancement.inspect %> <br><br> <%
+		pattern = / \((\d+)\) /m
+		enhancement = enhancement.gsub(pattern) {"SubControl (" + $1 + ")"}
+		pattern = /\<br\> \((\d+)\) /m
+		enhancement = enhancement.gsub(pattern) {"SubControl (" + $1 + ")"}
+		 
+		#enhancement = enhancement.gsub "<br> (1) ", "SubControl (1)"
+		#enhancement = enhancement.gsub "<br> (2) ", "SubControl (2)"
+		#enhancement = enhancement.gsub "<br> (3) ", "SubControl (3)"
+		#enhancement = enhancement.gsub "<br> (4) ", "SubControl (4)"
+		#enhancement = enhancement.gsub "<br> (5) ", "SubControl (5)"
+		#enhancement = enhancement.gsub "<br> (6) ", "SubControl (6)"
+		#enhancement = enhancement.gsub "<br> (7) ", "SubControl (7)"
+		
+		the_controls = enhancement.split ("SubControl")
+		the_statement = nil
+		the_control= nil
+		the_guidance = nil
+		
+		the_controls.each do |tempSentance|
+			tempSentance = tempSentance.gsub ")[Status:", ") <br> <br> [Status:"
+			%> tempSentance <%= tempSentance.inspect %> <br><br> <%
+			status = "Active"
+			enhancement_guidance  = nil
+			theElements = tempSentance.split ("<br> Enhancement")
+			theElements.each do |thisSentance|
+			
+				%> Sentance <%= thisSentance.inspect %> <br><br> <%
+				
+				if (thisSentance.starts_with? (" ("))  && !(thisSentance.starts_with? ("Control Enhancements:"))
+				 %> Trying to create control <br><br> <%
+					controlID= nil
+					statement = nil
+					param =  nil
+					pattern = /(\(\d+\))(.*)/
+					fullcontrolID = thisSentance.gsub (pattern) {$1}
+					newcontrolID = fullcontrolID.gsub ("("), ""
+					controlnumber = newcontrolID.gsub (")"), ""
+					newcontrolID = "#{the_sc.control_id}.#{controlnumber}"
+					control_id = newcontrolID.gsub " ", ""
+					%> control_id - <%= control_id %> <br> <%
+					
+					
+					tmpcontrol = nil
+					if (@policy4 != nil)
+						tmpcontrol = SecurityControl.where(security_policy: @policy4, control_id: control_id).first
+						if (tmpcontrol != nil) 
+							title = tmpcontrol.title
+							name = tmpcontrol.name
+						else
+							name = "#{the_sc.control_id}#{fullcontrolID}"	
+							title = "#{the_sc.title} (enhancement # #{controlnumber})"		
+						end
+					end
+					
+					the_policy = the_sc.security_policy
+					
+					security_control_family = the_sc.security_control_family
+					control_class =  "SP800-53-enhancement"
+					
+					pattern = /(\(\d+\)) (\[Status: .*\]\.)/
+					status = thisSentance.gsub (pattern) {$2}
+					
+					if !(status.include? ("[Status: Withdrawn:"))
+						status = "Active"
+						pattern = /(\(\d+\))(.*)(\[Param: .*\]\.)/
+						statement = thisSentance.gsub (pattern) {$2}
+					else
+						status = "Withdrawn"
+						 
+						pattern = /(^.\d Incorporated into )([A-Z][A-z]-\d+)/
+						related_control = status.gsub(pattern) {$2}
+						
+					end
+			
+					
+					if !(thisSentance.starts_with?("Related control"))
+						name = name.gsub "PE-7(1)","PE-7 (1)"
+						name = name.gsub "PE-7(2)","PE-7 (2)"
+						pattern = /([A-Z][A-z]-\d+)(\(\d+\))/
+						name = name.gsub(pattern) {$1 +" "+$2}
+						the_control = SecurityControl.find_or_create_by(control_id: control_id,parent: the_sc, control_class: control_class, name: name,  title: title, security_policy:  the_policy, security_control_family: security_control_family, status: status)
+						
+						if (status == "Withdrawn")
+							create_related_control(the_control, related_control, the_policy, "incorporated-into", "securitycontrol")
+						end
+						
+						checkParam(thisSentance, the_control)
+						if (statement!= nil) 
+							pattern = /(\(([0-9])\)) (.*)/
+							the_statement = statement.gsub (pattern) {$3}
+							the_statement = the_statement .gsub "(a) ", "<br>(i) "
+							the_statement = the_statement .gsub "(b) ", "<br>(ii) "
+							the_statement = the_statement .gsub "(c) ", "<br>(iii) "
+							the_statement = the_statement .gsub "(d) ", "<br>(iv) "
+							the_statement = the_statement .gsub "(e) ", "<br>(v) "
+							the_statement = the_statement .gsub "(f) ", "<br>(vi) "
+							the_statement = the_statement .gsub "(g) ", "<br>(vii) "
+							create_statement(the_statement, the_control)
+						end
+					end
+				else
+				%> Trying to setup guidance <br><br><%
+					enhancement_guidance = thisSentance
+					if (enhancement_guidance != nil) 
+						description = enhancement_guidance.gsub "Enhancement Guidance: ", ""
+						the_guidance = Guidance.find_or_create_by(security_control: the_control, description: description)
+						
+					end
+					if ((thisSentance.starts_with? "Related controls:") || (thisSentance.starts_with? "Related control:"))
+						thisSentance =  thisSentance.gsub "Related control: ", ""
+						thisSentance =  thisSentance.gsub "Related controls: ", ""
+						thisSentance =  thisSentance.gsub ";", ","
+						create_related(thisSentance, the_control, the_policy, the_guidance)
+					end
+				end
+			end
+			
+			
+		end
+		
+		
+	end
+	def create_elements(the_control, the_policy, the_sc, the_scf, version)
+		#%>Creating elements - <%= the_control.class%><br><br><%
+		
+		control_class = "SP800-53"
+		settingStatementItmes = false
+		parentStatementID = nil
+		related_set = false
+		description  = ""
+		the_guidance = nil
+		the_control.each do |theSentance|
+			
+			#%> theSentance =<%= theSentance%> <br> <%
+			if (theSentance.starts_with? ("Control-ID:")) || (theSentance.starts_with? ("Control-Title:"))
+			 	#Ignore	
+			 	#break
+			elsif (theSentance.starts_with? ("Statement:"))
+				#%> Creating Statement <br><%
+				parentStatementID = create_statement(theSentance, the_sc)
+				
+			elsif (theSentance.starts_with? "Guidance")
+				parentStatementID = nil
+				settingStatementItmes = false
+				guidance = theSentance
+				relatedcontrols = nil
+				if (theSentance.include? ("Related control:")) || (theSentance.include? ("Related controls:"))
+					guidance = theSentance.split("Related control")
+					description = guidance.first.gsub "Guidance:",""
+					description = description.gsub "<br>",""
+					relatedcontrols = guidance[1]
+				else
+					description = theSentance.gsub "Guidance:",""
+					description = theSentance.gsub ":",""
+				end
+				the_guidance = Guidance.find_or_create_by(security_control: the_sc, description: description)
+				
+				if (relatedcontrols != nil)
+					create_related(relatedcontrols, the_sc, the_policy, the_guidance)
+					related_set = true
+				end
+			elsif (theSentance.starts_with?("References:")) 
+				if !( theSentance == "References: None. ") 
+					create_relatedrefs(theSentance, the_sc, nil)
+				end
+			elsif (theSentance.starts_with?("Priority and Baseline"))
+			#	%> Setting the Priority  --<%= theSentance %> <br><%
+			elsif (theSentance.starts_with?("Control Enhancements:"))
+				#%> Setting the Control Enhancements --<%= theSentance %> <br><%
+				create_enhancement(theSentance, the_sc)
+			elsif ((theSentance.starts_with?("Related controls:")) || (theSentance.starts_with?("Related control:"))) && (related_set == false) 
+				related = theSentance.gsub "Related controls:",""
+				related = theSentance.gsub "Related control:",""
+				create_related(related, the_sc, the_policy, the_guidance)
+				
+			else
+				%> Unknown:<%= theSentance %> <br><%
+			end
+		end
+	end
+	
+	
+	
+	def create_control(the_control, the_policy, parent_sc, the_scf, version)
+		
+		sentances = the_control.split(" <br><br> ")	
+		control_id = nil
+		security_control_title = nil
+		control_status = "Active"
+		active = true
+		parent = nil
+		control_class = "SP800-53"
+		set_control = false
+		controlCreated  = false
+		settingStatementItmes = false
+		the_sc = nil
+		parentStatementID = nil
+		parentItem = nil
+		parentItemLetter = nil
+		sentances.each do |theSentance|
+			%> theSentance - <%= theSentance.inspect %> <br><%
+			theSentance = theSentance.gsub /^\s/m,""
+			theSentance = theSentance.gsub ")[Status:", ") <br> <br> [Status:"
+			break if (theSentance.starts_with?("Security_Family:"))||(theSentance.starts_with?("Family:"))||(theSentance.starts_with?("ACCESS CONTROL"))
+	
+			
+			
+			if (theSentance.starts_with?("Control-ID:")) || (theSentance.starts_with?(" Control-ID:"))
+				
+				control_id = theSentance.gsub "Control-ID:",""
+				control_id = control_id.strip
+
+			elsif (theSentance.starts_with?("Control-Title:"))
+				security_control_title = theSentance.gsub "Control-Title:", ""
+				%><br> control Title = <%= security_control_title %><br> <%
+			
+			elsif theSentance.include?("ACCESS CONTROL [Status: Withdrawn")
+				security_control_title = "SUPERVISION AND REVIEW - ACCESS CONTROL"
+				set_control = true
+			else
+				%>theSentance - <%= theSentance %> <br> <%
+				%>SetControl True<br> <%
+				set_control = true
+			end
+			
+			if (theSentance.include?("Status:"))
+				
+				active = false
+				pattern = /(^.* Incorporated into )([A-Z][A-z]-\d+)(.+)/
+				related_control = theSentance.gsub(pattern) {$2}
+				control_status = "Withdrawn"
+				set_control = true
+				#sentances.shift
+			end	
+			
+			if (set_control) && (control_id != nil)
+				%> Creating the control <br> <%
+				control_id = control_id.gsub " ",""
+				control_id = control_id.gsub ":",""
+				security_control_title = security_control_title.strip
+				security_control_title = security_control_title.gsub " //n", ""
+				security_control_title = security_control_title.titleize 
+				the_sc = SecurityControl.find_or_create_by(control_id: control_id,parent: parent,control_class: control_class, name: control_id,  title: security_control_title, security_policy:  the_policy, security_control_family: the_scf, status: control_status)
+				
+				%> Created Security Control - <%= the_sc.inspect %> <br><%
+				if (control_id == "AC-12")
+					%> control_status <%= control_status.inspect %><br><br><%
+				end
+				controlCreated = true
+				
+				if (control_status == "Active")
+					active = true
+				else
+					create_related_control(the_sc, related_control, the_policy, "incorporated-into", "securitycontrol")
+				end
+				sentances.shift
+			end
+			
+			break if (controlCreated)
+		end
+		
+		
+		#set the rest of the things
+			
+		if (controlCreated) && (the_sc != nil) && (active)
+			create_elements(sentances, the_policy, the_sc, the_scf, version)
+		end
+	end
+	
+	data = ""
+	data = IO.binread(path)
+	data = data.encode(Encoding.find('UTF-8'), {invalid: :replace, undef: :replace, replace: ''})
+	single_line_data = data.squish
+	single_line_data2 = single_line_data.gsub "Special Publication 800-53 Recommended Security Controls for Federal Information Systems and Organizations", ""
+	pattern = /( APPENDIX\s... )/
+	single_line_data3 = single_line_data2.gsub (pattern), ""
+	pattern = /(PAGE [A-Z]-\d+ )/
+	single_line_data4 = single_line_data3.gsub (pattern), ""
+	
+	replacedFamilyControls = single_line_data4.gsub 'FAMILY:', " Family: Security_Family:"
+	replaceClass = replacedFamilyControls.gsub (/(CLASS:)\s([A-Z]+)(\s)/) { "<br> Class: " + $2 + " <br> " }
+	fixAC = replaceClass.gsub " TECHNICAL <br> AC-1", "TECHNICAL <br><br> the_Control: Control-ID: AC-1"
+	
+	 
+	fixAC_title = fixAC.gsub "ACCESS CONTROL POLICY AND PROCEDURES", "<br><br> Control-Title: ACCESS CONTROL POLICY AND PROCEDURES "
+	clean_line = fixAC_title.gsub "________________________________________________________________________________________________" , ""
+	replacedControl = clean_line.gsub ' Control:', " <br><br> Statement:" 
+	
+	fixEnhancement=  replacedControl.gsub " Enhancement Supplemental Guidance:", " <br> Enhancement Guidance:"
+	replacedGuidance = fixEnhancement.gsub 'Supplemental Guidance:', " <br><br> Guidance:"
+	replacedAssignment = replacedGuidance.gsub 'Assignment:', "Param:"
+	replacedControlEnhancements = replacedAssignment.gsub " Control Enhancements: " , " <br><br> Control Enhancements: "
+	#pattern = /(Related control:( [A-Z]{2}-\d{1,2}[.|,| ])+)( <br><br> Control Enhancements:)/
+	#replacedRelatedControls = replacedControlEnhancements.gsub(pattern) {" <br><br> "+ $1 + $3}
+	
+	#pattern = /(Related controls:( [A-Z]{2}-\d{1,2}[.|,| ])+)( <br><br> Control Enhancements:)/
+	#replacedRelatedControls = replacedRelatedControls.gsub(pattern) {" <br><br> "+ $1 + $3}
+	#pattern = /([A-Z]{2})(\d{1,2})/
+	
+	#replacedRelatedControls = replacedRelatedControls.gsub(pattern) {$1 + "-" + $2}
+	
+	replacedRelatedControls = replacedControlEnhancements.gsub 'Related controls:', " <br> Related controls:"
+	replacedRelatedControls = replacedRelatedControls.gsub 'Related control:', " <br> Related control:"
+	
+	
+	
+	
+	fixingControls= replacedRelatedControls.gsub "AC-14 (1) AC-15 AUTOMATED MARKING", "AC-14 (1) <br><br> the_Control: Control-ID: AC-15 <br><br> Control-Title: AUTOMATED MARKING <br><br>"
+	fixingControls= fixingControls.gsub "(2) (4) CP-5 CONTINGENCY PLAN UPDATE", "(2) (4) <br><br> the_Control: Control-ID: CP-5 <br><br> Control-Title: CONTINGENCY PLAN UPDATE <br><br>"
+	fixingControls= fixingControls.gsub "AC-22 PUBLICLY ACCESSIBLE CONTENT", "<br><br> the_Control: Control-ID: AC-22 <br><br> Control-Title: PUBLICLY ACCESSIBLE CONTENT  <br><br>"
+	
+	pattern = /(Related control[s:]+( [A-Z]{2}-\d{1,2}[.,])+)( \([0-9]+\))/
+	replacedRelatedControls = fixingControls.gsub(pattern) {$1 + " <br> " + $3}
+	pattern = /([A-Z] )(\[Withdrawn\:)/
+	replacedStatus = replacedRelatedControls.gsub (pattern) {$1 + " <br> [Status: Withdrawn -"}
+	replacedStatus = replacedRelatedControls.gsub "Withdrawn-", "Withdrawn - "
+	replacedStatus = replacedRelatedControls.gsub "[Withdrawn", "[Status: Withdrawn"
+	 
+	replacedItems = replacedStatus.gsub(/([a-z]|;|.|:)( [a-z]\. )/) {$1 + " <br>" + $2}
+	
+	 
+	replacedControlEnhancements = replacedItems.gsub " References: ", " <br><br> References: "
+	
+	newreplacedPriorities = replacedControlEnhancements.gsub 'Priority and Baseline Allocation:', " <br><br> Priority and Baseline Allocation:"
+	pattern = /(Priority and Baseline Allocation: (?:.)*?) ([A-Z]{2}-\d{1,2}) ([A-Z\(\)\-\s]+ <br>)/
+	replacedPriorities = newreplacedPriorities.gsub(pattern) {$1 + " the_Control: Control-ID: " + $2 + " <br><br> Control-Title: " + $3}
+	
+	
+	replacedPriorities = replacedPriorities.gsub "(2) AU-6 AUDIT", "(2) <br><br> the_Control: Control-ID: AU-6 <br><br> Control-Title: AUDIT"
+	replacedPriorities = replacedPriorities.gsub "CA-2]. CA-5", "CA-2]. <br><br> the_Control: Control-ID: CA-5 <br><br> Control-Title: "
+	
+	replacedPriorities = replacedPriorities.gsub '800-39. PM-11', "800-39. <br> PM-11"
+	replacedStatementItems = replacedPriorities.gsub ' (i) ', " <br> (i) "
+	replacedStatementItems2 = replacedStatementItems.gsub ' (ii) ', " <br> (ii) "
+	replacedStatementItems3 = replacedStatementItems2.gsub ' (iii) ', " <br> (iii) "
+	replacedStatementItems4 = replacedStatementItems3.gsub ' (iv) ', " <br> (iv) "
+	replacedStatementItems5 = replacedStatementItems4.gsub ' (v) ', " <br> (v) "
+	replacedStatementItems6 = replacedStatementItems5.gsub ' (vi) ', " <br> (vi) "
+	replacedStatementItems7 = replacedStatementItems6.gsub ' (vii) ', " <br> (vii) "
+	replacedStatementItems8 = replacedStatementItems7.gsub 'NIST Special Publications', "NIST Special Publication"
+	pattern = /(APPENDIX )([A-Z]-[A-Z]+ )/
+	replacedStatementItems8 = replacedStatementItems8.gsub(pattern) {""}
+	
+	pattern = /(PM-\d{1,2}) ([A-Z\s]+ )/
+	replacedPMs = replacedStatementItems8.gsub (pattern) {"<br><br> the_Control: Control-ID: " + $1 + " <br><br> Control-Title: " + $2 }
+	finallist2 = replacedPMs.gsub "the_Control: Control-ID: PM-1" , "<br><br> the_Control: Control-ID: PM-1"
+	finallist3 = finallist2.gsub "Control Enhancements: (", "Control Enhancements: <br> ("
+	finallist4 = finallist3.gsub ". (", ". <br> ("
+	finallist5 = finallist4.gsub "PM-11 MISSION/BUSINESS PROCESS DEFINITION", "<br><br> the_Control: Control-ID: PM-11  <br><br> Control-Title: MISSION/BUSINESS PROCESS DEFINITION"
+	pattern = /(Status: Withdrawn - Incorporated into [A-Z]{2}-\d{1,2}\].)( [A-Z]{2}-\d{1,2} )/
+	finallist6 = finallist5.gsub(pattern) {$1 + "<br><br> the_Control: Control-ID: " + $2 + " <br><br> Control-Title: "}
+	pattern = /([A-Z]{2}-\d{1,2} )([A-Z]{2}-\d{1,2} )([A-Z ]+ )/
+	finallist7 = finallist6.gsub(pattern) {$1 + "<br><br> the_Control: Control-ID: " + $2 + " <br><br> Control-Title: " +$3  + " <br><br> "}
+	
+	pattern = /([A-Z]{2}-\d{1,2}. )([A-Z]{2}-\d{1,2} )([A-Z ]+ )/
+	finallist8 = finallist7.gsub(pattern) {$1 + "<br><br> the_Control: Control-ID: " + $2 + " <br><br> Control-Title: " +$3 + " <br><br> "}
+	finallist9 = finallist8.gsub "SC-21 SECURE NAME / ADDRESS RESOLUTION SERVICE (RECURSIVE OR CACHING RESOLVER)", "<br><br> the_Control: Control-ID: SC-21 <br><br> Control-Title: SECURE NAME / ADDRESS RESOLUTION SERVICE (RECURSIVE OR CACHING RESOLVER)" 
+	finallist10 = finallist9.gsub "SI-5 SECURITY ALERTS, ADVISORIES, AND DIRECTIVES","<br><br> the_Control: Control-ID: SI-5 <br><br> Control-Title: SECURITY ALERTS, ADVISORIES, AND DIRECTIVES"
+	finallist11 = finallist10.gsub "SI-6SI-7 SOFTWARE AND INFORMATION INTEGRITY","SI-6 <br><br> the_Control: Control-ID: SI-7 <br><br> Control-Title: SOFTWARE AND INFORMATION INTEGRITY"
+	finallist12 = finallist11.gsub "Statement: //n Control-ID: AC-1 //n Control-Title:", " the_Control: Control-ID: AC-1:" 
+	finallist13 = finallist12.gsub "AC-13", "<br><br> the_Control: Control-ID: AC-13 <br><br> Control-Title:"
+	
+	finallist  = finallist13.gsub "ACCESS CONTROL [Status: Withdrawn:", "ACCESS CONTROL <br><br> [Status: Withdrawn:"   
+	
+	
+	
+	
+	objects = finallist.split(" Family: ")
+	objects.delete("")
+	
+	#Sets the fields for the security policy
+	title = @doc.name
+	the_policy = @doc.security_policy
+	version = the_policy.version
+	policy_name = the_policy.name
+	
+	
+	objects.each do |the_object|
+	
+		title = the_object.split("Class:").first
+		 
+		title = title.gsub 'Security_Family:', ""
+		title = title.gsub '<br>', ""
+#	%> title  - <%= title  %> <br><br> <%
+		if (title != nil )
+			title = title.strip
+			family_class = the_object.split("the_Control:").first
+			family_class  = family_class.gsub /.*Class:/, ""
+			
+			
+			
+			if (title == "AUDIT AND ACCOUNTABILITY")
+				
+				the_scf = SecurityControlFamily.find_or_create_by(family: "AUDIT AND ACCOUNTABILITY" ,  abv: "AU" ,   security_policy: the_policy, family_class: family_class)
+			elsif (title == "ACCESS CONTROL")
+				family_class = "TECHNICAL"
+				the_scf = SecurityControlFamily.find_or_create_by(family: "ACCESS CONTROL" ,  abv: "AC" ,  security_policy:  the_policy, family_class: family_class)
+			elsif (title == "AWARENESS AND TRAINING")
+				the_scf = SecurityControlFamily.find_or_create_by(family: "AWARENESS AND TRAINING" ,  abv: "AT" ,  security_policy:  the_policy, family_class: family_class)
+			elsif (title == "CONFIGURATION MANAGEMENT")
+				the_scf = SecurityControlFamily.find_or_create_by(family: "CONFIGURATION MANAGEMENT" ,  abv: "CM" ,  security_policy:  the_policy, family_class: family_class)
+			elsif (title == "CONTINGENCY PLANNING")
+				the_scf = SecurityControlFamily.find_or_create_by(family: "CONTINGENCY PLANNING" ,  abv: "CP" ,  security_policy:  the_policy, family_class: family_class)
+			elsif (title == "IDENTIFICATION AND AUTHENTICATION")
+				the_scf = SecurityControlFamily.find_or_create_by(family: "IDENTIFICATION AND AUTHENTICATION" ,  abv: "IA" ,  security_policy:  the_policy, family_class: family_class)
+			elsif (title == "INCIDENT RESPONSE")
+				the_scf = SecurityControlFamily.find_or_create_by(family: "INCIDENT RESPONSE" ,  abv: "IR" ,  security_policy:  the_policy, family_class: family_class)
+			elsif (title == "MAINTENANCE")
+				the_scf = SecurityControlFamily.find_or_create_by(family: "MAINTENANCE" ,  abv: "MA" ,  security_policy:  the_policy, family_class: family_class)
+			elsif (title == "MEDIA PROTECTION")
+				the_scf = SecurityControlFamily.find_or_create_by(family: "MEDIA PROTECTION" ,  abv: "MP" ,  security_policy:  the_policy, family_class: family_class)
+			elsif (title == "PERSONNEL SECURITY")
+				the_scf = SecurityControlFamily.find_or_create_by(family: "PERSONNEL SECURITY" ,  abv: "PS" ,  security_policy:  the_policy, family_class: family_class)
+			elsif (title == "PHYSICAL AND ENVIRONMENTAL PROTECTION")
+				the_scf = SecurityControlFamily.find_or_create_by(family: "PHYSICAL AND ENVIRONMENTAL PROTECTION" ,  abv: "PE" ,  security_policy:  the_policy, family_class: family_class)
+			elsif (title == "PLANNING")
+				the_scf = SecurityControlFamily.find_or_create_by(family: "PLANNING" ,  abv: "PL" ,  security_policy:  the_policy, family_class: family_class)
+			elsif (title == "INFORMATION SECURITY PLAN")
+				the_scf = SecurityControlFamily.find_or_create_by(family: "INFORMATION SECURITY PLAN" ,  abv: "PM" ,  security_policy:  the_policy, family_class: family_class)
+			elsif (title == "RISK ASSESSMENT")
+				the_scf = SecurityControlFamily.find_or_create_by(family: "RISK ASSESSMENT" ,  abv: "RA" ,  security_policy:  the_policy, family_class: family_class)
+			elsif (title == "SECURITY ASSESSMENT AND AUTHORIZATION")
+				the_scf = SecurityControlFamily.find_or_create_by(family: "SECURITY ASSESSMENT AND AUTHORIZATION" ,  abv: "CA" ,  security_policy:  the_policy, family_class: family_class)
+			elsif (title == "SYSTEM AND COMMUNICATIONS PROTECTION")
+				the_scf = SecurityControlFamily.find_or_create_by(family: "SYSTEM AND COMMUNICATIONS PROTECTION" ,  abv: "SC" ,  security_policy:  the_policy, family_class: family_class)
+			elsif (title == "SYSTEM AND INFORMATION INTEGRITY")
+				the_scf = SecurityControlFamily.find_or_create_by(family: "SYSTEM AND INFORMATION INTEGRITY" ,  abv: "SI" ,  security_policy:  the_policy, family_class: family_class)
+			elsif (title == "SYSTEM AND SERVICES ACQUISITION")
+				the_scf = SecurityControlFamily.find_or_create_by(family: "SYSTEM AND SERVICES ACQUISITION" ,  abv: "SA" ,  security_policy:  the_policy, family_class: family_class)
+			else
+				%> Error- Title not found, and possibly new.-<%= title %>-<Br><%
+			end 
+			family_class = family_class.gsub "<br>",""
+			#%> family_class = <%= family_class  %> <br><%	
+
+#Used during debug...			
+erase_Controls = true
+
+if (erase_Controls == true) && (the_scf != nil ) && (the_scf.security_controls != nil)
+	the_scf.security_controls.destroy_all
+elsif (the_scf == nil)
+	%> Error- Title not found, and possibly new.-<%= title %>-<Br><%
+end
+			sec_controls  = 0
+			sec_controls = the_object.split("the_Control:")
+			control_count= sec_controls.count
+			
+			 #%> Creating Security Family - <%= title %> with <%=  control_count %> security Controls <br> <%
+			if (title == "ACCESS CONTROL") || (true)
+				sec_controls.each do |the_control|
+					create_control(the_control, the_policy, nil, the_scf, version)
+					 #%><br> <br><%
+				
+				end
+			end	
+		end
+		
+	end
+	
+end
+
+clean_up
+%>

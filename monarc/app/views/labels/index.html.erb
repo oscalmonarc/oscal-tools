@@ -1,0 +1,56 @@
+<% content_for :title, "Labels" %>
+<h1>Labels</h1>
+
+<table id="myDataTable"  class="table table-striped table-bordered"  style="width:100%">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Children Labels</th>
+      <th>Compnents</th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+ <tbody>
+    <% @labels.each do |label| %>
+      <tr>
+        <td><%= label.click_link %></td>
+        <td> 
+        	<% if has_data?(label.children) 
+				label.children.each do |child|%>
+					<%= child.click_link %>: <%= child.children.count %>
+					
+				<% end %>
+			<% end %>
+        	<strong>Total Count <%= label.children.count%></strong>
+        	<%= link_to 'Add', "/label/#{label.id}/add_child" %><br>
+       	</td>
+       	<td>
+       		<% if has_data?(label.components) 
+				label.components.each do |component|%>
+					<%= component.click_link %>, 
+				<% end %>
+				<strong>Total Count <%= label.components.count%></strong>
+			<% end %>
+        	
+       	</td>
+        <td><%= link_to 'Edit', edit_label_path(label) %></td>
+        <td><%= link_to 'Destroy', label, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+     <% end %>
+</table>
+
+<br>
+
+<%= link_to 'New Component Type', new_label_path %><br><br>
+<script>
+    $(document).ready(function() {
+    $('#myDataTable').DataTable( {
+    	"aaSorting": [],
+    	dom: 'Bfrtip',
+        buttons: [
+            'copy', 'csv', 'excel', 'pdf', 'print'
+        ]
+    } );
+} );
+</script>

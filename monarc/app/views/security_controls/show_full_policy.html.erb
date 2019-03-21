@@ -1,0 +1,69 @@
+<% @security_controls.each do |security_control| %>
+<p>
+	  <strong>Security Control:</strong> <%= security_control.control_id %> - <%= link_to security_control.title, security_control %>   <strong>State:</strong> 
+	  <% if security_control.check_active %>
+	  	<strong style='color: green;'>
+	  <% else %>
+	  	<strong style='color: red;'>
+	  <% end %>
+	  <%= security_control.status %>
+	  </strong> 
+	  <ul>
+	  	<li>
+		  <strong>Control Enhancements:</strong> 
+			  <%= security_control.grab_enhancements(security_control) %>
+		</li>
+	  </ul>
+	</p>
+<table>
+	<tr>
+		<td valign= "top">
+		  	<strong>Description:</strong>
+		</td>
+		<td> 
+  			<%= security_control.grab_statements(security_control.statements)%>
+		</td>
+	</tr>
+  	<tr>
+		<td valign= "top">
+		  	<strong>Supplemental Guidances:</strong> 
+  		</td>
+		<td>
+  			<%= security_control.grab_guidances(security_control) %>
+		</td>
+	</tr>
+  	<tr>
+		<td valign= "top">
+  			<strong>Objectives:</strong> 
+  		</td>
+		<td>
+  			<%= security_control.grab_objectives(security_control) %>
+		</td>
+	</tr>
+  	<tr>
+		<td valign= "top">
+			<strong>Procedures:</strong>
+  		</td>
+		<td>
+  			<%= security_control.grab_assessments(security_control) %>
+		</td>
+	</tr>
+  	<tr>
+		<td>
+		  	<strong>Control Parameters:</strong> 
+  		</td>
+		<td>
+  			<%= security_control.grab_params(security_control) %>
+		</td>
+	</tr>
+  	<tr>
+		<td>
+  			<strong>References:</strong><br>
+  		</td>
+		<td>
+  			<%= security_control.grab_references(security_control) %>
+  		</td>
+	</tr>
+</table>
+<hr>	
+<% end %>	

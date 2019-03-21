@@ -1,0 +1,77 @@
+<%= form_with(model: component, local: true) do |form| %>
+  <% if component.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(component.errors.count, "error") %> prohibited this component from being saved:</h2>
+
+      <ul>
+      <% component.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+  	<% 
+  	provider_id = nil 
+  	if (component.provider_id != nil)
+  		provider_id = component.provider_id
+  	elsif ( params[:provider_id] != nil)
+  		provider_id = params[:provider_id]
+  	elsif (@parent_component != nil)
+  		provider_id = @parent_component.provider.id
+  	end
+  	%> 
+    <%= form.label :provider_id %>
+    <% provider_array = Provider.all.map { |provider| [provider.name , provider.id] } %>
+    <%= form.select :provider_id, options_for_select(provider_array , provider_id) %>
+
+  </div>
+
+  <div class="field">
+  <% 
+  	parent_id = nil 
+  	if (component.parent_id != nil)
+  		parent_id = component.parent_id
+  	elsif ( @parent_component != nil)
+  		parent_id = @parent_component.id
+  	elsif (@component.parent_id != nil)
+  		parent_id = component.parent_id
+  	end
+  	%> 
+    <%= form.label "Parent Component" %>
+    <% components_array = Component.all.map { |component| [component.name , component.id] } %>
+    <%= form.select :parent_id, options_for_select(components_array , parent_id) %>
+    
+    
+  </div>
+
+  <div class="field">
+    <%= form.label :name %>
+    <%= form.text_field :name %>
+  </div>
+
+  <div class="field">
+    <%= form.label :description %>
+    <%= form.text_field :description %>
+  </div>
+
+  <div class="field">
+    <%= form.label :make %>
+    <%= form.text_field :make %>
+  </div>
+
+  <div class="field">
+    <%= form.label :model %>
+    <%= form.text_field :model %>
+  </div>
+
+  <div class="field">
+    <%= form.label :version %>
+    <%= form.text_field :version %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<% end %>

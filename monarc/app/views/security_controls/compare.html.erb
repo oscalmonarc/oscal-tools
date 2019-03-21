@@ -1,0 +1,111 @@
+
+<table border="1">
+	<tr>
+		<td width="3%"></td>
+		<td width="46%"><%= link_to "Version #{@security_control.security_policy.version}", @security_control.the_url %> </td>
+		<td width="46%"><%= link_to "Version #{@security_control2.security_policy.version}", @security_control2.the_url  %></td>
+	</tr>
+<tr>
+	<td>
+  		<strong>Statements:</strong>
+	</td>
+	<td>
+  		<%= grab_statements(@security_control) %>
+	</td>
+	<td>
+		<%= grab_statements(@security_control2) %>
+	</td>
+</tr>
+	
+
+
+
+<tr>
+	<td>
+  		<strong>Guidances:</strong>
+	</td>
+	<td> 
+  		<%= grab_guidances(@security_control) %>
+	</td>
+	<td>
+		<%= grab_guidances(@security_control2) %>
+	</td>
+</tr>
+		
+
+
+
+<tr>
+	<td>
+  		<strong>Objectives:</strong>
+	</td>
+	<td>
+  		<%= grab_objectives(@security_control) %>
+	</td>
+	<td>
+		<%= grab_objectives(@security_control2) %>
+	</td>
+</tr>
+		
+
+
+
+<tr>
+	<td>
+  		<strong>Assessments:</strong>
+	</td>
+	<td>
+  		<%= grab_assessments(@security_control) %>
+	</td>
+	<td>
+		<%= grab_assessments(@security_control2) %>
+	</td>
+</tr>
+		
+
+
+
+<tr>
+	<td>
+  		<strong>Params:</strong>
+	</td>
+	<td>
+  		<%= grab_params(@security_control) %>
+	</td>
+	<td>
+		<%= grab_params(@security_control2) %>
+	</td>
+</tr>
+		
+
+
+
+<tr>
+	<td>
+  		<strong>References:</strong>
+	</td>
+	<td>
+  		<%= grab_references_articles(@security_control) %>
+	</td>
+	<td>
+		<%= grab_references_articles(@security_control2) %>
+	</td>
+</tr>	
+<tr>
+	<td>
+  		<strong>Overlays:</strong>
+	</td>
+	<td>
+  		<% control_overlays = @security_control.control_overlays
+	if has_data? (control_overlays) %>
+  		<%= render 'overlays/show_overlays', control_overlays: control_overlays %>
+	<% end %>
+	</td>
+	<td>
+		<% control_overlays = @security_control2.control_overlays
+	if has_data? (control_overlays) %>
+  		<%= render 'overlays/show_overlays', control_overlays: control_overlays %>
+	<% end %>
+	</td>
+</tr>
+

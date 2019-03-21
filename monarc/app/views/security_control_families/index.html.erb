@@ -1,0 +1,57 @@
+<% content_for :title, "Security Control Family" %>
+<p id="notice"><%= notice %></p>
+<header>
+	<h1>Security Control Families</h1>	
+	<div id="showSearch">
+		<i class="fa fa-search" aria-hidden="true"></i>
+		Filter <button id="displaySearch" onclick="displaySearchBar()">+</button>
+	</div>
+</header>
+
+<%= render 'search' %>
+<br>
+<table id="myDataTable"  class="table table-striped table-bordered"  style="width:100%">
+  <thead>
+    <tr>
+      <th>Abv - Family</th>
+      <th>Security controls</th>
+      <th>Security policy</th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% 
+    counter = 0
+    @security_control_families.each do |security_control_family|
+    	counter = counter + 1 
+       	policy = security_control_family.security_policy
+       	policy_name = policy.name
+        version = policy.version
+
+    %>
+      <tr>
+	    <td><%= link_to "#{security_control_family.abv} #{security_control_family.family}", security_control_family %></td>
+        <td><%= show_more(security_control_family.grab_secrutiy_controls, counter).html_safe %>
+        </td>
+        <td><%= policy.click_link %></td>
+        <td><%= link_to 'Edit', edit_security_control_family_path(security_control_family) %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+<br>
+
+<%= link_to 'New Security Control Family', new_security_control_family_path %>
+
+<script>
+    $(document).ready(function() {
+    $('#myDataTable').DataTable( {
+    	"aaSorting": [],
+    	dom: 'Bfrtip',
+        buttons: [
+            'copy', 'csv', 'excel', 'pdf', 'print'
+        ]
+    } );
+} );
+</script>

@@ -1,0 +1,58 @@
+<%= form_with(model: security_control, local: true) do |form| %>
+  <% if security_control.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(security_control.errors.count, "error") %> prohibited this security_control from being saved:</h2>
+
+      <ul>
+      <% security_control.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= form.label :security_policy %>
+    <%= @security_control_family.security_policy.policy_version %>
+    <%= form.hidden_field(:security_policy_id, :value => @security_control_family.security_policy_id) %>
+  </div>
+	 
+
+	<% 
+	security_control_family_id = nil
+	
+	if (security_control.security_control_family != nil )
+		security_control_family_id = security_control.security_control_family.id
+	elsif  (@security_control_family != nil )
+		security_control_family_id = @security_control_family.id
+	end %>
+ 	
+  	    <%= form.label :security_control_family %>
+	    <% families_array = SecurityControlFamily.all.map { |security_control_family| [security_control_family.name , security_control_family.id] } %>
+	    <%= form.select :security_control_family_id, options_for_select(families_array  , security_control_family_id) %> 
+	
+
+
+  <div class="field">
+    <%= form.label :control_id %>
+    <%= form.text_field :control_id %>
+  </div>
+  
+  <div class="field">
+    <%= form.label :title %>
+    <%= form.text_field :title %>
+  </div>
+  
+  <div class="field">
+    <%= form.label :status %>
+    <%= form.select :status, ['Active', 'Withdrawn']%>
+  </div>
+  <div class="field">
+    <%= form.label :control_class %>
+    <%= form.text_field :control_class %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<% end %>

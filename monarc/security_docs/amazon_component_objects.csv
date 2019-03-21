@@ -1,0 +1,152 @@
+Name,Label,Parent,Provider,Domains,Description
+AWS,Cloud Infrastructure,,Amazon,aws-commercial,is a secure cloud services platform, offering compute power, database storage, content delivery and other functionality to help businesses scale and grow.
+AI and Machine Learning,AI and Machine Learning,AWS,Amazon,aws-commercial,
+Apache MXNet on AWS,AI and Machine Learning,AI and Machine Learning,Amazon,aws-commercial,Scalable,High-performance Deep Learning
+Comprehend,AI and Machine Learning,AI and Machine Learning,Amazon,aws-commercial,Discover Insights and Relationships in Text
+Deep Learning AMIs,AI and Machine Learning,AI and Machine Learning,Amazon,aws-commercial,Quickly Start Deep Learning on EC2
+DeepLens,AI and Machine Learning,AI and Machine Learning,Amazon,aws-commercial,Pairs a connected HD camera developer kit with a set of sample projects to help developers learn machine learning concepts using hands-on computer vision use cases
+Lex,AI and Machine Learning,AI and Machine Learning,Amazon,aws-commercial,Build Voice and Text Chatbots
+Machine Learning,AI and Machine Learning,AI and Machine Learning,Amazon,aws-commercial,Machine Learning for Developers
+Polly,AI and Machine Learning,AI and Machine Learning,Amazon,aws-commercial,Turn Text into Lifelike Speech
+Rekognition,AI and Machine Learning,AI and Machine Learning,Amazon,aws-commercial,Analyze Image and Video
+SageMaker,AI and Machine Learning,AI and Machine Learning,Amazon,aws-commercial,Build, Train,and Deploy Machine Learning Models at Scale
+TensorFlow on AWS,AI and Machine Learning,AI and Machine Learning,Amazon,aws-commercial,Open-source Machine Intelligence Library
+Transcribe,AI and Machine Learning,AI and Machine Learning,Amazon,aws-commercial,Automatic Speech Recognition
+Translate,AI and Machine Learning,AI and Machine Learning,Amazon,aws-commercial,Natural and Fluent Language Translation
+Analytics,Analytics,AWS,Amazon,aws-commercial,
+Athena,Analytics,Analytics,Amazon,aws-commercial,Query Data in S3 using SQL
+CloudSearch,Analytics,Analytics,Amazon,aws-commercial,Managed Search Service
+Data Pipeline,Analytics,Analytics,Amazon,aws-commercial,Orchestration Service for Periodic,Data-driven Workflows
+Elasticsearch Service,Analytics,Analytics,Amazon,aws-commercial,Run and Scale Elasticsearch Clusters
+EMR,Analytics,Analytics,Amazon,aws-commercial,Hosted Hadoop Framework
+Glue,Analytics,Analytics,Amazon,aws-commercial,Prepare and Load Data
+Kinesis,Analytics,Analytics,Amazon,aws-commercial,Work with Real-time Streaming Data
+QuickSight,Analytics,Analytics,Amazon,aws-commercial,Fast Business Analytics Service
+Application Integration,Application Integration,AWS,Amazon,aws-commercial,
+MQ,Application Integration,Application Integration,Amazon,aws-commercial,Managed Message Broker for ActiveMQ
+SNS,Application Integration,Application Integration,Amazon,aws-commercial,Simple Notification Service - Pub/Sub,Mobile Push and SMS
+SQS,Application Integration,Application Integration,Amazon,aws-commercial,Simple Queue Service - Managed Message Queues
+Step Functions,Application Integration,Application Integration,Amazon,aws-commercial,Coordinate Distributed Applications
+AR and VR,AR and VR,AWS,Amazon,aws-commercial,
+Sumerian,AR and VR,AR and VR,Amazon,aws-commercial,Build and Run VR and AR Applications
+Business Productivity,Business Productivity,AWS,Amazon,aws-commercial,
+Alexa for Business,Business Productivity,Business Productivity,Amazon,aws-commercial,Empower your Organization with Alexa
+Chime,Business Productivity,Business Productivity,Amazon,aws-commercial,Frustration-free Meetings,Video Calls,and Chat
+WorkDocs,Business Productivity,Business Productivity,Amazon,aws-commercial,Enterprise Storage and Sharing Service
+WorkMail,Business Productivity,Business Productivity,Amazon,aws-commercial,Secure and Managed Business Email and Calendaring
+Cloud Compute,Cloud Compute,AWS,Amazon,aws-commercial,
+Batch,Cloud Compute,Cloud Compute,Amazon,aws-commercial,Run Batch Jobs at Any Scale
+EC2 Auto Scaling,Cloud Compute,Cloud Compute,Amazon,aws-commercial,Scale Compute Capacity to Meet Demand
+Elastic Beanstalk,Cloud Compute,Cloud Compute,Amazon,aws-commercial,Run and Manage Web Apps
+Elastic Block Storage,Cloud Compute,Cloud Compute,Amazon,aws-commercial,Block Storage for EC2
+EC2 - Elastic Compute Cloud,Cloud Compute,Cloud Compute,Amazon,aws-commercial,Virtual Servers in the Cloud
+Elastic Container Registry,Cloud Compute,Cloud Compute,Amazon,aws-commercial,Store and Retrieve Docker Images
+Elastic Container Service,Cloud Compute,Cloud Compute,Amazon,aws-commercial,Run and Manage Docker Containers
+EKS,Cloud Compute,Cloud Compute,Amazon,aws-commercial,Elastic Container Service for Kubernetes - Managed service that makes it easy for you to run Kubernetes on AWS without needing to install and operate your own Kubernetes clusters.
+Fargate,Cloud Compute,Cloud Compute,Amazon,aws-commercial,Run Containers without Managing Servers or Clusters
+Lumberyard,Cloud Compute,Cloud Compute,Amazon,aws-commercial,A Free Cross-Platform 3D Game Engine with Full Source,Integrated with and Twitch
+Lightsail,Cloud Compute,Cloud Compute,Amazon,aws-commercial,Launch and Manage Virtual Private Servers
+Serverless Application Repository,Cloud Compute,Cloud Compute,Amazon,aws-commercial,Discover,Deploy, and Publish Serverless Applications
+Lambda,Cloud Compute,Cloud Compute,Amazon,aws-commercial,Run your Code in Response to Events
+Content Delivery,Content Delivery,AWS,Amazon,aws-commercial,
+API Gateway,Content Delivery,Content Delivery,Amazon,aws-commercial,Build, Deploy, and Manage APIs
+CloudFront,Content Delivery,Content Delivery,Amazon,aws-commercial,Global Content Delivery Network
+Customer Engagement,Customer Engagement,AWS,Amazon,aws-commercial,
+Connect,Customer Engagement,Customer Engagement,Amazon,aws-commercial,Cloud-based Contact Center
+Pinpoint,Customer Engagement,Customer Engagement,Amazon,aws-commercial,Push Notifications for Mobile Apps
+Simple Email Service,Customer Engagement,Customer Engagement,Amazon,aws-commercial,Email Sending and Receiving
+Databases,Databases,AWS,Amazon,aws-commercial,
+Aurora,Databases,Databases,Amazon,aws-commercial,High Performance Managed Relational Database
+DynamoDB,Databases,Databases,Amazon,aws-commercial,Managed NoSQL Database
+ElastiCache,Databases,Databases,Amazon,aws-commercial,In-memory Data Store and Cache
+Neptune,Databases,Databases,Amazon,aws-commercial,Fully Managed Graph Database Service
+RDS,Databases,Databases,Amazon,aws-commercial,Managed Relational Database Service for MySQL,PostgreSQL,Oracle,SQL Server,and MariaDB
+Redshift,Databases,Databases,Amazon,aws-commercial,Fast, Simple,Cost-effective Data Warehousing
+Desktop and App Streaming,Desktop and App Streaming,AWS,Amazon,aws-commercial,
+AppStream 2.0,Desktop and App Streaming,Desktop and App Streaming,Amazon,aws-commercial,Stream Desktop Applications Securely to a Browser
+WorkSpaces,Desktop and App Streaming,Desktop and App Streaming,Amazon,aws-commercial,Desktop Computing Service
+Developer Tools,Developer Tools,AWS,Amazon,aws-commercial,
+Cloud9,Developer Tools,Developer Tools,Amazon,aws-commercial,Write, Run,and Debug Code on a Cloud IDE
+CodeBuild,Developer Tools,Developer Tools,Amazon,aws-commercial,Build and Test Code
+CodeCommit,Developer Tools,Developer Tools,Amazon,aws-commercial,Store Code in Private Git Repositories
+CodeDeploy,Developer Tools,Developer Tools,Amazon,aws-commercial,Automate Code Deployment
+CodePipeline,Developer Tools,Developer Tools,Amazon,aws-commercial,Develop and Deploy Applications
+CodeStar,Developer Tools,Developer Tools,Amazon,aws-commercial,Unified Tool to Manage Services
+X-Ray,Developer Tools,Developer Tools,Amazon,aws-commercial,Analyze and Debug Your Applications
+Game Development,Game Development,AWS,Amazon,aws-commercial,
+GameLift,Game Development,Game Development,Amazon,aws-commercial,Simple,Fast,Cost-effective Dedicated Game Server Hosting
+Internet Of Things,Internet Of Things,AWS,Amazon,aws-commercial,
+FreeRTOS,Internet Of Things,Internet Of Things,Amazon,aws-commercial,IoT Operating System for Microcontrollers
+Greengrass,Internet Of Things,Internet Of Things,Amazon,aws-commercial,Local Compute,Messaging,and Sync for Devices
+IoT 1-Click,Internet Of Things,Internet Of Things,Amazon,aws-commercial,One Click Creation of an Lambda Trigger
+IoT Analytics,Internet Of Things,Internet Of Things,Amazon,aws-commercial,Analytics for IoT Devices
+IoT Button,Internet Of Things,Internet Of Things,Amazon,aws-commercial,Cloud Programmable Dash Button
+IoT Core,Internet Of Things,Internet Of Things,Amazon,aws-commercial,Connect Devices to the Cloud
+IoT Device Defender,Internet Of Things,Internet Of Things,Amazon,aws-commercial,Security Management for IoT devices
+IoT Device Management,Internet Of Things,Internet Of Things,Amazon,aws-commercial,Onboard,Organize,and Remotely Manage IoT Devices
+Management Tools,Management Tools,AWS,Amazon,aws-commercial,
+Auto Scaling,Management Tools,Management Tools,Amazon,aws-commercial,Scale Multiple Resources to Meet Demand
+CloudFormation,Management Tools,Management Tools,Amazon,aws-commercial,Create and Manage Resources with Templates
+CloudTrail,Management Tools,Management Tools,Amazon,aws-commercial,Track User Activity and API Usage
+CloudWatch,Management Tools,Management Tools,Amazon,aws-commercial,Monitor Resources and Applications
+Config,Management Tools,Management Tools,Amazon,aws-commercial,Track Resource Inventory and Changes
+OpsWorks,Management Tools,Management Tools,Amazon,aws-commercial,Automate Operations with Chef and Puppet
+Personal Health Dashboard,Management Tools,Management Tools,Amazon,aws-commercial,Personalized View of Service Health
+Service Catalog,Management Tools,Management Tools,Amazon,aws-commercial,Create and Use Standardized Products
+Systems Manager,Management Tools,Management Tools,Amazon,aws-commercial,Gain Operational Insights and Take Action
+Trusted Advisor,Management Tools,Management Tools,Amazon,aws-commercial,Optimize Performance and Security
+Media Services,Media Services,AWS,Amazon,aws-commercial,
+Elastic Transcoder,Media Services,Media Services,Amazon,aws-commercial,Easy-to-use Scalable Media Transcoding
+Elemental MediaConvert,Media Services,Media Services,Amazon,aws-commercial,Convert File-based Video Content
+Elemental MediaLive,Media Services,Media Services,Amazon,aws-commercial,Convert Live Video Content
+Elemental MediaPackage,Media Services,Media Services,Amazon,aws-commercial,Video Origination and Packaging
+Elemental MediaStore,Media Services,Media Services,Amazon,aws-commercial,Media Storage and Simple HTTP Origin
+Elemental MediaTailor,Media Services,Media Services,Amazon,aws-commercial,Video Personalization and Monetization
+Kinesis Video Streams,Media Services,Media Services,Amazon,aws-commercial,Process and Analyze Video Streams
+MediaTailor,Media Services,Media Services,Amazon,aws-commercial,personalization and monetization service that allows scalable server-side ad insertion
+Migration,Migration,AWS,Amazon,aws-commercial,
+Application Discovery Service,Migration,Migration,Amazon,aws-commercial,Discover On-Premises Applications to Streamline Migration
+Database Migration Service,Migration,Migration,Amazon,aws-commercial,Migrate Databases with Minimal Downtime
+Migration Hub,Migration,Migration,Amazon,aws-commercial,Track Migrations from a Single Place
+Server Migration Service,Migration,Migration,Amazon,aws-commercial,Migrate On-Premises Servers to AWS
+Snowball,Migration,Migration,Amazon,aws-commercial,Petabyte-scale Data Transport
+Mobile Services,Mobile Services,AWS,Amazon,aws-commercial,
+AppSync,Mobile Services,Mobile Services,Amazon,aws-commercial,Real-time and Offline Mobile Data Apps
+Device Farm,Mobile Services,Mobile Services,Amazon,aws-commercial,Test Android,FireOS,and iOS Apps on Real Devices in the Cloud
+Mobile Hub,Mobile Services,Mobile Services,Amazon,aws-commercial,Build,Test,and Monitor Apps
+Mobile SDK,Mobile Services,Mobile Services,Amazon,aws-commercial,Mobile Software Development Kit
+Cloud Networking,Cloud Networking,AWS,Amazon,aws-commercial,
+Direct Connect,Cloud Networking,Cloud Networking,Amazon,aws-commercial,Dedicated Network Connection to AWS
+Route 53,Cloud Networking,Cloud Networking,Amazon,aws-commercial,Scalable Domain Name System
+VPC,Cloud Networking,Cloud Networking,Amazon,aws-commercial,Virtual Private Cloud Isolated Cloud Resources
+VPC PrivateLink,Cloud Networking,Cloud Networking,Amazon,aws-commercial,Securely access services hosted on AWS
+Security Identity and Compliance,Security Identity and Compliance,AWS,Amazon,aws-commercial,
+Single Sign-On,Security Identity and Compliance,Security Identity and Compliance,Amazon,aws-commercial,Cloud Single Sign-On (SSO) Service
+WAF & Shield,Security Identity and Compliance,Security Identity and Compliance,Amazon,aws-commercial,Filter Malicious Web Traffic
+Artifact,Security Identity and Compliance,Security Identity and Compliance,Amazon,aws-commercial,On-demand access to compliance reports
+Certificate Manager,Security Identity and Compliance,Security Identity and Compliance,Amazon,aws-commercial,Provision, Manage, and Deploy SSL/TLS Certificates
+CloudHSM,Security Identity and Compliance,Security Identity and Compliance,Amazon,aws-commercial,Hardware-based Key Storage for Regulatory Compliance
+Cognito,Security Identity and Compliance,Security Identity and Compliance,Amazon,aws-commercial,Identity Management for your Apps
+Directory Service,Security Identity and Compliance,Security Identity and Compliance,Amazon,aws-commercial,Host and Manage Active Directory
+Firewall Manager,Security Identity and Compliance,Security Identity and Compliance,Amazon,aws-commercial,Central Management of Firewall Rules
+GuardDuty,Security Identity and Compliance,Security Identity and Compliance,Amazon,aws-commercial,Managed Threat Detection Service
+IAM,Security Identity and Compliance,Security Identity and Compliance,Amazon,aws-commercial,Manage User Access and Encryption Keys
+Inspector,Security Identity and Compliance,Security Identity and Compliance,Amazon,aws-commercial,Analyze Application Security
+Key Management Service,Security Identity and Compliance,Security Identity and Compliance,Amazon,aws-commercial,Managed Creation and Control of Encryption Keys
+Macie,Security Identity and Compliance,Security Identity and Compliance,Amazon,aws-commercial,Discover,Classify, and Protect Your Data
+Organizations,Security Identity and Compliance,Security Identity and Compliance,Amazon,aws-commercial,Policy-based Management for Multiple Accounts
+Secrets Manager,Security Identity and Compliance,Security Identity and Compliance,Amazon,aws-commercial,Rotate, Manage,and Retrieve Secrets
+Cloud Directory,Security Identity and Compliance,Security Identity and Compliance,Amazon,aws-commercial,Create Flexible Cloud-native Directories
+Shield,Security Identity and Compliance,Security Identity and Compliance,Amazon,aws-commercial,DDoS Protection
+Cloud Storage,Cloud Storage,AWS,Amazon,aws-commercial,
+EFS - Elastic File System,Cloud Storage,Cloud Storage,Amazon,aws-commercial,Managed File Storage for EC2
+Glacier,Cloud Storage,Cloud Storage,Amazon,aws-commercial,Low-cost Archive Storage in the Cloud
+S3,Cloud Storage,Cloud Storage,Amazon,aws-commercial,Scalable Storage in the Cloud
+Snowball,Cloud Storage,Cloud Storage,Amazon,aws-commercial,Petabyte-scale Data Transport
+Snowball Edge,Cloud Storage,Cloud Storage,Amazon,aws-commercial,Petabyte-scale Data Transport with On-board Compute
+Snowmobile,Cloud Storage,Cloud Storage,Amazon,aws-commercial,Exabyte-scale Data Transport
+Storage Gateway,Cloud Storage,Cloud Storage,Amazon,aws-commercial,Hybrid Storage Integration
+Desktop and App Streaming,Desktop and App Streaming,AWS,Amazon,aws-commercial,
+WorkSpaces,Desktop and App Streaming,Desktop and App Streaming,Amazon,aws-commercial,Desktop Computing Service
+Developer Tools,Developer Tools,AWS,Amazon,aws-commercial,
+X-Ray,Developer Tools,Developer Tools,Amazon,aws-commercial,Analyze and Debug Your Applications

@@ -1,0 +1,33 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Related Refs</h1>
+<%= will_paginate @related_refs %>
+<table>
+  <thead>
+    <tr>
+      <th>Requirement</th>
+      <th>Security control</th>
+      <th>Ref</th>
+      <th>Title</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @related_refs.each do |related_ref| %>
+      <tr>
+        <td><%= related_ref.requirement %></td>
+        <td><%= related_ref.security_control %></td>
+        <td><%= related_ref.ref %></td>
+        <td><%= related_ref.title %></td>
+        <td><%= link_to 'Show', related_ref %></td>
+        <td><%= link_to 'Edit', edit_related_ref_path(related_ref) %></td>
+        <td><%= link_to 'Destroy', related_ref, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+<%= will_paginate @related_refs %>
+<br>
+
+<%= link_to 'New Related Ref', new_related_ref_path %>

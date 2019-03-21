@@ -1,0 +1,60 @@
+<% 	
+	if !(has_data?(@docs)) 
+ 		Doc.erase_clean_storage(true)
+ 	end
+%>
+<h1>Docs</h1>
+<table id="myDataTable"  class="table table-striped table-bordered"  style="width:100%">
+	  <thead>
+	    <tr>
+	      <th></th>
+	      <th>Name</th>
+	      <th>Description</th>
+	      <th>Last Imported at</th>
+	      <th>Security policy</th>
+	      <th>Provider</th>
+	      <th>File</th>
+	      
+	      <th></th>
+	      <th></th>
+	    </tr>
+	  </thead>
+	
+	  <tbody>
+	    <% @docs.each do |doc| %>
+		      <tr>
+		        <td>
+		        	<% if (doc.grab_action_url != nil) %>  
+		  				<%= button_to "Import", doc.grab_action_url, method: :get %><br>
+		  			<% end %>
+		        </td>
+		        <td><%= link_to doc.name, doc %></td>
+		        <td><%= doc.description %></td>
+		        <td><%= doc.imported.strftime('%Y-%m-%d %H:%M:%S') if doc.imported %></td>
+		        <td><%= doc.security_policy.click_link if doc.security_policy %></td>
+		        <td><%= doc.provider.click_link if doc.provider %></td>
+		        <td><%= doc.grab_file_link %></td>
+		        <td><%= link_to 'Edit', edit_doc_path(doc) %></td>
+		        <td><%= link_to 'Destroy', doc, method: :delete,  data: { confirm: 'Are you sure?' } %></td>
+		      </tr>
+		<% end %>
+	  </tbody>
+	</table>
+<br>
+
+<%= button_to 'New Doc', new_doc_path, method: :get  %><br><br>
+<%= button_to 'Upload from Folder', '/docs/upload_from_folder', method: :get %>
+
+
+<script>
+$(document).ready(function() {
+    $('#myDataTable').DataTable( {
+    	"order": [[ 2, "asc" ]],
+    	dom: 'Bfrtip',
+    	"pageLength": 30, 
+        buttons: [
+            'copy', 'csv', 'excel', 'pdf', 'print'
+        ]
+    } );
+} );
+</script>

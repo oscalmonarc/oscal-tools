@@ -1,0 +1,106 @@
+<% content_for :title, "Label - #{@label.name}" %>
+<p>
+  	<%= show_tree(@label) %> 
+</p>
+<table>
+	<tr>
+		<td>
+  			<strong>Name:</strong>
+  		</td>
+  		<td>
+  			<%= @label.name %> - <%= link_to 'Edit', edit_label_path(@label) %>
+  		</td>
+  		<td></td>
+  		<td>
+  			<strong>Description:</strong>
+  		</td>
+  		<td>
+  			<%= @label.description %>
+		</td>
+	</tr>
+</table>
+<% 
+	components = @label.components
+	if has_data? (components) %>
+		<table id="myComponents"  class="table table-striped table-bordered"  style="width:100%">
+		  <thead>
+		    <tr>
+		      <th>Component Name</th>
+		      <th>Provider</th>
+		      <th>Labels</th>
+		      <th>Description</th>
+		      <th>Implemented Controls</th>
+		      
+		    </tr>
+		  </thead>
+		  <tbody>
+		    <% components.each do |component| %>
+		      <tr>
+		        <td><%= component.click_link %></td>
+		      	<td><%= component.provider.click_link %></td>
+		        <td><%= component.labels_click_link %></td>
+		        <td><%= component.description %></td>
+		        <td><%= component.show_implemented_controls %> </td>
+		       </tr>
+		       <% end %>
+		   </body>
+		</table>
+	<% end %>
+
+<% if has_data?(@label.children) %>
+<p>
+  <strong>Children</strong>
+	<table id="myChildren"  class="table table-striped table-bordered"  style="width:100%">
+	  <thead>
+	    <tr>
+	      <th>Name</th>
+	      <th>Labels</th>
+	      <th>Compnents</th>
+	      <th></th>
+	      <th></th>
+	    </tr>
+	  </thead>
+	 <tbody>
+	    <% @label.children.each do |label| %>
+	      <tr>
+	        <td><%= label.click_link %></td>
+	        <td> 
+	        	<% if has_data?(label.children) 
+					label.children.each do |child|%>
+						<%= child.click_link %>: <%= child.children.count %>
+						
+					<% end %>
+				<% end %><br>
+	        	<strong>Total Count <%= label.children.count%></strong> 
+	        	<%= link_to 'Add Sub Label', "/label/#{label.id}/add_child" %><br>
+	       	</td>
+	       	<td>
+	       		<% if has_data?(label.components) 
+					label.components.each do |component|%>
+						<%= component.click_link %>, 
+					<% end %><br>
+					<strong>Total Count <%= label.components.count%></strong>
+				<% end %>
+	        	
+	       	</td>
+	        <td><%= link_to 'Edit', edit_label_path(label) %></td>
+	        <td><%= link_to 'Destroy', label, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+	      </tr>
+	     <% end %>
+	</table>
+</p>
+<% end %>
+
+<%= button_to 'New Label', new_label_path, method: :get   %><br>
+
+<script>
+    var dataTables = $('#myChildren').DataTable({
+    	"aaSorting": []
+	});
+	var dataTables = $('#myComponents').DataTable({
+    	"aaSorting": []
+	});
+</script>
+
+<%= link_to 'Edit', edit_label_path(@label) %> |
+<%= link_to 'Back', labels_path %>

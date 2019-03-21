@@ -1,0 +1,32 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Assessment Objects</h1>
+<%= will_paginate @assessment_objects %>
+<table>
+  <thead>
+    <tr>
+      <th>Description</th>
+      <th>Security control</th>
+      <th>Requirement</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @assessment_objects.each do |assessment_object| %>
+      <tr>
+        <td><%= assessment_object.description %></td>
+        <td><%= assessment_object.security_control.the_url %></td>
+        <td><%= assessment_object.requirement %></td>
+        <td><%= link_to 'Show', assessment_object %></td>
+        <td><%= link_to 'Edit', edit_assessment_object_path(assessment_object) %></td>
+        <td><%= link_to 'Destroy', assessment_object, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+## render page links in the view:
+<%= will_paginate @assessment_objects %>
+<br>
+
+<%= link_to 'New Assessment Object', new_assessment_object_path %>

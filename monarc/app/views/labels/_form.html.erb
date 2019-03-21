@@ -1,0 +1,40 @@
+<%= form_with(model: label, local: true) do |form| %>
+  <% if label.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(label.errors.count, "error") %> prohibited this label from being saved:</h2>
+
+      <ul>
+      <% label.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= form.label :name %>
+    <%= form.text_field :name %>
+  </div>
+
+  <div class="field">
+    <%= form.label :description %>
+    <%= form.text_field :description %>
+  </div>
+  <div class="field">
+	<% 
+  	parent_id = nil 
+  	if (label.parent_id != nil)
+  		parent_id = label.parent_id
+  	elsif ( params[:parent_id] != nil)
+  		parent_id = params[:parent_id]
+  	end
+  	%> 
+      <%= form.label "Child of" %>
+    <% types_array = Label.all.map { |type| [type.name , type.id] } %>
+    <%= form.select :parent_id, options_for_select(types_array , parent_id) %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<% end %>

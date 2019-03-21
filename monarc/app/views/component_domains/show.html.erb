@@ -1,0 +1,12 @@
+<p>
+  <strong>Component:</strong>
+  <%= @component_domain.component %>
+</p>
+
+<p>
+  <strong>Domain environment:</strong>
+  <%= @component_domain.domain_environment %>
+</p>
+
+<%= link_to 'Edit', edit_component_domain_path(@component_domain) %> |
+<%= link_to 'Back', component_domains_path %>

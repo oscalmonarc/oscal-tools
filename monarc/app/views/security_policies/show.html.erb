@@ -1,0 +1,59 @@
+<table>
+	<tr>
+		<td>
+			<p>
+			  <strong>Name:</strong>
+			  <%= @security_policy.provider.name %> <%= @security_policy.name %> Rev <%= @security_policy.version %> (<%= @security_policy.security_controls.size %> Controls) 
+			</p>
+		<td>
+		<% if @security_policy.other_versions != nil %>
+			
+			<% @security_policy.other_versions.each do |the_SP| %>
+				<td><%= button_to "Compare to #{the_SP.version}", "/policy/#{@security_policy.name}/version/#{@security_policy.version}/compare/#{the_SP.version}" %></td>
+			<% end %> 
+	
+		<% end %>
+</tr>
+</table>
+<p>
+  <strong>Security Control Families:</strong> <%= button_to "+", "/policy/#{@security_policy.name}/version/#{@security_policy.version}/new_control_family/" %><br>
+  <table>
+  <% 	if (@security_policy.security_control_families != nil) 
+  			colCount = 1
+	  		%><tr><%
+	  		@security_policy.security_control_families.each do |security_control_family|%>
+              	<td valign="top" align="center"> <%= link_to "#{security_control_family.abv} #{security_control_family.family}", security_control_family %> (<%= security_control_family.security_controls.size %> Controls)<br> 
+	  			<%= security_control_family.grab_controls %>
+	  			  <p></td><%
+	        if (colCount == 4)
+	          	%></tr><tr><%
+	          colCount = 0
+	        end
+	        colCount = colCount + 1
+	  		end
+	  		%> </tr><%
+        end %>
+	 	</table>
+</p>
+
+<p>
+  <strong>Requirements:</strong>
+  <% count = 1
+  		if (@security_policy.requirements != nil) 
+  		@security_policy.requirements.each do |requirement| %>
+			<%= link_to requirement.name, requirement %>
+			<% if (count < @security_policy.params.count) 
+				count = count +1 %>
+				<br>
+			<% end %>
+		<% end %>	
+	<% end %> 
+</p>
+
+<%= link_to 'Edit', edit_security_policy_path(@security_policy) %> |
+<%= link_to 'Back', security_policies_path %>
+
+
+
+<br><br><br>Need to dump somthing? <%= link_to 'Click here', "/policy/#{@security_policy.name}/version/#{@security_policy.version}/dump_by_object" %>
+

@@ -1,0 +1,42 @@
+<% cache render_async_cache_key(request.path), :skip_digest => true do %>
+	<%= button_to 'All Docs', docs_path, method: :get  %><br>
+	<% require 'open-uri' %>
+	<%
+	@doc.imported = Time.current
+	@doc.save
+	Label.all.destroy_all
+	path = @doc.grab_file_path
+	
+	data = IO.binread(path)
+	data = data.encode(Encoding.find('UTF-8'), {invalid: :replace, undef: :replace, replace: ''})
+	labels = data.split "\r\n"
+	
+	%> labels <% labels.count %> <br<br><% 
+	counter = 0
+	%> counter <%= counter %> <br<br><% 
+	
+	labels.each do |label|
+		parent = nil
+		%> label= <%= label.inspect %> <br> <%
+		fields = label.split ","
+		if has_data? (fields)
+			counter = 0
+			name = fields[0]
+			if (name != "Name")
+				parent = fields[1]
+				%> name - <%= name %><br><%
+				%> parent - <%= parent %><br><%
+				if (parent != nil) || (parent != "")
+					parent = Label.where(name: parent).first 
+				else
+					parent = nil
+				end  
+				
+				tmp_label= Label.find_or_create_by(name: name, parent: parent )
+				
+				%> <br><%
+			end
+		end
+	end
+end
+	%>

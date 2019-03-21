@@ -1,0 +1,42 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Guidances</h1> 
+<%= will_paginate @guidances %>
+<table>
+  <thead>
+    <tr>
+      <th>Security Control</th>
+      <th>Description</th>
+      <th>Related Controls</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @guidances.each do |guidance| %>
+    
+      <tr>
+        <td><%= link_to guidance.security_control.control_id, guidance.security_control %></td>
+        <td><%= guidance.description %></td>
+        <td><%= guidance.grab_related_controls_urls(guidance.security_control) %></td>
+        <td><%= link_to 'Show', guidance %></td>
+        <td><%= link_to 'Edit', edit_guidance_path(guidance) %></td>
+        <td><%= link_to 'Destroy', guidance, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+      
+    <% end %>
+  </tbody>
+</table>
+
+<%= button_to 'New Guidance', new_guidance_path, method: :get  %>
+<script>
+    $(document).ready(function() {
+    $('#myDataTable').DataTable( {
+    	"aaSorting": [],
+    	dom: 'Bfrtip',
+        buttons: [
+            'copy', 'csv', 'excel', 'pdf', 'print'
+        ]
+    } );
+} );
+</script>

@@ -1,0 +1,64 @@
+<% content_for :title, "Family - #{@security_control_family.title}" %>
+<p>
+	<table><tr><td>
+  <strong>Security policy:</strong>
+
+   <%= link_to @security_control_family.security_policy.policy_version, @security_control_family.security_policy %></td>
+	<% if @other_security_families != nil %>
+ 		<td>Other versions - </td>		
+		<% @other_security_families.each do |the_SFC| 
+			version = the_SFC.security_policy.version 
+			viewURL = "#{the_SFC.the_url.html_safe}"
+			viewURL = clean_url(viewURL)
+			compareURL = "#{@security_control_family.grab_compare_url(the_SFC.security_policy.version)}"
+			compareURL  = clean_url(compareURL) 
+			
+			%>
+			<td><%= button_to "View rev #{version}", viewURL,  method: :get %></td><td><%= button_to "Compare rev #{version}", compareURL, method: :get %></td>
+		<% end %>
+	</tr></table>
+	<% end %>
+</p>
+
+<p>
+  <strong>Family:</strong>
+  <%= @security_control_family.family %>
+  <strong>Abv:</strong>
+  <%= @security_control_family.abv %>
+  <strong>Class:</strong>
+  <%= @security_control_family.family_class %>
+</p>
+
+
+<p>
+  <strong>Security controls:(<%= @security_control_family.security_controls.count %>) </strong> <%= button_to 'Add Security Control ', "/security_control_families/#{@security_control_family.id}/add_security_control" %> <br>
+  <%	active = ""
+		withdrawn = "" 
+	if (@security_control_family.security_controls != nil)
+	 
+		@security_control_family.security_controls.each do |security_control|
+		
+			url = "#{security_control.the_url} - #{security_control.title} <br>"
+			
+			if security_control.check_active
+				active = active + url
+			else 
+				withdrawn = withdrawn + url
+			end %>
+			
+			
+		<% end %>
+		<table> 
+				<tr>
+					<td><strong style='color: green;'>Active</strong></td><td><strong style='color: red;'>Withdrawn</strong></td>
+				</tr>			
+				<tr>
+					<td valign="top"><%= active.html_safe %></td><td valign="top"><%= withdrawn.html_safe %></td>
+				</tr>
+			</table>
+	<% end %> 
+  
+</p>
+
+<%= link_to 'Edit', edit_security_control_family_path(@security_control_family) %> |
+<%= link_to 'Back', security_control_families_path %>

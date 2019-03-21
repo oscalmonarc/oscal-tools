@@ -1,0 +1,56 @@
+<%= form_with(model: item, local: true) do |form| %>
+  <% if item.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(item.errors.count, "error") %> prohibited this item from being saved:</h2>
+
+      <ul>
+      <% item.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+<% if (@new_item != nil) %>
+		<div class="field"> 
+			<b>Parent Item :</b><%=@new_item.name %><br>
+		</div>
+		<div class="field"> 
+			<b>Security Control:</b><%=@new_item.statement.security_control.control_id %><br>
+		</div>
+		<div class="field"> 
+			<b>Statement :</b><%=@new_item.statement.description %><br>
+		</div>
+		<%= form.hidden_field(:parent_id, :value => @new_item.id) %>
+		<%= form.hidden_field(:statement_id, :value => @new_item.statement.id) %>
+		
+	<% else %>
+		<div class="field"> 
+			<b>Security Control:</b><%=@statement.security_control.control_id %><br>
+		</div>
+		<div class="field"> 
+			<b>Statement :</b><%=@statement.description %><br>
+		</div>
+		<%= form.hidden_field(:statement_id, :value => @statement.id) %>
+	
+<% end %>
+
+  <div class="field">
+    <b> Item ID (ac-1_smt.a)</b>
+    <%= form.text_field :item_id %>
+  </div>
+
+  <div class="field">
+    <b> Item Name (AC-1a.) </b>
+    <%= form.text_field :name %>
+  </div>
+  
+  <div class="field">
+    <%= form.label :description%>
+    <%= form.text_field :description%>
+  </div>
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<% end %>

@@ -1,0 +1,27 @@
+<%= form_with(model: overlay, local: true) do |form| %>
+  <% if overlay.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(overlay.errors.count, "error") %> prohibited this overlay from being saved:</h2>
+
+      <ul>
+      <% overlay.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= form.label :provider_id %>
+    <%= form.text_field :provider_id %>
+  </div>
+
+  <div class="field">
+    <%= form.label :name %>
+    <%= form.text_field :name %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<% end %>

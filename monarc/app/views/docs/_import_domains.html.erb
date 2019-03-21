@@ -1,0 +1,37 @@
+<% cache render_async_cache_key(request.path), :skip_digest => true do %>
+	<%= button_to 'All Docs', docs_path, method: :get  %><br>
+	<% require 'open-uri' %>
+	<% require 'csv' %>
+	<%
+	providers_hash = Provider.pluck("name", :id).to_h
+	classification_hash = DataClassification.pluck("name", :id).to_h
+	domain_hash = DomainEnvironment.pluck("name", :id).to_h
+	
+	@doc.imported = Time.current
+	@doc.save
+	path = @doc.grab_file_path
+	puts "path - #{path}"
+	domains = []
+	CSV.foreach("#{path}", headers: true) do |row|
+		provider_id = providers_hash[row["provider"]]
+		if (provider_id == nil)
+			provider_id = Provider.find_or_create_by(name: row["provider"])
+		end
+		if (row["parent"] != nil) && (row["parent"] != "")
+			parent_id = domain_hash[row["parent"]]
+			if (parent_id == nil)
+				the_parent = DomainEnvironment.find_or_create_by(name: row["parent"], provider_id: provider_id)
+				domain_hash[row["parent"]] = the_parent.id 
+				parent_id = the_parent.id
+			end
+		end
+		classification_id = classification_hash[row["dataclassification"]]
+		if (classification_id == nil)
+			classification_id = DataClassification.find_or_create_by(name: row["dataclassification"])
+		end
+		tmp_domain = DomainEnvironment.find_or_create_by(name: row["name"], region: row["region"], location: row["location"], end_point: row["endpoint"], provider_id: provider_id, data_classification_id: classification_id , parent_id: parent_id )
+		domain_hash[row["name"]] = tmp_domain.id
+	end
+	
+	
+end	%>

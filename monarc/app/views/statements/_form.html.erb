@@ -1,0 +1,44 @@
+<%= form_with(model: statement, local: true) do |form| %>
+  <% if statement.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(statement.errors.count, "error") %> prohibited this statement from being saved:</h2>
+
+      <ul>
+      <% statement.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+  
+<div class="field">
+    <%= form.label :security_policy %>
+    <%= @security_policy.policy_version %>
+    <%= form.hidden_field(:security_policy_id, :value => @security_policy.id) %>
+</div>
+
+<% if (@security_control != nil) %>
+	<div class="field">
+	    <%= form.label :security_control %>
+	    <%= @security_control.control_id %>
+	    <%= form.hidden_field(:security_control_id, :value => @security_control.id) %>
+	</div>
+<% end %>
+
+<% if (@requirement != nil) %>
+	<div class="field">
+	    <%= form.label :requirement %>
+	    <%= @requirement.name %>
+	    <%= form.hidden_field(:requirement_id, :value => @requirement.id) %>
+	</div>
+<% end %>
+
+<div class="field">
+  <%= form.label :description %>
+  <%= form.text_field :description %>
+</div>
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<% end %>

@@ -1,0 +1,2 @@
+module DomainEnvironmentsHelper
+end

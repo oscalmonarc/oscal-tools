@@ -1,0 +1,27 @@
+<p>
+  <strong>Security policy:</strong>
+  <%= @control_overlay.security_policy %>
+</p>
+
+<p>
+  <strong>Domain environment:</strong>
+  <%= @control_overlay.domain_environment %>
+</p>
+
+<p>
+  <strong>Overlay field:</strong>
+  <%= @control_overlay.overlay_field %>
+</p>
+
+<p>
+  <strong>Overlay value:</strong>
+  <%= @control_overlay.overlay_value %>
+</p>
+
+<p>
+  <strong>Security control:</strong>
+  <%= @control_overlay.security_control %>
+</p>
+
+<%= link_to 'Edit', edit_control_overlay_path(@control_overlay) %> |
+<%= link_to 'Back', control_overlays_path %>

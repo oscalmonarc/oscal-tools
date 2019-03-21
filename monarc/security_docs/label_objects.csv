@@ -1,0 +1,90 @@
+Name,Parent
+Categories,
+Software,Categories
+Hardware,Categories
+Service,Categories
+Types,
+On Prem,Types
+Cloud,Types
+Hybrid,Types
+Classification Fabrics,Types
+UNCLASSIFIED Fabric,Classification Fabrics
+UNCLASSIFIED FOUO Fabric,Classification Fabrics
+SECRET Fabric,Classification Fabrics
+TOP SECERT Fabric,Classification Fabrics
+Enterprise,Service
+Incident Response,Enterprise
+Data Center,Enterprise
+Virtual Hosting,Data Center
+Cloud Infrastructure,Data Center
+On Prem Infrastructure,Data Center
+Cloud Compute,Cloud Infrastructure
+OnPrem Compute,On Prem Infrastructure
+Cloud Storage,Cloud Infrastructure
+On Prem Storage,On Prem Infrastructure
+Cloud Networking,Cloud Infrastructure
+On Prem Networking,On Prem Infrastructure
+Program,Software
+Game,Software
+Utility,Software
+Online Service,Software
+Operating system,Software
+Browser,Software
+Word Processor,Software
+Audio,Software
+Video editing,Software
+Database,Software
+General Computers,Hardware
+Desktop Computer,General Computers
+Laptop,General Computers
+Tablet,General Computers
+Smartwatch,General Computers
+IOT Device,General Computers
+Servers,Hardware
+Computer Perriphrials,Hardware
+Monitors,Computer Perriphrials
+Flat Panel,Computer Perriphrials
+CRT,Computer Perriphrials
+LCD,Computer Perriphrials
+Gamepad,Computer Perriphrials
+Joystick,Computer Perriphrials
+Keyboard,Computer Perriphrials
+Microphone,Computer Perriphrials
+Mouse,Computer Perriphrials
+Printer,Computer Perriphrials
+Projector,Computer Perriphrials
+Scanner,Computer Perriphrials
+Speakers,Computer Perriphrials
+USB thumb drive,Computer Perriphrials
+Networking,Hardware
+Managed Network Switch,Networking
+Unmanaged Network Switch,Networking
+Router,Networking
+Proxy Server,Networking
+Bridge,Networking
+Firewall,Networking
+Modem,Networking
+Network Hub,Networking
+Network Interface Card NIC,Networking
+Wireless Access Points,Networking
+Repeater,Networking
+Cloud Services,Cloud Infrastructure
+AI and Machine Learning,Cloud Services
+Analytics,Cloud Services
+Application Integration,Cloud Services
+AR and VR,Cloud Services
+Business Productivity,Cloud Services
+Content Delivery,Cloud Services
+Customer Engagement,Cloud Services
+Databases,Cloud Services
+Desktop and App Streaming,Cloud Services
+Developer Tools,Cloud Services
+Game Development,Cloud Services
+Identity,Cloud Services
+Internet of Things,Cloud Services
+Management Tools,Cloud Services
+Media,Cloud Services
+Media Services,Cloud Services
+Migration,Cloud Services
+Mobile Services,Cloud Services
+Security Identity and Compliance,Cloud Services

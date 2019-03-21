@@ -1,0 +1,80 @@
+<%= form_with(model: doc, local: true) do |form| %>
+  <% if doc.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(doc.errors.count, "error") %> prohibited this doc from being saved:</h2>
+
+      <ul>
+      <% doc.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= form.label :name %>
+    <%= form.text_field :name, value: "SP800-53" %>
+  </div>
+  <div class="field">
+    <%= form.label :provider_id %>
+    <% providers_array = Provider.all.map { |provider| [provider.name , provider.id] } %>
+	<%= form.select :provider_id, options_for_select(providers_array, doc.provider_id) %>
+  </div>
+
+  <div class="field">
+    <%= form.label :description %>
+    <%= form.text_field :description %>
+  </div>
+
+  <div class="field">
+    <%= form.label :url %>
+    <%= form.text_field :url %>
+  </div>
+
+  <div class="field">
+    <%= form.label "Date File was Created" %>
+    <%= form.text_field :source_date %>
+  </div>
+  <% if (doc.imported != nil) %>
+	  <div class="field">
+	    <%= form.label "Last Imported" %> 
+	    <%= doc.imported %>
+	  </div>
+  <% end %>
+
+  <div class="field">
+    <%= form.label :security_policy_id %>
+    <% security_policies_array = SecurityPolicy.all.map { |policy| [policy.policy_version , policy.id] } %>
+	<%= form.select :security_policy_id, options_for_select(security_policies_array, doc.security_policy_id) %>
+  </div>
+  <div class="field">
+    <%= form.label :doc_type %>
+    <%= form.select :doc_type, options_for_select([['Select Doc Type', ''], ['oscal xml', 'oscal'],['oscal json', 'oscal.json'], 
+    ['800-53 as text', '800-53.text'], ['800-53a as text', '800-53a.text'],['Impact Level Nist in json', 'impact_levels_nist.json'], 
+    ['JSON Declaration', 'json_declaration'], ['1253 CSV', '1253.csv'], ['Provider Controls','provider_controls'],
+    ['ODNI Intellegence Overlay', 'intellegence_overlay_csv'], ['ODNI Accessibility Overlay', 'accessibility_overlay_csv'], ['ODNI PII Overlay', 'pii_overlay_csv']], doc.doc_type) %>
+  </div>
+	 
+  <div class="field">
+    <%= form.label "Declaration File" %>
+    <% docs_array = [] 
+    docs_array << ['Select If Needed', '']
+    Doc.all.map { |doc| docs_array << [doc.the_doc.filename, doc.id] } %>
+	<%= form.select :declarations_id, options_for_select(docs_array, doc.declarations_id) %>
+  </div>
+  	
+  <div class="field">
+    <%= form.label :"Upload File" %>
+    	
+    <% if (@doc.the_doc != nil) %> 
+    	File Name:
+    	<%= @doc.grab_file_link %>
+    <% end %>
+    <%= form.file_field :the_doc%>
+  </div>
+
+<br>
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<% end %>

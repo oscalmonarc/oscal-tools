@@ -1,0 +1,95 @@
+<% content_for :title, "Component - #{@component.name}" %>
+<p>
+  <strong>Component:</strong>
+  <%= show_tree(@component) %>
+</p>
+<p>
+  <strong>Provider:</strong>
+  <%= @component.provider.click_link %>
+</p>
+
+<p>
+  <strong>Description:</strong>
+  <%= @component.description %>
+</p>
+
+<% if has_data?(@component.make) %>
+	<p>
+	  <strong>Make:</strong>
+	  <%= @component.make %>
+	</p>
+<% end %>
+<% if has_data?(@component.model) %>
+	<p>
+	  <strong>Model:</strong>
+	  <%= @component.model %>
+	</p>
+<% end %>
+<p>
+  <strong>Version:</strong>
+  <%= @component.version %>
+</p>
+<p>
+  <strong>Labels:</strong> <%= button_to 'Add New Label', "/related_labels/add_to/#{@component.id}/component/", method: :get  %><br>
+	<%= @component.labels_click_link %>
+    
+   
+</p>
+<p>
+<% components = @component.children %>
+ <strong>Components:</strong> <%= button_to 'Add New Component', "/components/#{@component.id}/add_child_component", method: :get  %><br>
+ 
+ <% if has_data?(components) %>
+
+	<table id="myDataTable1"  class="table table-striped table-bordered"  style="width:100%">
+	  <thead>
+	    <tr>
+	      <th>Name</th>
+	      <th>Description</th>
+	      <th>Sub Components</th>
+	      <th>Labels</th>
+	    </tr>
+	  </thead>
+	  
+	 <tbody>
+    	<% 
+    	if has_data?(components ) 
+			components .each do |component|%>
+		      <tr>
+				<td><%= component.click_link %></td>
+				<td><%= component.description %></td>
+				<td><%= children_click_link(component)%></td>
+				<td><%= component.labels_click_link %></td>
+			  </tr>
+			<% end %>
+		<% end %>
+	     </tbody>
+	</table>
+	
+	<% end %>
+</p>
+  <p>
+  <strong>Control Implementations</strong> <%= button_to 'Add New Control Implementation', "/components/#{@component.id}/add_implementation", method: :get  %><br>
+<% 
+
+methods = ControlImplementation.unique_control_implementations(@component)
+	if has_data?(methods) %>
+		<%= render 'control_implementations/show_tables', methods: methods %>
+	 <% end %>
+</p>
+
+
+<%= link_to 'Edit', edit_component_path(@component) %> |
+<%= link_to 'Back', components_path %>
+<script>
+	$(document).ready(function() {
+	    $('#myDataTable1').DataTable( {
+	    	"order": [[ 2, "asc" ]],
+	    	dom: 'Bfrtip',
+	        buttons: [
+	            'copy', 'csv', 'excel', 'pdf', 'print'
+	        ]
+	    } );
+	} );
+
+</script>

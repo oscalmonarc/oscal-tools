@@ -1,0 +1,359 @@
+Testing 800-54a
+<% cache render_async_cache_key(request.path), :skip_digest => true do %>
+	<%= button_to 'All Docs', docs_path, method: :get  %><br>
+	<% require 'open-uri'
+	@doc.imported = Time.current
+	@doc.save
+	path = @doc.grab_file_path
+	the_SP = @doc.security_policy
+	def base_az(num)
+		  # temp variable for converting base
+		  temp = num
+		
+		  # the base 26 (az) number
+		  az = ''
+		
+		  while temp > 0
+		
+		    # get the remainder and convert to a letter
+		    num26 = temp % 26
+		    temp /= 26
+		
+		    # offset for lack of "0"
+		    temp -= 1 if num26 == 0
+		
+		    az = (num26).to_s(26).tr('0-9a-p', 'ZA-Y') + az
+		  end
+		
+		  return az
+	end
+	
+	def checkMethods(the_lines, the_SC)
+		
+		#%><br><br> the Line = <%= the_lines.inspect %> <br><%
+		
+		if !(the_lines.starts_with? "METHODS [Withdrawn:")
+			the_SCId = the_SC.id
+			tmp_array = the_lines
+			
+			if (the_lines.class == String)
+				tmp_array = []
+				tmp_array  << the_lines 
+			end
+			
+			tmp_array.each do |the_line|
+			the_line = the_line.gsub "Examine:", "::Examine:"
+			the_line = the_line.gsub "Test:", "::Test:"
+			the_line = the_line.gsub "Interview:", "::Interview:"
+			
+				if the_line.starts_with? "METHODS"
+					the_methods = the_line.split "::"
+					the_methods.each do |the_method|
+						dontset = false
+						if  the_method.starts_with? "Examine:"
+							the_method = the_method.gsub "Examine: [SELECT FROM: ", ""
+							the_method = the_method.gsub "]", ""
+							method_type = "Examine"
+							
+						elsif  the_method.starts_with? "Test:"
+							the_method = the_method.gsub "Test: [SELECT FROM: ", ""
+							the_method = the_method.gsub "]", ""
+							method_type = "Test"
+					
+						elsif the_method.starts_with? "Interview:"
+							the_method = the_method.gsub "Interview: [SELECT FROM: ", ""
+							the_method = the_method.gsub "]", ""
+							method_type = "Interview"
+						else 
+							dontset = true
+						end
+						
+						the_method_items = the_method.split ";"
+						
+						if (dontset ==false)
+							
+							the_assessment = Assessment.find_or_create_by(method: method_type, security_control: the_SC)
+	#						%> the_assessment  = <%= the_assessment.inspect %> <br> <%
+							the_method_items.each do |the_method|
+							
+								pattern = / FAMILY:.*$/m
+								the_method = the_method.gsub(pattern) {""}
+								the_method = the_method.strip
+		#						%> the_method =<%= the_method.inspect %> <br><%							             
+								the_ao = AssessmentObject.find_or_create_by(description: the_method, assessment_id: the_assessment.id)
+	#							%> the_ao  = <%= the_ao.inspect %> <br> <%
+							end
+						end 
+					end
+					
+				end
+			end
+		end
+	end
+	
+	
+	data = ""
+	data = IO.binread(path)
+	data = data.encode(Encoding.find('UTF-8'), {invalid: :replace, undef: :replace, replace: ''})
+	control_class_pattern = /(CONTROL CLASS: [A-Z]+)/m
+	
+	
+	
+	
+	data = data.gsub "Special Publication 800-53A Guide for Assessing the Security Controls in", ""
+	data = data.gsub "Federal Information Systems and Organizations", ""
+	data = data.gsub 'FAMILY:', "\n\nFAMILY:"
+	data = data.gsub(control_class_pattern) {$1 + "\n\nControl-ID: ID:"}
+	
+	
+	
+	
+	data = data.gsub "ASSESSMENT PROCEDURE", ""
+	data = data.gsub "________________________________________________________________________________________________", "" 
+	pattern = /(APPENDIX [A-Z]-[A-Z]+)/m
+	data = data.gsub (pattern) {""}
+	pattern = /(PAGE [A-Z]-\d+)/m
+	data = data.gsub (pattern) {""}
+	data = data.gsub "ASSESSMENT OBJECTIVE:", "\nPARENT:"
+	
+	control_pattern2 = /(ID: ID:)(\r\n\r\n[A-Z]{2}-\d+)([A-Z\s]+\r\n)/
+	data.gsub!(control_pattern2)  { $1 + $2 + "\n\nTitle:" + $3 + "\n\nOBJECTIVE_ID: "}
+	
+	objective_items_pattern = /(Determine if(?:.)*?)(POTENTIAL ASSESSMENT METHODS AND OBJECTS:)/m
+	examine_pattern = /(Examine: )(\[((?:.)*?(?:\n*?))\].)/m
+	test_pattern = /(Test: )(\[(?:.)*?\].)/m
+	interview_pattern = /(Interview: )(\[(?:.)*?\].)/m
+	
+	
+	
+	data = data.gsub " -" , "\nCHILD2:"
+	data = data.gsub " (i) " , "\nCHILD:(a)"
+	data = data.gsub " (ii) " , "\nCHILD:(b)"
+	data = data.gsub " (iii) " , "\nCHILD:(c)"
+	data = data.gsub " (iv) " , "\nCHILD:(d)"
+	data = data.gsub " (v) " , "\nCHILD:(e)"
+	data = data.gsub " (vi) " , "\nCHILD:(f)"
+	data = data.gsub " (vii) " , "\nCHILD:(g)"
+	data = data.gsub " (viii) " , "\nCHILD:(h)"
+	data = data.gsub " i)" , "\nCHILD3:1)"
+	data = data.gsub " ii)" , "\nCHILD3:2)"
+	data = data.gsub " iii)" , "\nCHILD3:3)"
+	data = data.gsub " iv) " , "\nCHILD3:4)"
+	data = data.gsub " v) " , "\nCHILD3:5)"
+	data = data.gsub " vi) " , "\nCHILD3:6)"
+	data = data.gsub " vii) " , "\nCHILD3:7)"
+	data = data.gsub " Determine if:", "Determine if:"
+	
+	 
+	
+	
+	#data = data.gsub(objective_items_pattern) {"\nMETHODS"}
+	
+	data = data.gsub "\r\nExamine\:","\:\:Examine\:"
+	data = data.gsub "\r\nTest\:","\:\:Test\:"
+	data = data.gsub "\r\nInterview\:","\:\:Interview\:"
+	data = data.gsub ":::","::"
+	data = data.gsub "\r\n"," "
+	data = data.gsub "POTENTIAL ASSESSMENT METHODS AND OBJECTS\:","\nMETHODS\:"
+	
+	control_pattern3 = /\s([A-Z][A-Z]-\d+\(\d\)\s)([A-Z\s]+)([A-Z][A-Z]-)/m
+	data = data.gsub(control_pattern3)  {"\n\nControl-ID: ID: "+ $1 + "\n\nTitle: " + $2 + "\n\nOBJECTIVE_ID: "+$3}
+	control_pattern3 = /(ID: [A-Z][A-Z]-\d+)( [A-Z][A-Z]+ )\)/m
+	data = data.gsub(control_pattern3)  {$1 + "\n\nTitle: " + $2}
+	data = data.gsub "\r\nDetermine if","\nPARENT:Determine if"
+	data = data.gsub "AC-9 PREVIOUS","AC-9 \n\nTitle: PREVIOUS"
+	data = data.gsub "AC-12 SESSION TERMINATION","AC-12 \n\nTitle: SESSION TERMINATION"
+	data = data.gsub "AC-13 SUPERVISION AND REVIEW", "AC-13 \n\nTitle: SUPERVISION AND REVIEW"
+	data = data.gsub "AC-15 AUTOMATED MARKING", "AC-15 \n\nTitle: AUTOMATED MARKING"
+	data = data.gsub "AC-21 USER-BASED","AC-21 \n\nTitle: USER-BASED"
+	 
+	the_controls = data.split("Control-ID: ") 
+	
+	
+	controls = []
+	control = []
+	control_items = []
+	control = []
+	objectives = []
+	methods = []
+	examine_methods = []
+	test_methods = []
+	interview_methods = []
+	controlID = ""
+	the_SC = ""
+	the_controls.each do |the_control|
+	%> The Control - <%= the_control.inspect %> <br><br> <%
+		the_SC = ""
+		the_objects = the_control.split("\n\n")
+		the_objects.each do |the_line|
+#			%> the_line <%= the_line.inspect %> <br><br> <%
+			
+			if the_line.starts_with? "ID:"
+				controlID = the_line.gsub "ID:", ""
+				controlID = controlID.gsub "(", " ("
+				controlID = controlID.strip
+				the_SC = SecurityControl.where(security_policy: the_SP, name: controlID).first
+				if (the_SC != nil )
+					if (the_SC.assessments != nil)
+						the_SC.assessments.destroy_all
+					end
+				#%> the_SC - <%= the_SC.inspect %> <br><br><%
+				control << controlID
+				else
+					%> the_SC NOT FOUND  the_SP<%= the_SP.inspect %> controlID-<%= controlID.inspect %> <br><br><%
+				
+				end
+				
+			elsif  the_line.starts_with? "OBJECTIVE_ID:"
+				counter = 0
+				object_counter = 1
+				the_objectives = the_line.split "\n"
+				lastObject = nil
+				parent_counter = 1
+				child_counter = 1
+				child2_counter = 1
+				child3_counter = 1
+				main_name = ""
+				name = ""
+				parent_name = ""
+				objective_id = ""
+				main_objective_id = ""
+				parent_objective_id = ""
+				child_objective_id = ""
+				child2_objective_id = ""
+				child3_objective_id = ""
+				child_parent = ""
+				child_parent2 = ""
+				child_parent3 = ""
+				parent_objective = ""
+				child_objective1 = ""
+				child2_objective = ""
+				child3_objective = ""
+				last_ID = ""
+				the_objectives.each do |theobj|
+				%><br><br> theobj - <%= theobj.inspect %> <br> <%
+					if (theobj.include? "the provideranization establishes a discrete line item for information security in provideranizational programming and budgeting documentation")
+				 		%> theobj - <%= theobj.inspect %> <br> <%
+				 	end
+							#sa-2_obj_a.3
+					theobj = theobj.strip
+					 
+					if (theobj.starts_with? "OBJECTIVE_ID:")
+						 
+						theobj = theobj.gsub "OBJECTIVE_ID:",""
+						tmp_split = theobj.split "."
+						providerinal = tmp_split[0]
+						obj_num_to_letter = tmp_split[1]
+						obj_num_to_letter = base_az(obj_num_to_letter.to_i).downcase
+						theobj = providerinal + "(#{obj_num_to_letter})"
+						main_name = theobj
+						name = main_name 
+						#AC-1 first objective looks like- 
+						#ac-1_obj_a.1
+						
+						#AC-18 (1) first obejctive looks like.
+						#ac-18.1_obj_1.1
+						tmp_controlID = controlID
+						tmp_controlID = tmp_controlID.gsub " (","."
+						tmp_controlID = tmp_controlID.gsub ")",""
+						tmp_split2 = tmp_controlID.split "-"
+						letters = tmp_split2[0].downcase
+						if (tmp_split2[1].include? ".")
+							main_objective_id = "#{letters}-#{tmp_split2[1]}_obj_#{parent_counter}"
+						else
+							main_objective_id = "#{letters}-#{tmp_split2[1]}_obj_#{base_az(parent_counter).downcase}"
+						end 
+						parent_objective_id = main_objective_id
+						objective_id = parent_objective_id 
+						child_objective_id = ""
+						child2_objective_id = ""
+						child3_objective_id = ""
+						child_parent = ""
+						child_parent2 = ""
+						child_parent3 = ""
+						parent_objective = ""
+						child_objective1 =""
+						child2_objective =""
+						child3_objective =""
+					elsif theobj.starts_with? "PARENT:"
+						
+						name = main_name
+						parent_name = name
+						theobj = theobj.gsub "PARENT:",""
+						theobj = theobj.gsub /^\(#{base_az(parent_counter).downcase}\)/,""
+						parent_counter = parent_counter + 1
+						child_counter = 1
+						child2_counter = 1
+						child3_counter = 1
+						parent_objective = Objective.find_or_create_by(security_control: the_SC, description: theobj, name: name, objective_id: objective_id)
+						
+						last_ID = parent_objective.id
+						
+					elsif (theobj.starts_with? "CHILD:") && (parent_objective != "")
+						#AC-1(a)(1)
+						child_objective_id = "#{parent_objective_id}.#{child_counter}" 
+						objective_id = child_objective_id  
+						name = "#{parent_name}(#{child_counter})"
+						child_parent = name	
+						theobj = theobj.gsub "CHILD:",""
+						theobj = theobj.gsub /^\(#{base_az(child_counter).downcase}\)/,""
+						child_objective1 = Objective.find_or_create_by(security_control: the_SC, description: theobj, name: name, objective_id: objective_id, parent_id: parent_objective.id)
+						child_counter = child_counter + 1
+						last_ID = child_objective1.id
+					elsif (theobj.starts_with? "CHILD2:") && (parent_objective != "")
+						#AC-1(a)(1)[1]
+						parent_obj = ""
+						if (child_objective1 != "")
+							
+							name = "#{child_parent}[#{child2_counter}]"
+							child_parent2 = name
+							child2_objective_id = "#{child_objective_id}.#{child2_counter}" 
+							objective_id = child2_objective_id
+							parent_obj = child_objective1.id
+						else
+							name = "#{parent_name}(#{child_counter})"
+							child_parent = name
+							child2_objective_id = "#{parent_objective_id}.#{child2_counter}" 
+							objective_id = child2_objective_id  
+							#parent_obj = parent_objective.id
+						end
+						theobj = theobj.gsub "CHILD2:",""
+						theobj = theobj.gsub /^\(#{base_az(child2_counter).downcase}\)/,""
+						child2_objective = Objective.find_or_create_by(security_control: the_SC, description: theobj, name: name, objective_id: objective_id, parent_id: parent_obj)
+						child2_counter = child2_counter + 1
+						last_ID = child2_objective.id
+						
+					elsif (theobj.starts_with? "CHILD3:") && (parent_objective != "")
+						#AC-1(a)(1)[1][a]
+						child3_objective_id = "#{child2_objective_id}.#{child3_counter}" 
+						objective_id = child3_objective_id
+						name = child_parent2+"[#{child3_counter}]"
+						child_parent3 = name
+						theobj = theobj.gsub "CHILD2:",""
+						theobj = theobj.gsub /^\(#{base_az(child3_counter).downcase}\)/,""
+						child3_objective = Objective.find_or_create_by(security_control: the_SC, description: theobj, name: name, objective_id: objective_id, parent_id: child2_objective.id)
+						last_ID = child3_objective.id
+						child3_counter = child3_counter + 1
+					elsif (theobj.starts_with? "METHODS") && (parent_objective != "")
+						%> theobj - <%= theobj.inspect %> <br> <%
+						if (the_SC == nil)
+							%> ERROR - ERROR <br><br> <%
+						end
+						methods = checkMethods(theobj, the_SC)
+					else 
+						%> ERROR -- theobj <%= theobj.inspect %> <br><br><br><%
+					end
+					counter = counter + 1
+					
+				end
+			elsif the_line.starts_with? "METHODS"
+				%> the_line - <%= the_line.inspect %> <br> <%
+				methods = checkMethods(the_line, the_SC)
+			end
+		end
+		%> <br><br> <%
+		
+		
+	end
+end
+%>

@@ -1,0 +1,42 @@
+<p id="notice"><%= notice %></p>
+<h1>Objectives</h1>
+<table id="myDataTable"  class="table table-striped table-bordered"  style="width:100%">  <thead>
+    <tr>
+      <th>Objective</th>
+      <th>Parent Objective</th>
+      <th>Name</th>
+      <th>Description</th>
+      <th ></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @objectives.each do |objective| %>
+      <tr>
+        <td><%= objective.objective_id %></td>
+        <td><%= objective.parent_id %></td>
+        <td><%= objective.name %></td>
+        <td><%= objective.description %></td>
+        <td><%= link_to 'Show', objective %></td>
+        <td><%= link_to 'Edit', edit_objective_path(objective) %></td>
+        <td><%= link_to 'Destroy', objective, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= link_to 'New Objective', new_objective_path %>
+<script>
+$(document).ready(function() {
+    $('#myDataTable').DataTable( {
+    	"aaSorting": [],
+    	dom: 'Bfrtip',
+        buttons: [
+            'copy', 'csv', 'excel', 'pdf', 'print'
+        ]
+    } );
+} );
+	
+</script>

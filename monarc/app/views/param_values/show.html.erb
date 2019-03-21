@@ -1,0 +1,17 @@
+<p>
+  <strong>Param:</strong>
+    <%= @param_value.param.the_url_full%>
+</p>
+
+<p>
+  <strong>Param value:</strong>
+  <%= @param_value.param_value %>
+</p>
+
+<p>
+  <strong>The value:</strong>
+  <%= @param_value.the_value %>
+</p>
+
+<%= link_to 'Edit', edit_param_value_path(@param_value) %> |
+<%= link_to 'Back', param_values_path %>

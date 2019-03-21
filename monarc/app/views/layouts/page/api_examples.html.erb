@@ -1,0 +1,65 @@
+<%   examples = ""
+   url = "#{request.base_url}"
+   
+   examples = examples + to_api_url("#{url}/api/v1/security_policies/")
+   examples = examples + "<br>"
+   the_sp = SecurityPolicy.first
+   examples = examples + "<br>"  
+   by_policy_id = "#{url}/api/v1/security_policy/#{the_sp.id}/"
+   examples = examples + to_api_url("#{by_policy_id}")
+   examples = examples + to_api_url("#{by_policy_id}detailed")
+   examples = examples + to_api_url("#{by_policy_id}detailed/oscal")
+   examples = examples + to_api_url("#{by_policy_id}security_control_families")
+   examples = examples + to_api_url("#{by_policy_id}security_controls")
+   examples = examples + "<br>"  
+   the_control = SecurityControl.first   
+   examples = examples + to_api_url("#{url}/api/v1/security_controls/")
+   examples = examples + to_api_url("#{url}/api/v1/security_controls/#{the_control.id}")
+   examples = examples + to_api_url("#{url}/api/v1/security_controls/#{the_control.id}/detailed")
+   examples = examples + to_api_url("#{url}/api/v1/security_controls/#{the_control.id}/detailed/oscal")
+   
+   examples = examples + "<br>"
+   the_family = SecurityControlFamily.first 
+   examples = examples + to_api_url("#{url}/api/v1/security_control_families/")
+   examples = examples + to_api_url("#{url}/api/v1/security_control_families/#{the_family.id}")
+   examples = examples + to_api_url("#{url}/api/v1/security_control_families/#{the_family.id}/detailed")
+   examples = examples + to_api_url("#{url}/api/v1/security_control_families/#{the_family.id}/detailed/oscal")
+   examples = examples + to_api_url("#{url}/api/v1/security_control_families/#{the_family.id}/security_controls")
+   examples = examples + "<br>"
+   the_control = the_sp.security_controls.first
+   policy_prefix ="#{url}/api/v1/policy/#{the_sp.name}/version/#{the_sp.version}/"
+   examples = examples + to_api_url("#{policy_prefix}")
+   examples = examples + to_api_url("#{policy_prefix}all")
+   examples = examples + to_api_url("#{policy_prefix}all/oscal")
+   examples = examples + to_api_url("#{policy_prefix}security_control_families")
+   examples = examples + to_api_url("#{policy_prefix}security_control_family/")
+   family_prefix = "#{policy_prefix}/security_control_families/"
+   examples = examples + to_api_url("#{family_prefix}abv/#{the_family.abv}")
+   examples = examples + to_api_url("#{family_prefix}abv/#{the_family.abv}/detailed")
+   examples = examples + to_api_url("#{family_prefix}abv/#{the_family.abv}/detailed/oscal")
+   examples = examples + to_api_url("#{family_prefix}title/#{URI.escape(the_family.title)}")
+   examples = examples + to_api_url("#{family_prefix}title/#{URI.escape(the_family.title)}/detailed")
+   examples = examples + to_api_url("#{family_prefix}title/#{URI.escape(the_family.title)}/detailed/oscal")
+   
+   
+   examples = examples + to_api_url("#{policy_prefix}security_controls")
+   examples = examples + to_api_url("#{policy_prefix}security_control/#{the_control.control_id}/")
+   examples = examples + to_api_url("#{policy_prefix}security_control/#{the_control.control_id}/detailed")
+   examples = examples + to_api_url("#{policy_prefix}security_control/#{the_control.control_id}/detailed/oscal")
+   examples = examples + "<br>"
+   assessment = Assessment.first
+    
+   examples = examples + to_api_url("#{url}/api/v1/assessments/")
+   examples = examples + to_api_url("#{url}/api/v1/assessments/#{assessment.id}")
+   examples = examples + to_api_url("#{url}/api/v1/assessments/#{assessment.id}/detailed")
+   examples = examples + to_api_url("#{url}/api/v1/assessments/#{assessment.id}/detailed/oscal")
+   examples = examples + "<br>"
+   guidance = Guidance.first
+   examples = examples + to_api_url("#{url}/api/v1/guidances/")
+   examples = examples + to_api_url("#{url}/api/v1/guidances/api_commands")
+   examples = examples + to_api_url("#{url}/api/v1/guidances/#{guidance.id}")
+   examples = examples + to_api_url("#{url}/api/v1/guidances/#{guidance.id}/detailed")
+   examples = examples + to_api_url("#{url}/api/v1/guidances/#{guidance.id}/detailed/oscal")
+
+   %>
+   <%= examples.html_safe  %>

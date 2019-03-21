@@ -1,0 +1,55 @@
+<h1>Param</h1>
+<% if (@security_control != nil) %>
+	<p>
+		<strong>Secuirty Control:</strong>
+		<%= link_to @security_control.control_id, @security_control %>
+	</p>
+	
+<% end %>
+
+<% if (@requirement != nil) %>
+	<p>
+		<strong>Requirement:</strong>
+		<%= link_to @requirement.name, @requirement %>
+	</p>
+<% end %>
+
+
+<p>
+  <strong>Param ID:</strong>
+  <%= @param.params_id  %>
+</p>
+
+<p>
+  <strong>Description:</strong>
+  
+  <%= @param.description %><br>
+ <%  optioncounter = 1
+	Param.where(parent_id: @param).each do |child_param| %>
+		Option <%= optioncounter %>: <%= child_param.description %> <br>
+		<% optioncounter = optioncounter +1
+	end %>
+
+</p>
+
+<p>
+  <strong>Value:</strong>
+  <%= @param.grab_values %> - <%= @param.value_url %><br>
+	<% Param.where(parent_id: @param).each do |child_param| %>
+		<%= child_param.grab_values %> - <%= @param.value_url  %><br>
+	<% end %>
+</p>
+
+
+<p>
+  	<strong>Item:</strong>
+  	<% if (@param.item_id!= nil) %>
+		<%= link_to @param.item.item_id, @param.item %>
+	<% end %>
+</p>
+
+        	
+        	
+
+<%= link_to 'Edit', edit_param_path(@param) %> |
+<%= link_to 'Back', params_path %>

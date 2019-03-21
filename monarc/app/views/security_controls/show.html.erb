@@ -1,0 +1,61 @@
+<% content_for :title, "Security Control- #{@security_control.control_id}" %>
+<p>
+  <strong>Description:</strong> <% if @security_control.check_active %><%= link_to 'Add', "/security_controls/#{@security_control.id}/add_statement" %><% end %>
+  <%= grab_statements(@security_control)%>
+</p>
+
+<p>
+  <strong>Supplemental Guidances:</strong> <% if @security_control.check_active %><%= link_to 'Add', "/security_controls/#{@security_control.id}/add_guidance" %><% end %>
+  <%= grab_guidances(@security_control) %>
+</p>
+
+<p>
+  <strong>Objectives:</strong>  <% if @security_control.check_active %><%= link_to 'Add', "/security_controls/#{@security_control.id}/add_objective" %><% end %>
+  <%= grab_objectives(@security_control) %>
+</p>
+
+<p>
+  <strong>Procedures:</strong> <% if @security_control.check_active %><%= link_to 'Add', "/security_controls/#{@security_control.id}/add_assessment" %><% end %>
+  <%= grab_assessments(@security_control) %>
+</p>
+
+<p>
+  <strong>Control Parameters:</strong> <% if @security_control.check_active %><%= link_to 'Add', "/security_controls/#{@security_control.id}/add_param" %><% end %>
+  <%= grab_params(@security_control) %>
+</p>
+
+<p>
+  <strong>References:</strong><br>
+  <%= grab_references_articles(@security_control) %>
+</p>
+<p>
+  <strong>Control Overlays:</strong><br>
+  <% control_overlays = @security_control.control_overlays
+	if has_data? (control_overlays) %>
+  		<%= render 'overlays/show_overlays', control_overlays: control_overlays %>
+	<% end %>
+		
+
+</p>
+
+<p>
+  <strong>Control Implementations:</strong><br>
+  <% methods = ControlImplementation.unique_control_implementations(@security_control)
+	if has_data?(methods) %>
+		<%= render 'control_implementations/show_tables', methods: methods %>
+	 <% end %>
+</p>
+
+<%= link_to 'Edit', edit_security_control_path(@security_control) %> |
+<%= link_to 'Back', security_controls_path %>
+<script>
+$(document).ready(function() {
+    $('#myDataTable').DataTable( {
+    	"aaSorting": [],
+    	dom: 'Bfrtip',
+        buttons: [
+            'copy', 'csv', 'excel', 'pdf', 'print'
+        ]
+    } );
+} );
+</script>

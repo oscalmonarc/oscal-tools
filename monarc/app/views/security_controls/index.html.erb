@@ -1,0 +1,59 @@
+<% content_for :title, "Security Controls" %>
+<p id="notice"><%= notice %></p>
+<header>
+	<h1>Security Controls</h1>
+	<div id="showSearch">
+		<i class="fa fa-search" aria-hidden="true"></i>
+		Filter <button id="displaySearch" onclick="displaySearchBar()">+</button>
+	</div>
+</header>
+
+<%= render 'search' %>
+
+<br>
+
+
+<table id="myDataTable"  class="table table-striped table-bordered"  style="width:100%">
+	  <thead>
+	    <tr>
+	      <%= content_tag :th, sort_link(@q, :control_id) %>
+	      <%= content_tag :th, sort_link(@q, :title) %>
+	      <%= content_tag :th, sort_link(@q, :security_control_family_family) %>
+	      <%= content_tag :th, sort_link(@q, :security_policy_id) %>
+		  <%= content_tag :th, sort_link(@q, :control_class) %>
+	      <%= content_tag :th, sort_link(@q, :status) %>
+	      
+	      <th ></th>
+	    </tr>
+	  </thead>
+	
+	  <tbody>
+	    <% @security_controls.each do |security_control| %>
+	      <tr>
+	        <td><%= security_control.the_url %></td>
+	        <td><%= security_control.title %></td>
+	        <td><%= link_to security_control.security_control_family.family, security_control.security_control_family %></td>
+	        <td><%= link_to security_control.security_policy.policy_version, security_control.security_policy%></td>
+	        <td><%= security_control.control_class %></td>
+	        <td><%= security_control.status %></td>
+	        <td><%= link_to 'Edit', edit_security_control_path(security_control) %></td>
+	      </tr>
+	    <% end %>
+	  </tbody>
+</table>
+<br>
+
+<%= link_to 'New Security Control', new_security_control_path %>
+
+<script>
+$(document).ready(function() {
+    $('#myDataTable').DataTable( {
+    	"aaSorting": [],
+    	dom: 'Bfrtip',
+        buttons: [
+            'copy', 'csv', 'excel', 'pdf', 'print'
+        ]
+    } );
+} );
+	
+</script>

@@ -1,0 +1,21 @@
+# Build image
+docker build -f Dockerfile -t monarch:latest .
+
+# Create network (once)
+docker network create monarch
+
+# Start database container
+docker run -d --network monarch --name monarchdb -e MYSQL_RANDOM_ROOT_PASSWORD=yes -e MYSQL_USER=monarch -e MYSQL_PASSWORD=password -e MYSQL_DATABASE=monarch mariadb:10.3.9
+
+# Start ruby/rails container
+docker run -d --network monarch -p 80:3000 --name monarch -e DB_HOST="monarchdb" -e DB_USER="monarch" -e DB_PASSWORD=<password> -e DB_NAME="monarch" -e monarch_URL=<url> -e SECRET_KEY_BASE=<secret_key> monarch:latest
+
+# Initial db creation (once)
+docker exec -it monarch bundle exec rake db:setup
+
+# After redeploy of new monarch container versions with schema changes (on migration)
+docker exec -it monarch bundle exec rake db:migrate
+
+# To clean up and for new monarch install
+docker stop monarch
+docker rm monarch

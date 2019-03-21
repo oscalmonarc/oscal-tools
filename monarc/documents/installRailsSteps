@@ -1,0 +1,50 @@
+curl -sSL https://get.rvm.io | bash -s stable --gems=rails,puma
+
+sudo adduser espresso
+sudo groupadd rvm
+sudo usermod -a -G rvm monarch
+sudo usermod -a -G rvm "$USER"
+rvm user gemsets
+rvm get head
+rvm reload
+
+npm install yarn -g
+
+sudo tar -zxvf monarch.tar -C /home/monarch/
+sudo chown -R monarch: /home/monarch/
+
+sudo su monarch
+	cd /home/monarch/monarch
+	unset rvm_path
+	curl -sSL https://get.rvm.io | bash -s stable --gems=rails,puma
+	rvm group add rvm "$USER"
+	rvm user gemsets
+	rvm install ruby-2.5.1
+	rvm use ruby-2.5.1
+	rvm  use 2.5.1 --default
+	
+	gem install bundler
+	gem install puma
+	bundle install 
+	rake db:setup
+	rvm wrapper default systemd rails
+exit
+
+# Will only work if you dont have apache running on port 80.
+sudo iptables -t nat -I PREROUTING -p tcp --dport 80 -j REDIRECT --to-ports 3001
+sudo iptables -t nat -I PREROUTING -p tcp --dport 443 -j REDIRECT --to-ports 3000
+sudo iptables -t nat -I PREROUTING -p tcp --dport 3000 -j REDIRECT --to-ports 3000
+sudo iptables -t nat -I PREROUTING -p tcp --dport 3000 -j REDIRECT  -p tcp --to-ports 3000
+#sudo iptables -t nat -I PREROUTING -p tcp --dport 3001 -j REDIRECT -p ssl --to-ports 3001
+sudo iptables-save
+
+rvm wrapper default systemd rails
+
+sudo cp /home/monarch/monarch/InstallDocs/rails-puma.service /etc/systemd/system/
+sudo chown root: /etc/systemd/system/rails-puma.service
+
+systemctl enable rails-puma
+systemctl start rails-puma
+
+
+

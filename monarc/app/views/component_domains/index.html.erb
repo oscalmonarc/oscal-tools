@@ -1,0 +1,16 @@
+<h1>Component Domains</h1>
+
+<table class="responsive nowrap table table-hover" id="dttb-component_domains" data-sort="true" data-source="<%= url_for(format: :json)%>">
+  <thead>
+    <tr>
+      <th data-data="component">Component</th>
+      <th data-data="domain_environment">Domain environment</th>
+      <th data-data="url" data-orderable="false" data-class-name="all" data-searchable="false" class="skip-export" width="100px"></th>
+    </tr>
+  </thead>
+
+</table>
+
+<br>
+
+<%= button_to 'New Component Domain', new_component_domain_path , method: :get %>

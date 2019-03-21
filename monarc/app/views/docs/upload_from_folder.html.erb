@@ -1,0 +1,213 @@
+<% 
+provider = Provider.find_or_create_by(name: "NIST")
+spRev3 = SecurityPolicy.find_or_create_by(id: 3, name: "SP800-53", version: "3", provider: provider)
+spRev4 = SecurityPolicy.find_or_create_by(id: 4, name: "SP800-53", version: "4", provider: provider)
+spRev5 = SecurityPolicy.find_or_create_by(id: 5, name: "SP800-53", version: "5", provider: provider)
+docs = Doc.all %> 
+<%= button_to 'All Docs', '/docs/', method: :get  %><br>
+<% 
+systemFiles = []
+docs.each do |doc|
+	if (doc.the_doc.attachment == nil)
+		#doc.destroy
+	else
+		doc_name = doc.the_doc.filename
+		doc_location = doc.grab_file_path
+		if File.exist?(doc_location)
+			systemFiles << doc_name
+		else
+			doc.destroy
+		end
+	end  
+	systemFiles.sort
+end %>
+
+<% files = Dir["security_docs/*"]  
+	files.each do |the_file|
+	
+	file_location = the_file
+	file_name = the_file.gsub "security_docs/", ""
+	%> File Name - <%= file_name %><br> <%
+	
+	if (systemFiles.include? file_name)
+		%> I am already uploaded <br> <%
+	else 
+		policy = nil
+		if (file_name.include? "rev3")
+			policy = spRev3
+		elsif (file_name.include? "rev4")
+			policy = spRev4
+		elsif (file_name.include? "rev5")
+			policy = spRev5
+		end	
+		
+		provider = nil
+		source_date = nil
+		url = nil
+		doc_type = nil
+		declarations_id = nil
+		
+		if (file_name.downcase.include? "aws") || (file_name.downcase.include? "amazon")
+			provider = Provider.find_or_create_by(name: "Amazon")
+		elsif (file_name.downcase.include? "microsoft") 
+			provider = Provider.find_or_create_by(name: "Microsoft")
+		elsif (file_name.downcase.include? "nist")
+			provider = Provider.find_or_create_by(name: "NIST")
+		elsif (file_name.downcase.include? "cnss")
+			provider = Provider.find_or_create_by(name: "CNSS")
+		end
+		
+				
+		if (file_name.include? "label_objects") && (file_name.include? ".csv")
+			name = "Label Objects"
+			doc_type = "label_objects"
+			description = "Step 1 - Setup Server - Install Labels"
+			provider = Provider.find_or_create_by(name: "Espresso")
+		elsif (file_name.include? "domain_objects") && (file_name.include? ".csv")
+			name = "Domain Objects"
+			doc_type = "domain_objects"
+			description = "Step 2 - Setup Server - Install Domain"
+			provider = Provider.find_or_create_by(name: "Espresso")
+		elsif (file_name.include? "component_objects") && (file_name.include? ".csv")
+			name = "Component Objects"
+			name = file_name
+			doc_type = "component_objects"
+			description = "Step 3 - Setup Server - Install Components "
+			provider = Provider.find_or_create_by(name: "Espresso")
+		elsif (file_name.include? "provider_objects") && (file_name.include? ".csv")
+			name = "Provider Objects"
+			name = file_name
+			doc_type = "component_objects"
+			description = "Step 4 - Setup Server - Install Providers"
+			provider = Provider.find_or_create_by(name: "Espresso")
+		elsif (file_name.include? "_catalog.xml")
+			name = "OSCAL Catalog" 
+			doc_type = "oscal"
+			url = "https://raw.githubusercontent.com/usnistgov/OSCAL/master/content/nist.gov/SP800-53/rev4/NIST_SP-800-53_rev4_catalog.xml"
+			description = "Step 5.1 - Setup Security Controls - OSCAL Security Controls in XML" 
+			provider = Provider.find_or_create_by(name: "NIST")
+		elsif (file_name.include? "HIGH.json")
+			doc_type = "impact_levels_nist.json"
+			description = "Step 5.2 - Setup Security Controls OSCAL High Impact Levels as JSON"
+			name = description
+			url = "https://raw.githubusercontent.com/usnistgov/OSCAL/master/content/nist.gov/SP800-53/rev4/NIST_SP-800-53_rev4_HIGH-baseline_profile.json"
+			provider = Provider.find_or_create_by(name: "NIST")
+		elsif (file_name.include? "Mod.json")
+			doc_type = "impact_levels_nist.json"
+			description = "Step 5.3 - Setup Security Controls OSCAL Mod Impact Levels as JSON"
+			name = description
+			url ="https://raw.githubusercontent.com/usnistgov/OSCAL/master/content/nist.gov/SP800-53/rev4/NIST_SP-800-53_rev4_MODERATE-baseline_profile.json"
+			provider = Provider.find_or_create_by(name: "NIST")
+		elsif (file_name.include? "Low.json")
+			doc_type = "impact_levels_nist.json"
+			url = "https://raw.githubusercontent.com/usnistgov/OSCAL/master/content/nist.gov/SP800-53/rev4/NIST_SP-800-53_rev4_LOW-baseline_profile.json"
+			description = "Step 5.4 - Setup Security Controls - OSCAL Low Impact Levels as JSON"
+			name = description
+			provider = Provider.find_or_create_by(name: "NIST")
+		elsif (file_name.include? "Step_1_800-53") && (file_name.include? ".txt")
+			name = "800-53"
+			doc_type = "800-53.text"
+			description = "Step 5.5 - Setup Security Controls - 800-53 Security Controls in txt form"
+			source_date = "2010-05-01"
+			provider = Provider.find_or_create_by(name: "NIST")
+		elsif (file_name.include? "800-53_rev_5_11-15-18.txt")
+			policy = spRev5
+			name = "800-53"
+			doc_type = "800-53.text"
+			description = "Step 5.5 - Setup Security Controls - 800-53 Security Controls in txt form"
+			source_date = "2018-11-15"
+			provider = Provider.find_or_create_by(name: "NIST")
+		elsif (file_name.include? "800-53a") && (file_name.include? ".txt")
+			name = "800-53a"
+			doc_type = "800-53a.text"
+			description = "Step 5.6 - Setup Security Controls - 800-53a Security Controls in txt form"
+			source_date = "2010-07-01"
+			provider = Provider.find_or_create_by(name: "NIST")
+		elsif (file_name.include? "1253-rev3-march-2012")
+			name = "CNSS 1253"
+			doc_type = "1253.csv"
+			description = "Step 5.7 - Setup Security Controls - 1253 for Security Controls in CSV"
+			source_date = "2012-03-01"
+			provider = Provider.find_or_create_by(name: "CNSS")
+		elsif (file_name.include? "1253-") && (file_name.include? ".csv")
+			name = "CNSS 1253 CSV"
+			doc_type = "1253.csv"
+			description = "Step 5.8 - Setup Security Controls - 1253 for Security Controls in CSV"
+			provider = Provider.find_or_create_by(name: "Espresso")
+		elsif (file_name.include? "intellegence_overlay")
+			name = "ODNI Intellegence Overlay"
+			doc_type = "intellegence_overlay_csv"
+			description = "Step 6.1 - Setup Security Overlays - ODNI Intellegence Overlay for Security Controls in CSV"
+			provider = Provider.find_or_create_by(name: "ODNI")
+		elsif (file_name.include? "accessibility_overlay")
+			name = "ODNI Accessibility Overlay"
+			doc_type = "accessibility_overlay_csv"
+			description = "Step 6.2 - Setup Security Overlays - ODNI Accessibility Overlay for Security Controls in CSV"
+			provider = Provider.find_or_create_by(name: "ODNI")
+		elsif (file_name.include? "pii_overlay")
+			name = "ODNI PII Overlay"
+			doc_type = "pii_overlay_csv"
+			description = "Step 6.3 - Setup Security Overlays - ODNI PII Overlay for Security Controls in CSV"
+			provider = Provider.find_or_create_by(name: "ODNI")
+		elsif (file_name.include? "inheritied_controls") && (file_name.include? ".csv")
+			name = "Provider Controls"
+			doc_type = "provider_controls"
+			description = "Step 7 - Setup Control Implementation - Provider Component Implementations"
+			if (file_name.include? "aws")
+				name = "AWS Provider Controls"
+				policy = spRev4 
+				description = "Step 7.1 - Setup Control Implementation - Example AWS Inheritied Controls taken from their spreadsheet."
+				url = "https://fwd.aws/bWvRw"
+			end
+		elsif (file_name.include? "declarations.json")
+			name = "OSCAL Declerations" 
+			doc_type = "json_declaration"
+			policy = spRev5
+			description = "Step 8 - Not Working- OSCAL in Decleration in JSON"
+			url = "https://raw.githubusercontent.com/usnistgov/OSCAL/master/content/nist.gov/SP800-53/rev4/NIST_SP-800-53_rev4_declarations.json"
+			provider = Provider.find_or_create_by(name: "NIST")
+		elsif (file_name.include? "oscal.json") 
+			name = "OSCAL Catalog in JSON"
+			doc_type = "oscal.json"
+			description = "Step 8.1 - Not Working- OSCAL Security Controls in JSON"
+			policy = spRev5
+			tmp_doc = Doc.where(doc_type: "json_declaration", security_policy_id: policy.id).first
+			url = "https://raw.githubusercontent.com/usnistgov/OSCAL/master/content/nist.gov/SP800-53/rev4/NIST_SP-800-53_rev4_catalog.json"
+			if (tmp_doc != nil)
+				declarations_id = tmp_doc.id	 
+			end
+			provider = Provider.find_or_create_by(name: "NIST")
+			
+		end
+		
+		if (doc_type != nil)
+			theDoc = Doc.find_or_create_by(name: name, security_policy: policy, doc_type: doc_type, url: url, 
+			description: description, declarations_id: declarations_id, source_date: source_date, provider: provider)
+			%> Created theDoc - <%= theDoc.inspect %> <br> <%
+			theDoc.the_doc.attach(io: File.open(file_location), filename: file_name)
+			theDoc.save
+			
+			if (file_name == "Step_2_NIST_SP-800-53_rev4_declarations.json")
+				
+				tmp_doc = Doc.where(doc_type: "oscal.json", security_policy_id: policy.id).first
+				if (tmp_doc != nil)
+					tmp_doc.declarations_id = theDoc.id
+					tmp_doc.save
+				end
+			end
+			
+			if (file_name == "Step_2_NIST_SP-800-53_rev4_declarations.json")
+				
+				tmp_doc = Doc.where(doc_type: "oscal.json", security_policy_id: policy.id).first
+				if (tmp_doc != nil)
+					tmp_doc.declarations_id = theDoc.id
+					tmp_doc.save
+				end
+			end
+		end
+		
+	end   
+ end %>
+
+
+

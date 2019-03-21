@@ -1,0 +1,32 @@
+<p>
+  <strong>Name:</strong>
+  <%= @requirement.name %>
+</p>
+
+<p>
+  <strong>Statements:</strong>
+  <%= @requirement.statements %>
+</p>
+
+<p>
+  <strong>Guidances:</strong>
+  <%= @requirement.guidances %>
+</p>
+
+<p>
+  <strong>Security controls:</strong>
+  <%= url_links(@requirement.security_controls) %>
+</p>
+
+<p>
+  <strong>Requirements:</strong>
+  <%= url_links(@requirement.requirements) %>
+</p>
+
+<p>
+  <strong>Security policies:</strong>
+  <%= @requirement.security_policy %>
+</p>
+
+<%= link_to 'Edit', edit_requirement_path(@requirement) %> |
+<%= link_to 'Back', requirements_path %>

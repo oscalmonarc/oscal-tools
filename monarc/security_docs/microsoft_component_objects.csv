@@ -1,0 +1,239 @@
+Name,Label,Parent,Provider,Domains,Description
+Azure,Cloud Infrastructure,,Microsoft,azure-commercial,Microsoft Azure is an ever-expanding set of cloud services to help your organization meet your business challenges. It?s the freedom to build, manage, and deploy applications on a massive, global network using your favorite tools and frameworks.
+AI and Machine Learning,AI and Machine Learning,Azure,Microsoft,azure-commercial,
+Azure Batch AI,AI and Machine Learning,AI and Machine Learning,Microsoft,azure-commercial,Easily experiment and train your deep learning and AI models in parallel at scale
+Azure Bot Service,AI and Machine Learning,AI and Machine Learning,Microsoft,azure-commercial,Intelligent, serverless bot service that scales on demand
+Azure Search,AI and Machine Learning,AI and Machine Learning,Microsoft,azure-commercial,Fully-managed search-as-a-service
+Bing Autosuggest,AI and Machine Learning,AI and Machine Learning,Microsoft,azure-commercial,Give your app intelligent autosuggest options for searches
+Bing Custom Search,AI and Machine Learning,AI and Machine Learning,Microsoft,azure-commercial,An easy-to-use, ad-free, commercial-grade search tool that lets you deliver the results you want
+Bing Entity Search,AI and Machine Learning,AI and Machine Learning,Microsoft,azure-commercial,Enrich your experiences by identifying and augmenting entity information from the web
+Bing Image Search,AI and Machine Learning,AI and Machine Learning,Microsoft,azure-commercial,Search for images and get comprehensive results
+Bing News Search,AI and Machine Learning,AI and Machine Learning,Microsoft,azure-commercial,Search for news and get comprehensive results
+Bing Spell Check,AI and Machine Learning,AI and Machine Learning,Microsoft,azure-commercial,Detect and correct spelling mistakes in your app
+Bing Video Search,AI and Machine Learning,AI and Machine Learning,Microsoft,azure-commercial,Search for videos and get comprehensive results
+Bing Web Search,AI and Machine Learning,AI and Machine Learning,Microsoft,azure-commercial,Get enhanced search details from billions of web documents
+Cognitive Services,AI and Machine Learning,AI and Machine Learning,Microsoft,azure-commercial,Add smart API capabilities to enable contextual interactions
+Computer Vision,AI and Machine Learning,AI and Machine Learning,Microsoft,azure-commercial,Distill actionable information from images
+Content Moderator,AI and Machine Learning,AI and Machine Learning,Microsoft,azure-commercial,Automated image, text, and video moderation
+Custom Vision,AI and Machine Learning,AI and Machine Learning,Microsoft,azure-commercial,Easily customize your own state-of-the-art computer vision models for your unique use case
+Data Science Virtual Machines,AI and Machine Learning,AI and Machine Learning,Microsoft,azure-commercial,Rich pre-configured environment for AI development
+Emotion,AI and Machine Learning,AI and Machine Learning,Microsoft,azure-commercial,Personalize user experiences with emotion recognition
+Face,AI and Machine Learning,AI and Machine Learning,Microsoft,azure-commercial,Detect, identify, analyze, organize, and tag faces in photos
+Language Understanding,AI and Machine Learning,AI and Machine Learning,Microsoft,azure-commercial,Teach your apps to understand commands from your users
+Linguistic Analysis,AI and Machine Learning,AI and Machine Learning,Microsoft,azure-commercial,Simplify complex language concepts and parse text with the Linguistic Analysis API
+Machine Learning service,AI and Machine Learning,AI and Machine Learning,Microsoft,azure-commercial,Bring AI to everyone with an end-to-end, scalable, trusted platform with experimentation and model management
+Machine Learning Studio,AI and Machine Learning,AI and Machine Learning,Microsoft,azure-commercial,Easily build, deploy, and manage predictive analytics solutions
+Microsoft Genomics,AI and Machine Learning,AI and Machine Learning,Microsoft,azure-commercial,Power genome sequencing & research insights
+QnA Maker,AI and Machine Learning,AI and Machine Learning,Microsoft,azure-commercial,Distill information into conversational, easy-to-navigate answers
+Speaker Recognition,AI and Machine Learning,AI and Machine Learning,Microsoft,azure-commercial,Use speech to identify and verify individual speakers
+Text Analytics,AI and Machine Learning,AI and Machine Learning,Microsoft,azure-commercial,Easily evaluate sentiment and topics to understand what users want
+Translator Text,AI and Machine Learning,AI and Machine Learning,Microsoft,azure-commercial,Easily conduct machine translation with a simple REST API call
+Video Indexer,AI and Machine Learning,AI and Machine Learning,Microsoft,azure-commercial,Unlock video insights
+Web Language Model,AI and Machine Learning,AI and Machine Learning,Microsoft,azure-commercial,Use the power of predictive language models trained on web-scale data
+Analytics,Analytics,Azure,Microsoft,azure-commercial,
+Apache Spark for Azure HDInsight,Analytics,Analytics,Microsoft,azure-commercial,Apache Spark in the cloud for mission critical deployments
+Apache Storm for HDInsight,Analytics,Analytics,Microsoft,azure-commercial,Real-time stream processing made easy for big data
+Azure Analysis Services,Analytics,Analytics,Microsoft,azure-commercial,Enterprise-grade analytics engine as a service
+Azure Data Explorer,Analytics,Analytics,Microsoft,azure-commercial,Fast and highly scalable data exploration service
+Azure Databricks,Analytics,Analytics,Microsoft,azure-commercial,Fast, easy, and collaborative Apache Spark-based analytics platform
+Azure Search,Analytics,Analytics,Microsoft,azure-commercial,Fully-managed search-as-a-service
+Azure SignalR Service,Analytics,Analytics,Microsoft,azure-commercial,Add real-time
+Data Catalog,Analytics,Analytics,Microsoft,azure-commercial,Get more value from your enterprise data assets
+Data Factory,Analytics,Analytics,Microsoft,azure-commercial,Hybrid data integration at enterprise scale, made easy
+Data Lake Analytics,Analytics,Analytics,Microsoft,azure-commercial,Distributed analytics service that makes big data easy
+Event Hubs,Analytics,Analytics,Microsoft,azure-commercial,Receive telemetry from millions of devices
+HDInsight,Analytics,Analytics,Microsoft,azure-commercial,Provision cloud Hadoop, Spark, R Server, HBase, and Storm clusters
+Power BI Embedded,Analytics,Analytics,Microsoft,azure-commercial,Embed fully interactive, stunning data visualizations in your applications
+R Server for HDInsight,Analytics,Analytics,Microsoft,azure-commercial,Predictive analytics, machine learning, and statistical modeling for big data
+Stream Analytics,Analytics,Analytics,Microsoft,azure-commercial,Real-time data stream processing from millions of IoT devices
+Cloud Compute,Cloud Compute,Azure,Microsoft,azure-commercial,
+API Apps,Cloud Compute,Cloud Compute,Microsoft,azure-commercial,Easily build and consume Cloud APIs
+API Management,Cloud Compute,Cloud Compute,Microsoft,azure-commercial,Publish APIs to developers, partners, and employees securely and at scale
+App Service,Cloud Compute,Cloud Compute,Microsoft,azure-commercial,Quickly create powerful cloud apps for web and mobile
+Azure CycleCloud,Cloud Compute,Cloud Compute,Microsoft,azure-commercial,Create, manage, operate, and optimize HPC and big compute clusters of any scale
+Azure Kubernetes Service - AKS,Cloud Compute,Cloud Compute,Microsoft,azure-commercial,Simplify the deployment, management, and operations of Kubernetes
+Batch,Cloud Compute,Cloud Compute,Microsoft,azure-commercial,Cloud-scale job scheduling and compute management
+Cloud Services,Cloud Compute,Cloud Compute,Microsoft,azure-commercial,Create highly-available, infinitely-scalable cloud applications and APIs
+Container Instances,Cloud Compute,Cloud Compute,Microsoft,azure-commercial,Easily run containers on Azure without managing servers
+Container Instances,Cloud Compute,Cloud Compute,Microsoft,azure-commercial,Easily run containers on Azure without managing servers
+Container Registry,Cloud Compute,Cloud Compute,Microsoft,azure-commercial,Store and manage container images across all types of Azure deployments
+Functions,Cloud Compute,Cloud Compute,Microsoft,azure-commercial,Process events with serverless code
+Linux Virtual Machines,Cloud Compute,Cloud Compute,Microsoft,azure-commercial,Provision virtual machines for Ubuntu, Red Hat, and more
+SAP HANA on Azure Large Instances,Cloud Compute,Cloud Compute,Microsoft,azure-commercial,Run the largest SAP HANA workloads of any hyperscale cloud provider
+Service Fabric,Cloud Compute,Cloud Compute,Microsoft,azure-commercial,Develop microservices and orchestrate containers on Windows or Linux
+Service Fabric,Cloud Compute,Cloud Compute,Microsoft,azure-commercial,Develop microservices and orchestrate containers on Windows or Linux
+Virtual Machine Scale Sets,Cloud Compute,Cloud Compute,Microsoft,azure-commercial,Manage and scale up to thousands of Linux and Windows virtual machines
+Virtual Machines,Cloud Compute,Cloud Compute,Microsoft,azure-commercial,Provision Windows and Linux virtual machines in seconds
+Web App for Containers,Cloud Compute,Cloud Compute,Microsoft,azure-commercial,Easily deploy and run containerized web apps that scale with your business
+Web Apps,Cloud Compute,Cloud Compute,Microsoft,azure-commercial,Quickly create and deploy mission critical web apps at scale
+Cloud Networking,Cloud Networking,Azure,Microsoft,azure-commercial,
+Azure DNS,Cloud Networking,Cloud Networking,Microsoft,azure-commercial,Host your DNS domain in Azure
+Azure Firewall,Cloud Networking,Cloud Networking,Microsoft,azure-commercial,Native firewalling capabilities with built-in high availability, unrestricted cloud scalability, and zero maintenance
+Azure Front Door Service,Cloud Networking,Cloud Networking,Microsoft,azure-commercial,Scalable, security-enhanced delivery point for global, microservice-based web applications
+ExpressRoute,Cloud Networking,Cloud Networking,Microsoft,azure-commercial,Dedicated private network fiber connections to Azure
+Load Balancer,Cloud Networking,Cloud Networking,Microsoft,azure-commercial,Deliver high availability and network performance to your applications
+Traffic Manager,Cloud Networking,Cloud Networking,Microsoft,azure-commercial,Route incoming traffic for high performance and availability
+Virtual Network,Cloud Networking,Cloud Networking,Microsoft,azure-commercial,Provision private networks, optionally connect to on-premises datacenters
+Virtual WAN,Cloud Networking,Cloud Networking,Microsoft,azure-commercial,Optimize and automate branch to branch connectivity through Azure
+VPN Gateway,Cloud Networking,Cloud Networking,Microsoft,azure-commercial,Establish secure, cross-premises connectivity
+Cloud Storage,Cloud Storage,Azure,Microsoft,azure-commercial,
+Archive Storage,Cloud Storage,Cloud Storage,Microsoft,azure-commercial,Industry leading price point for storing rarely accessed data
+Azure Backup,Cloud Storage,Cloud Storage,Microsoft,azure-commercial,Simplify data protection and protect against ransomware
+Azure Data Lake Storage,Cloud Storage,Cloud Storage,Microsoft,azure-commercial,Massively scalable data lake storage
+Azure NetApp Files,Cloud Storage,Cloud Storage,Microsoft,azure-commercial,Powerful, hybrid network file system (NFS) file shares
+Blob Storage,Cloud Storage,Cloud Storage,Microsoft,azure-commercial,REST-based object storage for unstructured data
+Disk Storage,Cloud Storage,Cloud Storage,Microsoft,azure-commercial,Persistent, secured disk options supporting virtual machines
+File Storage,Cloud Storage,Cloud Storage,Microsoft,azure-commercial,File shares that use the standard SMB 3.0 protocol
+Managed Disks,Cloud Storage,Cloud Storage,Microsoft,azure-commercial,Persistent, secured disk storage for Azure virtual machines
+Queue Storage,Cloud Storage,Cloud Storage,Microsoft,azure-commercial,Effectively scale apps according to traffic
+Storage,Cloud Storage,Cloud Storage,Microsoft,azure-commercial,Durable, highly available, and massively scalable cloud storage
+Storage Explorer,Cloud Storage,Cloud Storage,Microsoft,azure-commercial,View and interact with Azure Storage resources
+StorSimple,Cloud Storage,Cloud Storage,Microsoft,azure-commercial,Lower costs with an enterprise hybrid cloud storage solution
+Content Delivery,Content Delivery,Azure,Microsoft,azure-commercial,
+Application Gateway,Content Delivery,Content Delivery,Microsoft,azure-commercial,Build secure, scalable, and highly available web front ends in Azure
+Content Delivery Network,Content Delivery,Content Delivery,Microsoft,azure-commercial,Ensure secure, reliable content delivery with broad global reach
+Databases,Databases,Azure,Microsoft,azure-commercial,
+Azure Cosmos DB,Databases,Databases,Microsoft,azure-commercial,Globally distributed, multi-model database for any scale
+Azure Database for MariaDB,Databases,Databases,Microsoft,azure-commercial,Managed MariaDB database service for app developers
+Azure Database for MySQL,Databases,Databases,Microsoft,azure-commercial,Managed MySQL database service for app developers
+Azure Database for PostgreSQL,Databases,Databases,Microsoft,azure-commercial,Managed PostgreSQL database service for app developers
+Azure SQL Database,Databases,Databases,Microsoft,azure-commercial,Managed relational SQL Database as a service
+Redis Cache,Databases,Databases,Microsoft,azure-commercial,Power applications with high-throughput, low-latency data access
+SQL Data Warehouse,Databases,Databases,Microsoft,azure-commercial,Elastic data warehouse as a service with enterprise-class features
+SQL Server on Virtual Machines,Databases,Databases,Microsoft,azure-commercial,Host enterprise SQL Server apps in the cloud
+SQL Server Stretch Database,Databases,Databases,Microsoft,azure-commercial,Dynamically stretch on-premises SQL Server databases to Azure
+Table Storage,Databases,Databases,Microsoft,azure-commercial,NoSQL key-value store using semi-structured datasets
+Developer Tools,Developer Tools,Azure,Microsoft,azure-commercial,
+Azure Artifacts,Developer Tools,Developer Tools,Microsoft,azure-commercial,Create, host, and share packages with your team
+Azure Boards,Developer Tools,Developer Tools,Microsoft,azure-commercial,Plan, track, and discuss work across your teams
+Azure DevOps,Developer Tools,Developer Tools,Microsoft,azure-commercial,Services for teams to share code, track work, and ship software
+Azure DevTest Labs,Developer Tools,Developer Tools,Microsoft,azure-commercial,Quickly create environments using reusable templates and artifacts
+Azure Lab Services,Developer Tools,Developer Tools,Microsoft,azure-commercial,Set up labs for classrooms, trials, development and testing, and other scenarios
+Azure Pipelines,Developer Tools,Developer Tools,Microsoft,azure-commercial,Continuously build, test, and deploy to any platform and cloud
+Azure Repos,Developer Tools,Developer Tools,Microsoft,azure-commercial,Get unlimited, cloud-hosted private Git repos for your project
+Azure Test Plans,Developer Tools,Developer Tools,Microsoft,azure-commercial,Test and ship with confidence with a manual and exploratory testing toolkit
+CLIs,Developer Tools,Developer Tools,Microsoft,azure-commercial,Build, deploy, diagnose, and manage multi-platform, scalable apps and services
+Developer tool integrations,Developer Tools,Developer Tools,Microsoft,azure-commercial,Use the development tools you know?including Eclipse, IntelliJ, and Maven?with Azure
+DevOps tool integrations,Developer Tools,Developer Tools,Microsoft,azure-commercial,Use your favorite DevOps tools with Azure
+SDKs,Developer Tools,Developer Tools,Microsoft,azure-commercial,Get the SDKs and command-line tools you need
+Visual Studio,Developer Tools,Developer Tools,Microsoft,azure-commercial,The powerful and flexible environment for developing applications in the cloud
+Visual Studio Code,Developer Tools,Developer Tools,Microsoft,azure-commercial,A powerful, lightweight code editor for cloud development
+Azure Digital Twins,Internet of Things,,Microsoft,azure-commercial,Build next-generation IoT spatial intelligence solutions
+Azure Maps,Internet of Things,,Microsoft,azure-commercial,Simple and secure location APIs provide geospatial context to data
+Azure Sphere,Internet of Things,,Microsoft,azure-commercial,Securely connect MCU-powered devices from the silicon to the cloud
+Event Grid,Internet of Things,,Microsoft,azure-commercial,Get reliable event delivery at massive scale
+IoT Central,Internet of Things,,Microsoft,azure-commercial,Experience the simplicity of SaaS for IoT, with no cloud expertise required
+IoT Edge,Internet of Things,,Microsoft,azure-commercial,Extend cloud intelligence and analytics to edge devices
+IoT Hub,Internet of Things,,Microsoft,azure-commercial,Connect, monitor and manage billions of IoT assets
+IoT solution accelerators,Internet of Things,,Microsoft,azure-commercial,Create fully customizable solutions with templates for common IoT scenarios
+Logic Apps,Internet of Things,,Microsoft,azure-commercial,Automate the access and use of data across clouds without writing code
+Time Series Insights,Internet of Things,,Microsoft,azure-commercial,Explore and analyze time-series data from IoT devices
+Windows 10 IoT Core Services,Internet of Things,,Microsoft,azure-commercial,Long-term OS support and services to manage device updates and assess device health
+Media,Media,Azure,Microsoft,azure-commercial,
+Azure Media Player,Media,Media,Microsoft,azure-commercial,A single layer for all your playback needs
+Content Protection,Media,Media,Microsoft,azure-commercial,Securely deliver content using AES, PlayReady, Widevine, and Fairplay
+Encoding,Media,Media,Microsoft,azure-commercial,Studio grade encoding at cloud scale
+Live and On-Demand Streaming,Media,Media,Microsoft,azure-commercial,Deliver content to virtually all devices with scale to meet business needs
+Media Analytics,Media,Media,Microsoft,azure-commercial,Uncover insights from video files with speech and vision services
+Media Services,Media,Media,Microsoft,azure-commercial,Encode, store, and stream video and audio at scale
+Migration,Migration,Azure,Microsoft,azure-commercial,
+Azure Database Migration Service,Migration,Migration,Microsoft,azure-commercial,Simplify on-premises database migration to the cloud
+Azure Migrate,Migration,Migration,Microsoft,azure-commercial,Easily discover, assess, right-size, and migrate your on-premises VMs to Azure
+Data Box,Migration,Migration,Microsoft,azure-commercial,Secure, ruggedized appliance for Azure data transfer
+Mobile Services,Mobile Services,Azure,Microsoft,azure-commercial,
+Azure Maps,Mobile Services,Mobile Services,Microsoft,azure-commercial,Simple and secure location APIs provide geospatial context to data
+Azure Mobile App,Mobile Services,Mobile Services,Microsoft,azure-commercial,Stay connected to your Azure resources?anytime, anywhere
+Mobile Apps,Mobile Services,Mobile Services,Microsoft,azure-commercial,Build and host the backend for any mobile app
+Visual Studio App Center,Mobile Services,Mobile Services,Microsoft,azure-commercial,Ship apps faster by automating application lifecycles
+Xamarin,Mobile Services,Mobile Services,Microsoft,azure-commercial,Create cloud-powered mobile apps faster
+Security Identity and Compliance,Security Identity and Compliance,Azure,Microsoft,azure-commercial,
+Automation,Security Identity and Compliance,Security Identity and Compliance,Microsoft,azure-commercial,Simplify cloud management with process automation
+Azure Active Directory,Security Identity and Compliance,Security Identity and Compliance,Microsoft,azure-commercial,Synchronize on-premises directories and enable single sign-on
+Azure Active Directory B2C,Security Identity and Compliance,Security Identity and Compliance,Microsoft,azure-commercial,Consumer identity and access management in the cloud
+Azure Active Directory Domain Services,Security Identity and Compliance,Security Identity and Compliance,Microsoft,azure-commercial,Join Azure virtual machines to a domain without domain controllers
+Azure Advanced Threat Protection,Security Identity and Compliance,Security Identity and Compliance,Microsoft,azure-commercial,Detect and investigate advanced attacks on-premises and in the cloud
+Azure Advisor,Security Identity and Compliance,Security Identity and Compliance,Microsoft,azure-commercial,Your personalized Azure best practices recommendation engine
+Azure Blueprints,Security Identity and Compliance,Security Identity and Compliance,Microsoft,azure-commercial,Enabling quick, repeatable creation of governed environments
+Azure DDoS Protection,Security Identity and Compliance,Security Identity and Compliance,Microsoft,azure-commercial,Protect your applications from Distributed Denial of Service (DDoS) attacks
+Azure Information Protection,Security Identity and Compliance,Security Identity and Compliance,Microsoft,azure-commercial,Better protect your sensitive information?anytime, anywhere
+Azure Managed Applications,Security Identity and Compliance,Security Identity and Compliance,Microsoft,azure-commercial,Simplify management of cloud offerings
+Azure Migrate,Security Identity and Compliance,Security Identity and Compliance,Microsoft,azure-commercial,Easily discover, assess, right-size, and migrate your on-premises VMs to Azure
+Azure Monitor,Security Identity and Compliance,Security Identity and Compliance,Microsoft,azure-commercial,Highly granular and real-time monitoring data for any Azure resource
+Azure Policy,Security Identity and Compliance,Security Identity and Compliance,Microsoft,azure-commercial,Implement corporate governance and standards at scale for Azure resources
+Azure Resource Manager,Security Identity and Compliance,Security Identity and Compliance,Microsoft,azure-commercial,Simplify how you manage your app resources
+Azure Service Health,Security Identity and Compliance,Security Identity and Compliance,Microsoft,azure-commercial,Personalized guidance and support for when issues in Azure services affect you
+Azure Site Recovery,Security Identity and Compliance,Security Identity and Compliance,Microsoft,azure-commercial,Keep your business running with built-in disaster recovery service
+Cloud Shell,Security Identity and Compliance,Security Identity and Compliance,Microsoft,azure-commercial,Streamline Azure administration with a browser-based shell
+Cost Management,Security Identity and Compliance,Security Identity and Compliance,Microsoft,azure-commercial,Optimize what you spend on the cloud, while maximizing cloud potential
+Key Vault,Security Identity and Compliance,Security Identity and Compliance,Microsoft,azure-commercial,Safeguard and maintain control of keys and other secrets
+Microsoft Azure portal,Security Identity and Compliance,Security Identity and Compliance,Microsoft,azure-commercial,Build, manage, and monitor all Azure products in a single, unified console
+Network Watcher,Security Identity and Compliance,Security Identity and Compliance,Microsoft,azure-commercial,Network performance monitoring and diagnostics solution
+Scheduler,Security Identity and Compliance,Security Identity and Compliance,Microsoft,azure-commercial,Run your jobs on simple or complex recurring schedules
+Security Center,Security Identity and Compliance,Security Identity and Compliance,Microsoft,azure-commercial,Unify security management and enable advanced threat protection across hybrid cloud workloads
+Utility,Utility,Software,Microsoft,,
+Defrag,Utility,Utility,Microsoft,,
+Directx,Utility,Utility,Microsoft,,
+Dr. Watson,Utility,Utility,Microsoft,,
+Microsoft Backup,Utility,Utility,Microsoft,,
+Microsoft Defrag,Utility,Utility,Microsoft,,
+Microsoft Paint,Utility,Utility,Microsoft,,
+Microsoft Plus!,Utility,Utility,Microsoft,,
+Microsoft Scandisk,Utility,Utility,Microsoft,,
+Scandisk,Utility,Utility,Microsoft,,
+Video editing,Video editing,Software,Microsoft,,
+Windows Movie Maker,Video editing,Video editing,Microsoft,,
+Word processor,Word processor,Software,Microsoft,,
+Word,Word processor,Word processor,Microsoft,,
+Software,Software,,Microsoft,,
+Audio,Audio,Software,Microsoft,,
+Microsoft Windows Media Player,Audio,Audio,Microsoft,,
+Sound Recorder,Audio,Audio,Microsoft,,
+Windows Media Player,Audio,Audio,Microsoft,,
+Browser,Browser,Software,Microsoft,,
+Internet Explorer,Browser,Browser,Microsoft,,
+Microsoft Edge,Browser,Browser,Microsoft,,
+Operating system,Operating system,Software,Microsoft,,
+Dos,Operating system,Operating system,Microsoft,,
+MS-DOS,Operating system,Operating system,Microsoft,,
+Windows 10,Operating system,Operating system,Microsoft,,
+Windows 2000,Operating system,Operating system,Microsoft,,
+Windows 3.X,Operating system,Operating system,Microsoft,,
+Windows 7,Operating system,Operating system,Microsoft,,
+Windows 8,Operating system,Operating system,Microsoft,,
+Windows 95,Operating system,Operating system,Microsoft,,
+Windows 98,Operating system,Operating system,Microsoft,,
+Windows ME,Operating system,Operating system,Microsoft,,
+Windows NT,Operating system,Operating system,Microsoft,,
+Windows Vista,Operating system,Operating system,Microsoft,,
+Windows XP,Operating system,Operating system,Microsoft,,
+Windows Program,Windows Program,Software,Microsoft,,
+Excel,Windows Program,Windows Program,Microsoft,,
+Fat32,Windows Program,Windows Program,Microsoft,,
+FrontPage,Windows Program,Windows Program,Microsoft,,
+Hyper Terminal,Windows Program,Windows Program,Microsoft,,
+Office,Office,Software,Microsoft,,
+Microsoft Excel,Office,Office,Microsoft,,
+Microsoft Expression Web,Office,Office,Microsoft,,
+Microsoft Office,Office,Office,Microsoft,,
+Microsoft Outlook,Office,Office,Microsoft,,
+Microsoft PowerPoint,Office,Office,Microsoft,,
+Microsoft Word,Office,Office,Microsoft,,
+Outlook,Office,Office,Microsoft,,
+Plus!,Windows Program,Windows Program,Microsoft,,
+Skype,Windows Program,Windows Program,Microsoft,,
+Terminal,Windows Program,Windows Program,Microsoft,,
+Visual Basic,Windows Program,Windows Program,Microsoft,,
+Game,Game,Software,Microsoft,,
+Age of Empires,Game,Game,Microsoft,,
+Close Combat,Game,Game,Microsoft,,
+Microsoft Combat Flight Simulator,Game,Game,Microsoft,,
+Microsoft Deadly Tides,Game,Game,Microsoft,,
+Microsoft Flight Simulator,Game,Game,Microsoft,,
+Microsoft Fury 3,Game,Game,Microsoft,,
+Mine Sweeper,Game,Game,Microsoft,,
+Solitaire,Game,Game,Microsoft,,
+Windows Minesweeper,Game,Game,Microsoft,,
+Windows Solitaire,Game,Game,Microsoft,,
+Internet of Things,Internet of Things,Azure,Microsoft,,
+Application Integration,Application Integration,Software,Microsoft,,
+Notification Hubs,Application Integration,Application Integration,Microsoft,,Send push notifications to any platform from any back end

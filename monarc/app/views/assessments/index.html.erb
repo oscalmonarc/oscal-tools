@@ -1,0 +1,40 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Assessments</h1>
+<%= will_paginate @assessments %>
+<table id="myDataTable"  class="table table-striped table-bordered"  style="width:100%">
+  <thead>
+    <tr>
+      <th>Method</th>
+      <th>Assesment objects</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @assessments.each do |assessment| %>
+      <tr>
+        <td><%= assessment.method %></td>
+        <td><%= assessment.grab_assessment_objects(assessment.security_control) %></td>
+        <td><%= link_to 'Show', assessment %></td>
+        <td><%= link_to 'Edit', edit_assessment_path(assessment) %></td>
+        <td><%= link_to 'Destroy', assessment, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+<%= will_paginate @assessments %>
+<br>
+
+<%= button_to 'New Assessment', new_assessment_path, method: :get  %>
+<script>
+    $(document).ready(function() {
+    $('#myDataTable').DataTable( {
+    	"order": [[ 2, "asc" ]],
+    	dom: 'Bfrtip',
+        buttons: [
+            'copy', 'csv', 'excel', 'pdf', 'print'
+        ]
+    } );
+} );
+</script>

@@ -1,0 +1,144 @@
+inherit_from: .rubocop_todo.yml
+
+AllCops:
+  DisplayCopNames: true
+  TargetRubyVersion: 2.5.1
+  Exclude:
+    - 'docker/**/*' # local docker storage
+    - 'Documents/*' # install files
+    - 'security_docs/*' # install security docsfiles
+    - 'lib/templates/rails/jbuilder/*'
+    - 'db/schema.rb' # generated file
+    - 'db/migrate/*'
+    - 'bin/*' # rails framework
+
+Metrics/AbcSize:
+  Max: 75
+  Exclude:
+    - 'test/*/*.rb'
+
+Metrics/ClassLength:
+  Max: 500
+  Exclude:
+    - 'test/*/*.rb'
+
+Metrics/ModuleLength:
+  Max: 600
+  Exclude:
+    - 'test/*/*.rb'
+
+Metrics/CyclomaticComplexity:
+  Max: 20
+  Exclude:
+    - 'test/*/*.rb'
+
+Metrics/LineLength:
+  Max: 160
+  Exclude:
+    - 'config/initializers/devise.rb'
+    - 'test/*/*.rb'
+
+Metrics/MethodLength:
+  Max: 75
+  Exclude:
+    - 'test/*/*.rb'
+
+Metrics/PerceivedComplexity:
+  Max: 20
+  Exclude:
+    - 'test/*/*.rb'
+
+Metrics/BlockLength:
+  Exclude:
+    - 'config/environments/*rb'
+
+# Extra blank lines between methods helps readability
+Layout/EmptyLines:
+  Enabled: false
+
+# Turn off Frozen String Literal Comment
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
+Layout/MultilineMethodCallIndentation:
+  EnforcedStyle: indented
+
+Style/EmptyMethod:
+  Enabled: false
+
+# There are legitimate uses for low-precedence and/or/not
+Style/AndOr:
+  Enabled: false
+
+Style/Not:
+  Enabled: false
+
+# You don't usually put a space if you comment out a line of code
+Layout/LeadingCommentSpace:
+  Enabled: false
+
+# Sorry, too awesome to ban
+Style/RescueModifier:
+  Enabled: false
+
+# Every other language goes with no_space
+Layout/SpaceAroundEqualsInParameterDefault:
+  EnforcedStyle: no_space
+
+# We like no_space here
+Layout/SpaceInsideBlockBraces:
+  EnforcedStyle: no_space
+  SpaceBeforeBlockParameters: false
+
+# The Rails guide disagrees
+Rails/HasAndBelongsToMany:
+  Enabled: false
+
+# We're not on Rails 5 yet
+Rails/ApplicationRecord:
+  Enabled: true
+Rails/ApplicationJob:
+  Enabled: true
+
+# This is a new rule and we don't want to update old migrations.
+# On a fresh install they'll be fast enough anyway.
+Rails/BulkChangeTable:
+  Exclude:
+    - 'db/migrate/*'
+
+# We only do this to quiet rubocop
+Style/CommentedKeyword:
+  Enabled: false
+
+# Micromanagement
+Naming/UncommunicativeMethodParamName:
+  Enabled: false
+  
+Naming/MethodName:
+  Description: 'Use the configured style when naming methods.'
+  StyleGuide: '#snake-case-symbols-methods-vars'
+  Enabled: true
+  EnforcedStyle: snake_case
+  SupportedStyles:
+    - snake_case
+    - camelCase
+
+Naming/VariableName:
+  Description: 'Use the configured style when naming variables.'
+  StyleGuide: '#snake-case-symbols-methods-vars'
+  Enabled: true
+  EnforcedStyle: snake_case
+  SupportedStyles:
+    - snake_case
+    - camelCase
+
+Naming/VariableNumber:
+  Description: 'Use the configured style when numbering variables.'
+  Enabled: true
+  EnforcedStyle: normalcase
+  SupportedStyles:
+    - snake_case
+    - normalcase
+    - non_integer
+  
+      

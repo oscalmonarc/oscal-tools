@@ -1,0 +1,74 @@
+<% cache render_async_cache_key(request.path), :skip_digest => true do %>
+	<%= button_to 'All Docs', docs_path, method: :get  %><br>
+	<% require 'open-uri' %>
+	<%
+	@doc.imported = Time.current
+	@doc.save
+	path = @doc.grab_file_path
+	if (@doc.security_policy != nil) 
+		the_policy = @doc.security_policy
+		version = the_policy.version
+		policy_name = the_policy.name
+	else
+		the_policy = nil
+		version = nil
+		policy_name = nil
+	end
+	if (@doc.provider != nil)
+		provider = @doc.provider
+	else
+		provider  = nil 
+	end
+	
+	data = IO.binread(path)
+	data = data.encode(Encoding.find('UTF-8'), {invalid: :replace, undef: :replace, replace: ''})
+	components = data.split "\r\n"
+	
+	%> components <% components.count %> <br<br><% 
+	parent = nil
+	components.each do |component|
+		fields = component.split ","
+		%> component= <%= component.inspect %> <br> <%
+		
+		name = fields[0]
+		label = fields[1]
+		if ((name != "Name") && (label != "Label"))
+		
+			parent = fields[2]
+			provider = fields[3]
+			domains = fields[4].to_s
+			if domains.include? ','
+				domains  = domains.split ","
+			end
+		  	if (fields[5] != nil )
+		  		tmp_split = component.split "#{domains},"
+		  		description = tmp_split[1].to_s
+		  	end
+		  					
+			%> name = <%= name.inspect %> <br> <%
+			%> label = <%= label.inspect %> <br> <%
+			%> parent = <%= parent.inspect %> <br> <%
+			%> provider = <%= provider.inspect %> <br> <%
+			%> domains = <%= domains.inspect %> <br> <%
+			%>  description = <%= description.inspect %> <br> <%
+			label = Label.find_or_create_by(name: label)
+			
+			provider = Provider.where(name: provider).first
+			
+			if (parent != nil) && (parent != "")
+				parent = Component.where(name: parent, provider: provider).first
+				%> parent = <%= parent.inspect %> <br> <%
+			else
+				parent = nil
+			end
+			component = Component.find_or_create_by(name: name, parent: parent, provider: provider, description: description)
+			related_label = RelatedLabel.find_or_create_by(label: label,  object_type: "component", object_id: component.id , provider:  provider)
+			
+			%> component - <%= component.inspect %>  <br> <%
+			%> related_label - <%= related_label.inspect %> <br><%
+			
+		end
+	end
+	
+end
+%>

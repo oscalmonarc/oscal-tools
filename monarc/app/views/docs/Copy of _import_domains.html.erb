@@ -1,0 +1,47 @@
+<% cache render_async_cache_key(request.path), :skip_digest => true do %>
+	<%= button_to 'All Docs', docs_path, method: :get  %><br>
+	<% require 'open-uri' %>
+	<%
+	require ‘csv’
+	@doc.imported = Time.current
+	@doc.save
+	path = @doc.grab_file_path
+	
+	data = IO.binread(path)
+	data = data.encode(Encoding.find('UTF-8'), {invalid: :replace, undef: :replace, replace: ''})
+	domains = data.split "\r\n"
+	counter = 0
+	parent = nil
+	domains.each do |domain|
+		fields = domain.split ","
+		if has_data? (fields)
+			counter = 0
+			region = fields[0]
+			name = fields[1]
+			if (name != "Name")
+				location = fields[2]
+				endpoint = fields[3]
+				provider = fields[4]
+				parent = fields[5]
+				classification = fields[6]
+				label = fields[7]
+				provider = Provider.find_or_create_by(name: provider)
+				classification = DataClassification.find_or_create_by(name: classification)
+				
+				if (parent != nil) || (parent != "")
+					parent = DomainEnvironment.where(name: parent).first 
+				else
+					parent = nil
+				end  
+				
+				tmp_domain = DomainEnvironment.find_or_create_by(name: name, region: region, location: location, end_point: endpoint, provider: provider, data_classification: classification , parent: parent )
+				tmp_label = Label.where(name: label).first
+
+				if has_data?(tmp_label)
+					related_label = RelatedLabel.find_or_create_by(label: tmp_label,  object_type: "domainenvironment", object_id: tmp_domain.id , provider:  provider)
+				end
+			end
+		end
+	end
+end
+	%>

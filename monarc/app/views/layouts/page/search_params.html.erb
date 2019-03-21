@@ -1,0 +1,262 @@
+<h3>Search Matchers</h3>
+<p>List of all possible predicates</p>
+<table>
+<thead>
+<tr>
+<th>Predicate</th>
+<th>Description</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>*_eq</code></td>
+<td>equal</td>
+<td></td>
+</tr>
+<tr>
+<td><code>*_not_eq</code></td>
+<td>not equal</td>
+<td></td>
+</tr>
+<tr>
+<td><code>*_matches</code></td>
+<td>matches with <code>LIKE</code></td>
+<td>e.g. <code>q[email_matches]=%@gmail.com</code></td>
+</tr>
+<tr>
+<td><code>*_does_not_match</code></td>
+<td>does not match with <code>LIKE</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>*_matches_any</code></td>
+<td>Matches any</td>
+<td></td>
+</tr>
+<tr>
+<td><code>*_matches_all</code></td>
+<td>Matches all</td>
+<td></td>
+</tr>
+<tr>
+<td><code>*_does_not_match_any</code></td>
+<td>Does not match any</td>
+<td></td>
+</tr>
+<tr>
+<td><code>*_does_not_match_all</code></td>
+<td>Does not match all</td>
+<td></td>
+</tr>
+<tr>
+<td><code>*_lt</code></td>
+<td>less than</td>
+<td></td>
+</tr>
+<tr>
+<td><code>*_lteq</code></td>
+<td>less than or equal</td>
+<td></td>
+</tr>
+<tr>
+<td><code>*_gt</code></td>
+<td>greater than</td>
+<td></td>
+</tr>
+<tr>
+<td><code>*_gteq</code></td>
+<td>greater than or equal</td>
+<td></td>
+</tr>
+<tr>
+<td><code>*_present</code></td>
+<td>not null and not empty</td>
+<td>Only compatible with string columns. Example: <code>q[name_present]=1</code> (SQL: <code>col is not null AND col != ''</code>)</td>
+</tr>
+<tr>
+<td><code>*_blank</code></td>
+<td>is null or empty.</td>
+<td>(SQL: <code>col is null OR col = ''</code>)</td>
+</tr>
+<tr>
+<td><code>*_null</code></td>
+<td>is null</td>
+<td></td>
+</tr>
+<tr>
+<td><code>*_not_null</code></td>
+<td>is not null</td>
+<td></td>
+</tr>
+<tr>
+<td><code>*_in</code></td>
+<td>match any values in array</td>
+<td>e.g. <code>q[name_in][]=Alice&amp;q[name_in][]=Bob</code></td>
+</tr>
+<tr>
+<td><code>*_not_in</code></td>
+<td>match none of values in array</td>
+<td></td>
+</tr>
+<tr>
+<td><code>*_lt_any</code></td>
+<td>Less than any</td>
+<td>SQL: <code>col &lt; value1 OR col &lt; value2</code></td>
+</tr>
+<tr>
+<td><code>*_lteq_any</code></td>
+<td>Less than or equal to any</td>
+<td></td>
+</tr>
+<tr>
+<td><code>*_gt_any</code></td>
+<td>Greater than any</td>
+<td></td>
+</tr>
+<tr>
+<td><code>*_gteq_any</code></td>
+<td>Greater than or equal to any</td>
+<td></td>
+</tr>
+<tr>
+<td><code>*_matches_any</code></td>
+<td><code>*_does_not_match_any</code></td>
+<td>same as above but with <code>LIKE</code></td>
+</tr>
+<tr>
+<td><code>*_lt_all</code></td>
+<td>Less than all</td>
+<td>SQL: <code>col &lt; value1 AND col &lt; value2</code></td>
+</tr>
+<tr>
+<td><code>*_lteq_all</code></td>
+<td>Less than or equal to all</td>
+<td></td>
+</tr>
+<tr>
+<td><code>*_gt_all</code></td>
+<td>Greater than all</td>
+<td></td>
+</tr>
+<tr>
+<td><code>*_gteq_all</code></td>
+<td>Greater than or equal to all</td>
+<td></td>
+</tr>
+<tr>
+<td><code>*_matches_all</code></td>
+<td>Matches all</td>
+<td>same as above but with <code>LIKE</code></td>
+</tr>
+<tr>
+<td><code>*_does_not_match_all</code></td>
+<td>Does not match all</td>
+<td></td>
+</tr>
+<tr>
+<td><code>*_not_eq_all</code></td>
+<td>none of values in a set</td>
+<td></td>
+</tr>
+<tr>
+<td><code>*_start</code></td>
+<td>Starts with</td>
+<td>SQL: <code>col LIKE 'value%'</code></td>
+</tr>
+<tr>
+<td><code>*_not_start</code></td>
+<td>Does not start with</td>
+<td></td>
+</tr>
+<tr>
+<td><code>*_start_any</code></td>
+<td>Starts with any of</td>
+<td></td>
+</tr>
+<tr>
+<td><code>*_start_all</code></td>
+<td>Starts with all of</td>
+<td></td>
+</tr>
+<tr>
+<td><code>*_not_start_any</code></td>
+<td>Does not start with any of</td>
+<td></td>
+</tr>
+<tr>
+<td><code>*_not_start_all</code></td>
+<td>Does not start with all of</td>
+<td></td>
+</tr>
+<tr>
+<td><code>*_end</code></td>
+<td>Ends with</td>
+<td>SQL: <code>col LIKE '%value'</code></td>
+</tr>
+<tr>
+<td><code>*_not_end</code></td>
+<td>Does not end with</td>
+<td></td>
+</tr>
+<tr>
+<td><code>*_end_any</code></td>
+<td>Ends with any of</td>
+<td></td>
+</tr>
+<tr>
+<td><code>*_end_all</code></td>
+<td>Ends with all of</td>
+<td></td>
+</tr>
+<tr>
+<td><code>*_not_end_any</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>*_not_end_all</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>*_cont</code></td>
+<td>Contains value</td>
+<td>uses <code>LIKE</code></td>
+</tr>
+<tr>
+<td><code>*_cont_any</code></td>
+<td>Contains any of</td>
+<td></td>
+</tr>
+<tr>
+<td><code>*_cont_all</code></td>
+<td>Contains all of</td>
+<td></td>
+</tr>
+<tr>
+<td><code>*_not_cont</code></td>
+<td>Does not contain</td>
+<td></td>
+</tr>
+<tr>
+<td><code>*_not_cont_any</code></td>
+<td>Does not contain any of</td>
+<td></td>
+</tr>
+<tr>
+<td><code>*_not_cont_all</code></td>
+<td>Does not contain all of</td>
+<td></td>
+</tr>
+<tr>
+<td><code>*_true</code></td>
+<td>is true</td>
+<td></td>
+</tr>
+<tr>
+<td><code>*_false</code></td>
+<td>is false</td>
+<td></td>
+</tr></tbody></table>
+<p>(See full list: <a href="https://github.com/activerecord-hackery/ransack/blob/master/lib/ransack/locale/en.yml#L15">https://github.com/activerecord-hackery/ransack/blob/master/lib/ransack/locale/en.yml#L15</a> and <a href="https://github.com/activerecord-hackery/ransack/wiki/Basic-Searching">wiki</a>)</p>

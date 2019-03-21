@@ -1,0 +1,116 @@
+<% 
+component_id = nil
+provider_id = nil
+security_policy_id = nil
+component = get_component(control_implementation)
+puts "get_component- #{component}"
+if (component != nil)
+	component_id = component.id
+	provider = get_provider(component)
+	if (provider != nil)
+		provider_id = provider.id
+	end
+	
+end 
+
+
+if (security_policy_id == nil)
+		security_policy_id = control_implementation.security_policy_id
+end
+
+%>
+
+<%= form_with(model: control_implementation, local: true) do |form| %>
+  <% if control_implementation.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(control_implementation.errors.count, "error") %> prohibited this control_implementation from being saved:</h2>
+      <ul>
+      <% control_implementation.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+	
+  <div class="field">	
+    <%= form.label :component_id %>
+    <%= form.select :component_id, options_for_select(components_for_select, component_id) %>
+  </div>
+
+  <div class="field">
+	<%= form.label :provider_id %>
+    <%= form.select :provider_id, options_for_select(providers_for_select, provider_id ) %>
+  </div>
+  
+  <div class="field">
+    <%= form.label :security_policy_id %>
+    <%= form.select(:security_policy_id , options_for_select(security_policies_for_select, security_policy_id),{ :include_blank => true})%>
+  </div>
+  
+  <div class="field" id="security_controls" style="display: none;">
+  	<%= form.label "Controls" %>
+  	<div class="field" id="security_control_options" style="display: none;">
+  	</div>
+  </div>
+  
+  <div class="field">
+    <%= form.label :inheritance_type  %>
+    <%= form.select :inheritance_type, options_for_select(inheritance_type_options) %>
+  </div>
+
+  <div class="field">
+    <%= form.label :implementation_method %>
+    <%= form.text_area :implementation_method,:cols => 100, :rows => 10 %>
+  </div>
+
+  <div class="field">
+    <%= form.label :required %>
+    <%= form.check_box :required %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+
+<script >
+
+var setControls=function(){
+	var policy = $('#control_implementation_security_policy_id option:selected').val();
+	selected_control_id = null;
+	
+	<% if (control_implementation.security_control_id != nil) %>
+		selected_control_id = <%= control_implementation.security_control_id %>;
+	<% end %>
+
+	var controls  = document.getElementById("security_controls");
+    var control_options  = document.getElementById("security_control_options");
+    
+    var the_url = "/api/v1/security_policy/" + policy + "/security_controls";
+    
+    grabControlsForSelectFromAPI(the_url, selected_control_id).then((ctrl) => {
+    	if(ctrl) {
+ 	    	console.log(ctrl);
+		    if (controls.style.display === "none") {
+		        controls.style.display = "block";
+		    }
+		    var tmp_data = "<select name='control_implementation[security_control_id]' id='control_implementation_security_control_id'>" + ctrl  + "</select>" 
+	        control_options.innerHTML = tmp_data ;
+	        control_options.style.display = "block";
+	    } else {
+	    	
+	    	control_options.innerHTML = "No Controls Found" ;
+	    }
+	    
+    })
+	 
+}
+
+var inputElement = document.getElementById("control_implementation_security_policy_id");
+inputElement.addEventListener("change", setControls, false);
+
+<% if (security_policy_id != nil) %>
+		setControls();
+<% end %>
+
+</script>
+<% end %>

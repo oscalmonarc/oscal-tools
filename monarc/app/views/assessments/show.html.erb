@@ -1,0 +1,29 @@
+<% if (@security_control != nil) %>
+	<p>
+		<strong>Secuirty Control:</strong>
+		<%= link_to @security_control.control_id, @security_control %>
+	</p>
+	
+<% end %>
+
+<% if (@requirement != nil) %>
+	<p>
+		<strong>Requirement:</strong>
+		<%= link_to @requirement.name, @requirement %>
+	</p>
+<% end %>
+<p>
+  <strong>Method:</strong>
+  <%= @assessment.method %>
+</p>
+
+<p>
+  <strong>Assesment Objects:</strong>
+  
+  <%= button_to 'Add Assesment Object ', "/assessment/#{@assessment.id}/add_assessment_object", method: :get  %> <br>
+  <%= grab_assessment_objects(@assessment.security_control) %> 
+</p>
+
+
+<%= link_to 'Edit', edit_assessment_path(@assessment) %> |
+<%= link_to 'Back', assessments_path %>

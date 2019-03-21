@@ -1,0 +1,22 @@
+<p>
+  <strong>Ref_id:</strong>
+  <%= @ref.ref_id %>
+</p>
+
+<p>
+  <strong>Title:</strong>
+  <%= @ref.title %>
+</p>
+
+<p>
+  <strong>Url:</strong>
+  <%= @ref.url %>
+</p>
+
+<p>
+  <strong>Document:</strong>
+  <%= @ref.document %>
+</p>
+
+<%= link_to 'Edit', edit_ref_path(@ref) %> |
+<%= link_to 'Back', refs_path %>

@@ -1,0 +1,65 @@
+<%
+
+sp = SecurityPolicy.all
+scf = SecurityControlFamily.all
+sc = SecurityControl.all
+
+
+sp.each do |destroyme| 
+	destroyme.destroy
+end
+scf.each do |destroyme| 
+	destroyme.destroy
+end
+sc.each do |destroyme| 
+	destroyme.destroy
+end
+
+secRev3 = SecurityPolicy.create(name: 'NIST 800-53', version: 3, provider: 'NIST' )
+secRev3.save
+
+au_object = SecurityControlFamily.create(family: "AUDIT AND ACCOUNTABILITY" ,  abv: "AU" ,  version: 4 ,  provider: "NIST 800-53" , security_policy: secRev3)
+ac_object = SecurityControlFamily.create(family: "ACCESS CONTROL" ,  abv: "AC" ,  version: 4 ,  provider: "NIST 800-53" , security_policy:  secRev3)
+at_object = SecurityControlFamily.create(family: "AWARENESS AND TRAINING" ,  abv: "AT" ,  version: 4 ,  provider: "NIST 800-53" , security_policy:  secRev3)
+cm_object = SecurityControlFamily.create(family: "CONFIGURATION MANAGEMENT" ,  abv: "CM" ,  version: 4 ,  provider: "NIST 800-53" , security_policy:  secRev3)
+cp_object = SecurityControlFamily.create(family: "CONTINGENCY PLANNING" ,  abv: "CP" ,  version: 4 ,  provider: "NIST 800-53" , security_policy:  secRev3)
+ia_object = SecurityControlFamily.create(family: "IDENTIFICATION AND AUTHENTICATION" ,  abv: "IA" ,  version: 4 ,  provider: "NIST 800-53" , security_policy:  secRev3)
+ir_object = SecurityControlFamily.create(family: "INCIDENT RESPONSE" ,  abv: "IR" ,  version: 4 ,  provider: "NIST 800-53" , security_policy:  secRev3)
+ma_object = SecurityControlFamily.create(family: "MAINTENANCE" ,  abv: "MA" ,  version: 4 ,  provider: "NIST 800-53" , security_policy:  secRev3)
+mp_object = SecurityControlFamily.create(family: "MEDIA PROTECTION" ,  abv: "MP" ,  version: 4 ,  provider: "NIST 800-53" , security_policy:  secRev3)
+ps_object = SecurityControlFamily.create(family: "PERSONNEL SECURITY" ,  abv: "PS" ,  version: 4 ,  provider: "NIST 800-53" , security_policy:  secRev3)
+pe_object = SecurityControlFamily.create(family: "PHYSICAL AND ENVIRONMENTAL PROTECTION" ,  abv: "PE" ,  version: 4 ,  provider: "NIST 800-53" , security_policy:  secRev3)
+pl_object = SecurityControlFamily.create(family: "PLANNING" ,  abv: "PL" ,  version: 4 ,  provider: "NIST 800-53" , security_policy:  secRev3)
+pm_object = SecurityControlFamily.create(family: "PROGRAM MANAGEMENT" ,  abv: "PM" ,  version: 4 ,  provider: "NIST 800-53" , security_policy:  secRev3)
+ra_object = SecurityControlFamily.create(family: "RISK ASSESSMENT" ,  abv: "RA" ,  version: 4 ,  provider: "NIST 800-53" , security_policy:  secRev3)
+ca_object = SecurityControlFamily.create(family: "SECURITY ASSESSMENT AND AUTHORIZATION" ,  abv: "CA" ,  version: 4 ,  provider: "NIST 800-53" , security_policy:  secRev3)
+sc_object = SecurityControlFamily.create(family: "SYSTEM AND COMMUNICATIONS PROTECTION" ,  abv: "SC" ,  version: 4 ,  provider: "NIST 800-53" , security_policy:  secRev3)
+si_object = SecurityControlFamily.create(family: "SYSTEM AND INFORMATION INTEGRITY" ,  abv: "SI" ,  version: 4 ,  provider: "NIST 800-53" , security_policy:  secRev3)
+sa_object = SecurityControlFamily.create(family: "SYSTEM AND SERVICES ACQUISITION" ,  abv: "SA" ,  version: 4 ,  provider: "NIST 800-53" , security_policy:  secRev3)
+
+
+ac_object.save
+au_object.save
+at_object.save
+cm_object.save
+cp_object.save
+ia_object.save
+ir_object.save
+ma_object.save
+mp_object.save
+ps_object.save
+pe_object.save
+pl_object.save
+pm_object.save
+ra_object.save
+ca_object.save
+sc_object.save
+si_object.save
+sa_object.save
+
+
+
+
+
+%> 
+Populated!

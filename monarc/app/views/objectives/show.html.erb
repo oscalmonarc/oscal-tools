@@ -1,0 +1,53 @@
+<h1> OBJECTIVE </h1>
+<% if (@objective.security_control_id !=nil) %>
+	<p>
+	  <strong>Security Control</strong>
+	  <%= @objective.security_control.the_url %> 
+	</p>
+<% end %>
+
+<% if (@objective.requirement_id !=nil) %>
+	<p>
+	  <strong>Requirement</strong>
+	  <%= link_to @objective.requirement.name, @objective.requirement%> 
+	</p>
+<% end %>
+
+<% if (@objective.parent_id !=nil) %>
+	<p>
+	  <strong>Parent objective</strong>
+	  <%= link_to "View - #{@objective.parent.name}" , @objective.parent %> <%=@objective.parent.description %>  
+	</p>
+<% end %>
+<p>
+  <strong>Objective ID:</strong>
+  <%= @objective.objective_id %>
+</p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @objective.name %>
+</p>
+
+<p>
+  <strong>Description:</strong>
+  <%= @objective.description %>
+</p>
+<p>
+  <strong>Child Objectives:</strong>
+  <%= button_to 'Add Child Objective', "/objective/#{@objective.id}/add_objective" %> <br>
+  <%= show_child_objectives(@objective) %> 
+</p>
+
+  <% statements = RelatedRef.grab_refs_by_type(@objective, "corresp", "owner") 
+  	
+  	if has_data?(statements) %> 
+  	<strong>Relates to the following statements: <%= statements.inspect %></strong>
+  		<% statements.each do |statement|
+  	 		%> statement - <%= statement.inspect %> <br> <%
+  		end
+  	end 
+  %>
+</p>
+<%= link_to 'Edit', edit_objective_path(@objective) %> |
+<%= link_to 'Back', objectives_path %>

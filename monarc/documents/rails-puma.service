@@ -1,0 +1,34 @@
+# 1. rvm wrapper default systemd rails
+
+# 2. put this file in /etc/systemd/system/rails-puma.service
+
+# 3. systemctl enable rails-puma
+
+# 4. systemctl start rails-puma
+
+[Unit]
+
+Description=Rails-Puma Webserver
+After=network.target
+  
+
+[Service]
+
+Type=simple
+
+User=monarch
+Group=rvm
+
+WorkingDirectory=/home/monarch/monarch
+ExecStart=/usr/bin/bash -lc "rails s"
+
+
+TimeoutSec=30
+RestartSec=15s
+Restart=always
+
+  
+
+[Install]
+
+WantedBy=multi-user.target

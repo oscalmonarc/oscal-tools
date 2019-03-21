@@ -1,0 +1,71 @@
+<% content_for :title, "Providers" %>
+<p id="notice"><%= notice %></p>
+
+<h1>Providers</h1>
+
+<table id="myDataTable"  class="table table-striped table-bordered"  style="width:100%">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Domains</th>
+      <th>Labels</th>
+      <th>Components</th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @providers.each do |provider| %>
+      <tr>
+        <td><%= link_to provider.name, provider %></td>
+
+        <td><%= link_to 'Add', "/providers/#{provider.id}/add_domain" %><br> 
+        	<% if(provider.domain_environments.count > 0) 
+        		domains = provider.domain_environments
+        		domains.each do |domain| %>
+	        		<%= link_to domain.name, domain%> - 
+	    		<% end %>
+	    	<% end %>    			
+	    </td>	
+        <td><%= link_to 'Add', "/providers/#{provider.id}/add_label" %><br>
+        
+	        <% labels = provider.labels 
+			if has_data?(labels)
+				labels.each do |label| %>
+					<%= label.click_link %>: <%= label.provider_components_count(provider) %> | 
+				<% end %>
+			<% end %>
+		</td>
+	    <td><%= link_to 'Add', "/providers/#{provider.id}/add_label" %><br>
+    
+	        <% components = provider.components 
+			if has_data?(components)
+				components.each do |component| %>
+					<%= component.click_link %>	| 
+				<% end %>
+			<% end %>
+			</td>
+        <td><%= link_to 'Edit', edit_provider_path(provider) %></td>
+        <td><%= link_to 'Destroy', provider, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= button_to 'New Provider', new_provider_path, method: :get  %>
+
+<script>
+    $(document).ready(function() {
+    	$('#myDataTable').DataTable( {
+	    	"aaSorting": [],
+    		dom: 'Bfrtip',
+        	buttons: [
+            	'copy', 'csv', 'excel', 'pdf', 'print'
+        	]
+    	} );
+	} );
+</script>
+

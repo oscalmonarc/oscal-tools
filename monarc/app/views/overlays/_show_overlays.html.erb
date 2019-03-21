@@ -1,0 +1,105 @@
+<%
+randomizer = DateTime.now.strftime('%Q')
+overlays = []
+if (@overlay != nil)
+	overlays << @overlay
+	control_overlays = @overlay.control_overlays 
+ 	security_controls = @overlay.security_controls
+
+end
+
+	overlay_fields = []
+	control_overlays.uniq { |control_overlay| overlay_fields << control_overlay.overlay_field }
+	overlay_fields = overlay_fields.uniq
+	overlay_fields.each do |overlay_field|
+		if !(overlays.include? (overlay_field.overlay))
+			overlays << overlay_field.overlay
+		end
+	end	
+	overlays = overlays.uniq
+	
+	if has_data?(overlays) 
+	
+	%>
+	
+		<table id="OverlayDataTable<%= randomizer %>" class="table table-striped table-bordered"  style="width:100%">
+			<thead>
+		    <tr>
+		      <th>Overlay Name</th>
+		      <th>Provider</th>
+		      <th>Overlays</th>
+		    </tr>
+		  </thead>
+		 <tbody>
+			<% overlays.each do |overlay| 
+			  		control_overlays_tmp = []
+			  		overlay_fields = overlay.overlay_fields
+			  		options = [] 
+						control_overlays.each do |control_overlay|
+							if (control_overlay.overlay_field.overlay.id == overlay.id)
+								control_overlays_tmp << control_overlay
+				  			end
+			  			end %>
+			  		 
+			  			<tr>
+		      				<td> <%= overlay.click_link %> </td>
+		      				<td> <%= overlay.provider.click_link %> </td>
+		      				<td>
+			      				<table class="table table-striped table-bordered"  style="margin: 0 0px 0px 0px; padding: 0; border-collapse: collapse" width = "100%">
+									 <tr>
+										<% overlay_fields.each do |the_field| 
+											options = the_field.overlay_field_options
+											options_count = options.count
+											if (options_count < 1 )
+												options_count = 1
+											end 
+											widthpercent = (100.to_f  / options_count.to_f )
+											%>
+											<td colspan="<%= options_count %>" align="center"> <%= the_field.name %> </td>
+										<% end %>
+									 </tr>
+									 <tr>
+										<% overlay_fields.each do |the_field| 
+											tmp_options = the_field.overlay_field_options
+											tmp_options.each do |option| %>
+												<td height = "100%" width ="33%" align = "center"><%= option.name %></td>
+											<% end %>	
+										<% end %>
+									</tr>
+									
+									<tr>
+										<% 
+											overlay_fields.each do |the_field| 
+												tmp_options = the_field.overlay_field_options
+												tmp_options.each do |the_option| %>
+													<td height = "100%" width ="33%" align = "center"> <%	
+													control_overlays_tmp.each do |control_overlay|
+														if (the_option == control_overlay.overlay_field_option)  %> 
+															<%= control_overlay.overlay_value %>
+														 <% else %>
+															&nbsp;
+														<%  end
+													end
+											end
+												%> </td> <%
+										end %>
+									</tr>
+								</table>
+							</td>
+					   </tr>
+		      		</tbody>
+			<% end %>
+		</table>		
+	<% end %>
+	<script>
+$(document).ready(function() {
+    $('#OverlayDataTable<%= randomizer = DateTime.now.strftime('%Q')%>').DataTable( {
+    	"aaSorting": [],
+    	dom: 'Bfrtip',
+        buttons: [
+            'copy', 'csv', 'excel', 'pdf', 'print'
+        ]
+    } );
+} );
+	
+</script>

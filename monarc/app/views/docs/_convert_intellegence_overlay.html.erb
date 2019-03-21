@@ -1,0 +1,58 @@
+
+<% cache render_async_cache_key(request.path), :skip_digest => true do
+	def checkEmpty(theString)
+		# -'s mean it was withdrawn in 1253 Rev 3.
+		if (theString == nil) || (theString == "") || (theString == "-") || (theString == " ")
+			theString = nil
+		end
+		return theString	
+		  
+	end
+ 
+ %>
+	<%= button_to 'All Docs', docs_path, method: :get  %><br>
+	<% require 'open-uri' %>
+	<%
+	@doc.imported = Time.current
+	@doc.save
+	path = @doc.grab_file_path
+	
+	the_policy = @doc.security_policy
+	version = the_policy.version
+	policy_name = the_policy.name
+	
+	provider = Provider.find_or_create_by(name: "ODNI")
+	overlay = Overlay.find_or_create_by(name: "ODNI Intellegence Overlay", provider: provider)
+	overlay_level = OverlayField.find_or_create_by(overlay: overlay, name: "Level" )
+	
+	int_a_field = OverlayFieldOption.set_overlay_option(overlay_level, "Int-A")
+	int_b_field = OverlayFieldOption.set_overlay_option(overlay_level, "Int-B")
+	int_c_field = OverlayFieldOption.set_overlay_option(overlay_level, "Int-C")
+
+	data = IO.binread(path)
+	data = data.encode(Encoding.find('UTF-8'), {invalid: :replace, undef: :replace, replace: ''})
+	controls = data.split "\r\n"
+	controls.each do |control|
+		parts = control.split ","
+		%> control - <%= control %> <br> <%
+	 	control_ID = parts[0]
+	 	control_ID = control_ID.gsub ",", ""
+	 	control_ID = control_ID.gsub "(", " ("
+	 	the_control = SecurityControl.where(name: control_ID, security_policy:  the_policy).first
+
+	 	if (the_control != nil)
+	 		%> Found the_control : <%= the_control.control_id %> <br><%  
+		 	int_a_value = checkEmpty(parts[1])
+		 	int_b_value = checkEmpty(parts[2])
+		 	int_c_value = checkEmpty(parts[3])
+		 			 	
+		 	int_a_control = ControlOverlay.set_control_overlay(the_control, the_policy, overlay_level, int_a_value, int_a_field)
+		 	%> int_a_control - <%= int_a_control.inspect %><br><%
+		 	int_b_control = ControlOverlay.set_control_overlay(the_control, the_policy, overlay_level, int_b_value, int_b_field)
+		 	%> int_b_control - <%= int_b_control.inspect %><br><%
+		 	int_c_control = ControlOverlay.set_control_overlay(the_control, the_policy, overlay_level, int_c_value, int_c_field)
+		 	%> int_c_control - <%= int_c_control.inspect %> <br><br><%
+		end
+	 end
+	
+end %>

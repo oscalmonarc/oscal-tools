@@ -1,0 +1,27 @@
+<h1>Guidance</h1>
+<% if (@security_control != nil) %>
+	<p>
+		<strong>Secuirty Control:</strong>
+		<%= @security_control.the_url %>
+	</p>
+	
+<% end %>
+
+<% if (@requirement != nil) %>
+	<p>
+		<strong>Requirement:</strong>
+		<%= link_to @requirement.name, @requirement %>
+	</p>
+<% end %>
+
+<p>
+  <strong>Description:</strong>
+  <%= @guidance.description %>
+</p>
+<p>
+  <strong>Related Controls:</strong> <%= link_to 'Add', "/guidance/#{@guidance.id}/add_related_control" %>
+  <%= grab_related_controls(@guidance) %>
+</p>
+
+<%= link_to 'Edit', edit_guidance_path(@guidance) %> |
+<%= link_to 'Back', guidances_path %>

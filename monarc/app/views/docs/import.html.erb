@@ -1,0 +1,102 @@
+@doc - <%= @doc.the_doc.filename %> <br>
+@doc.security_policy.version - <%= @doc.security_policy.version %>
+@action_type - <%= @action_type %> <br>
+ <%
+	if (@action_type  == "convert_from_oscal") %>
+		<%= render_async_cache "/docs/#{@doc.id}/convert_oscal_xml" do %>
+  			<h1>Importing from Oscal XML...</h1>
+  			<div class="loader"></div>
+		<% end 
+	elsif (@action_type  == "convert_800_53_txt") %>
+		<% if (@doc.security_policy.version == "3") %>
+		 	<%= render_async_cache "/docs/#{@doc.id}/convert_800_53_txt" do %>
+	  			<h1>Importing from 800-53 from text file...</h1>
+	  			<div class="loader"></div>
+			<% end 
+	 	elsif (@doc.security_policy.version == "5") %>
+			<%= render_async_cache "/docs/#{@doc.id}/convert_800_53_txt_rev5" do %>
+	  			<h1>Importing from rev5 from text file...</h1>
+	  			<div class="loader"></div>
+			<% end 
+		end 
+	elsif (@action_type  == "convert_800_53a") %>
+		<%= render_async_cache "/docs/#{@doc.id}/convert_800_53a" do %>
+  			<h1>Importing from 800_53a from text file...</h1>
+  			<div class="loader"></div>
+		<% end 
+	elsif (@action_type  == "impact_levels_nist") %>
+		<%= render_async_cache "/docs/#{@doc.id}/impact_levels_nist" do %>
+  			<h1>Importing from impact_levels_nist from json file...</h1>
+  			<div class="loader"></div>
+		<% end 
+	elsif (@action_type  == "convert_from_oscal_json") %>
+		<%= render_async_cache "/docs/#{@doc.id}/convert_oscal_json" do %>
+  			<h1>Importing from convert_oscal_json from json file...</h1>
+  			<div class="loader"></div>
+		<% end    			
+    elsif (@action_type  == "convert_csv_1253") %>
+		<%= render_async_cache "/docs/#{@doc.id}/convert_csv_1253" do %>
+  			<h1>Importing from convert_csv_1253 from csv file...</h1>
+  			<div class="loader"></div>
+		<% end 
+	elsif (@action_type  == "convert_intellegence_overlay") %>
+		<%= render_async_cache "/docs/#{@doc.id}/convert_intellegence_overlay" do %>
+  			<h1>Importing from convert_intellegence_overlay from csv file...</h1>
+  			<div class="loader"></div>
+		<% end 
+	elsif (@action_type  == "convert_pii_overlay") %>
+		<%= render_async_cache "/docs/#{@doc.id}/convert_pii_overlay" do %>
+				<h1>Importing from convert_pii_overlay from csv file...</h1>
+				<div class="loader"></div>
+		<% end 
+	elsif (@action_type  == "convert_accessibility_overlay") %>
+		<%= render_async_cache "/docs/#{@doc.id}/convert_accessibility_overlay" do %>
+				<h1>Importing from convert_accessibility_overlay from csv file...</h1>
+				<div class="loader"></div>
+		<% end 	
+	
+		
+	elsif (@action_type  == "import_provider_controls") %>
+		<%= render_async_cache "/docs/#{@doc.id}/import_provider_controls" do %>
+  			<h1>Importing from convert_provider_controls from csv file...</h1>
+  			<div class="loader"></div>
+		<% end 	
+	elsif (@action_type  == "import_domains") %>
+		hi
+		<%= render_async_cache "/docs/#{@doc.id}/import_domains" do %>
+  			<h1>Importing domains from from csv file...</h1>
+  			<div class="loader"></div>
+		<% end 
+	elsif (@action_type  == "import_labels") %>
+		<%= render_async_cache "/docs/#{@doc.id}/import_labels" do %>
+  			<h1>Importing from import_labels from csv file...</h1>
+  			<div class="loader"></div>
+		<% end 
+	elsif (@action_type  == "import_components") %>
+		<%= render_async_cache "/docs/#{@doc.id}/import_components" do %>
+  			<h1>Importing from import_components from csv file...</h1>
+  			<div class="loader"></div>
+		<% end 
+	else %>	
+    	Not found
+    <% end %>
+    
+    <%= content_for :render_async %>
+    
+
+
+<script>
+    function move() {
+    var elem = document.getElementById("myBar"); 
+    var width = 1;
+    var id = setInterval(frame, 10);
+    function frame() {
+        if (width >= 100) {
+            clearInterval(id);
+        } else {
+            width++; 
+            elem.style.width = width + '%'; 
+        }
+    }
+}
+</script>

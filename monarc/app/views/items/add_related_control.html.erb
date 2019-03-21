@@ -1,0 +1,7 @@
+<h1>New Related Control</h1>
+<% @object_type = "item"
+   @object_id = @item.id 
+%>  
+<%= render '/related_controls/form', related_control: @related_control %>
+
+<%= link_to 'Back', related_controls_path %>

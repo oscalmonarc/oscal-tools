@@ -1,0 +1,185 @@
+<%
+def getstatus (list, control_id)
+	status = nil
+	control_found = false
+	list.each do |tmpControl|
+	
+		if (control_id == tmpControl.control_id)
+			status = tmpControl.check_active
+			control_found = true
+		end
+		break if (control_found)
+	end
+	return status 
+end
+%>
+
+<table>
+	<tr>
+		<td>Control Family</td>
+		<td> New controls added since rev <%= @policy2.version %></td>
+		<td> Controls remaining active from rev <%= @policy2.version %></td>
+		<td> Back from the Dead <br>( no longer withdrawn) </td>
+		<td> Withdrawn controls after rev <%= @policy2.version %> </td>
+		<td> Withdrawn during rev <%= @policy2.version %></td>
+		<td> Missing in rev <%= @policy1.version %> <br>(Probably error importing)</td>
+	</tr>  
+<%
+
+aCountTotal = 0
+nCountTotal = 0
+wCountTotal = 0
+swCountTotal = 0
+nlwCountTotal = 0
+mCountTotal = 0	
+	
+@policy1.security_control_families.each do |security_control_family|
+puts "@policy2.id - #{@policy2.id}"
+
+security_control_family2 = SecurityControlFamily.where(abv: security_control_family.abv, security_policy_id: @policy2.id).first
+puts "security_control_family2 -#{security_control_family2.inspect}"	
+controls1 = nil
+controls2 = nil	
+	controls1 = security_control_family.security_controls
+	
+	if (security_control_family2 != nil)
+		controls2 = security_control_family2.security_controls
+		controls = controls1 + controls2
+	else
+		controls = controls1
+	end
+	
+
+	controls = controls.sort_by{|e| e.control_id}
+	control_list = []
+	activeControls = ""
+	newControls = ""
+	withdrawnControls = ""
+	stillWithdrawn = ""
+	noLongerWithdrawn = ""
+	missing = ""
+	aCount = 0
+	nCount = 0
+	wCount = 0
+	swCount = 0
+	nlwCount = 0
+	missingCount = 0
+	controls.each do |this_control|
+		if !(control_list.any? {|h| h[:control_id] == this_control.control_id })
+			control1 = getstatus(controls1, this_control.control_id)
+			if (controls2 != nil)
+				control2 = getstatus(controls2, this_control.control_id)
+			end
+			
+			if (control1 == nil ) && (this_control.control_id != "PL-2.4" )  &&  (this_control.control_id != "PE-19.2")   
+			#IGNORE - PE-19.2 , my ingest is outdated.  
+			# status is not withdrawn but oscal is it wrong. PL-2.4
+			#SA-6.1 < Parent withdrawn
+			#PE 7 Parent withdrawn   
+			#SC-9.1 parent withdawn
+			parent2 = nil
+				if (this_control.parent != nil)
+					parent1 = getstatus(controls1, this_control.parent.control_id)
+					if controls2 != nil
+						parent2 = getstatus(controls2, this_control.parent.control_id)
+	 				end
+	 				
+	 				if (parent1 == nil )
+	 					%> Missing control - <%= this_control.control_id %> 	<br> <%
+	 					missing = missing + this_control[:control_id] + " "
+						missingCount = missingCount + 1
+						if (missingCount % 6 == 0)
+							missing = missing + "<br>"
+						end
+	 				end
+				end
+				
+			end
+			tmpControl = {control_id: this_control.control_id, control1: control1, control2: control2}
+			control_list << tmpControl
+			
+		end
+	
+
+	end
+	
+	control_list.each do |the_Control|
+		
+		if (the_Control[:control1] == true) && (the_Control[:control2] == true)
+			activeControls = activeControls + the_Control[:control_id] + " " 
+			aCount = aCount + 1
+			if (aCount % 6 == 0)
+				activeControls = activeControls + "<br>"
+			end
+			
+		elsif (the_Control[:control1] == false) && (the_Control[:control2] == true)
+		    withdrawnControls = withdrawnControls +  the_Control[:control_id] + " "
+		    wCount = wCount + 1
+		    if (wCount % 6 == 0)
+				withdrawnControls = withdrawnControls + "<br>"
+			end 
+		elsif (the_Control[:control1] == false) && (the_Control[:control2] == false)
+			stillWithdrawn = stillWithdrawn + the_Control[:control_id] + " "
+			swCount = swCount +1
+			if (swCount % 6 == 0)
+				stillWithdrawn = stillWithdrawn + "<br>"
+			end
+		elsif (the_Control[:control1] == true) && (the_Control[:control2] == nil)
+			newControls = newControls + the_Control[:control_id] + " "
+			nCount = nCount + 1
+			if (nCount % 6 == 0)
+				newControls = newControls + "<br>"
+			end
+		elsif (the_Control[:control1] == true) && (the_Control[:control2] == false)
+			noLongerWithdrawn = noLongerWithdrawn + the_Control[:control_id] + " "
+			nlwCount = nlwCount + 1
+			if (nlwCount % 6 == 0)
+				noLongerWithdrawn = noLongerWithdrawn + "<br>"
+			end
+		end
+	end
+	aCountTotal = aCountTotal + aCount
+	wCountTotal = wCountTotal + wCount
+	swCountTotal = swCountTotal + swCount
+	nCountTotal = nCountTotal + nCount
+	nlwCountTotal = nlwCountTotal + nlwCount
+	mCountTotal = mCountTotal+ missingCount
+	
+	%>
+	<tr>
+		<td> <%= security_control_family.abv %> </td>
+		<td valign="top">
+			<strong style='color: darkblue;'><%= newControls.html_safe %>Count -<%= nCount %> </strong>
+		</td>
+		
+		<td valign="top">
+			<strong style='color: green;'><%= activeControls.html_safe %>Count -<%= aCount %></strong>
+		</td>
+		<td valign="top">
+			<strong style='color: black;'><%= noLongerWithdrawn.html_safe %>Count -<%= nlwCount %></strong></td>
+		</td>
+		<td valign="top">
+			<strong style='color: darkred;'><%= withdrawnControls.html_safe %>Count -<%= wCount %></strong></td>
+		</td>
+		<td valign="top">
+			<strong style='color: black;'><%= stillWithdrawn.html_safe %>Count -<%= swCount %></strong></td>
+		</td>
+  		<td valign="top">
+			<strong style='color: darkRed;'><%= missing.html_safe %>Count -<%= missingCount %></strong></td>
+		</td>
+	</tr>
+
+	<%
+	
+end	%>
+	<tr>
+		<td> Totals </td>
+		<td> <%= aCountTotal %> </td>
+		<td> <%= nCountTotal %> </td>
+		<td> <%= nlwCountTotal %> </td>
+		<td> <%= wCountTotal %> </td>
+		<td> <%= swCountTotal %> </td>
+		<td> <%= mCountTotal %> </td>
+	</tr> 
+
+</table>

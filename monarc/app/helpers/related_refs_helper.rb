@@ -1,0 +1,2 @@
+module RelatedRefsHelper
+end

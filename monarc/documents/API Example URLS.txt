@@ -1,0 +1,16 @@
+
+http://localhost:3000/api/v1/policy/SP800-53/version/3/
+http://localhost:3000/api/v1/policy/SP800-53/version/3/security_controls
+http://localhost:3000/api/v1/policy/SP800-53/version/3/security_control_families
+http://localhost:3000/api/v1/policy/SP800-53/version/3/export/json
+http://localhost:3000/api/v1/policy/SP800-53/version/3/all/oscal
+
+
+http://localhost:3000/api/v1/security_controls/
+http://localhost:3000/api/v1/security_controls/11651
+http://localhost:3000/api/v1/security_controls/11651/oscal
+
+http://localhost:3000/api/v1/security_control_families/
+http://localhost:3000/api/v1/security_control_families/344
+http://localhost:3000/api/v1/security_control_families/344/security_controls
+http://localhost:3000/api/v1/security_control_families/344/oscal

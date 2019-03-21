@@ -1,0 +1,118 @@
+<% cache render_async_cache_key(request.path), :skip_digest => true do %>
+	<%= button_to 'All Docs', docs_path, method: :get  %><br>
+	<% require 'open-uri' %>
+	
+ 
+	
+	<%
+	@doc.imported = Time.current
+	@doc.save
+	path = @doc.grab_file_path
+	the_file = File.read(path) 
+	
+	the_policy = @doc.security_policy
+	version = the_policy.version
+	policy_name = the_policy.name
+
+	data = IO.binread(path)
+	data = data.encode(Encoding.find('UTF-8'), {invalid: :replace, undef: :replace, replace: ''})
+	controls = data.split "\r\n"
+	
+	%> controls <% controls.count %> <br<br><% 
+	counter = 0
+	%> counter <%= counter %> <br<br><% 
+	parent_control_implementation = nil
+	control_implementation = nil
+	prev_control_id = nil
+	control_id = nil
+	controls.each do |control|
+	items = control.split ","
+	control = control.gsub ",'{",",\"{"
+	control = control.gsub "}'","}\""
+	control = control.gsub ",\"'{",",\"{"
+
+	 
+		
+		provider = items[0]
+		if (provider != "Provider")
+		provider = Provider.find_or_create_by(name: provider)
+		%> Provider :<%= provider.inspect %> <br> <%
+			label = Label.find_or_create_by(name: items[2])
+			component = Component.find_or_create_by(name: items[1], provider: provider)
+			related_label = RelatedLabel.set_related_label(label.name, nil, component)
+			prev_control_id = control_id 
+			control_id = items[3]
+			control_id = control_id.gsub " ", ""
+			control_id = control_id.gsub "(", "."
+			control_id = control_id.gsub ")", ""
+			
+			if (control_id != prev_control_id)
+				parent_control_implementation = nil
+			end 
+			security_control = SecurityControl.find_or_create_by(control_id: control_id, security_policy: the_policy)
+			item_id = items[4]
+			item_id = item_id.gsub " ",""
+			
+			item = nil
+			statement = nil
+			objective = nil
+			
+			if (security_control != item_id)
+				statement = security_control.statements.first  
+				item = Item.where(name: "#{item_id}.", statement: statement).first
+			end 
+			inheratence = items[5]  
+	
+			str1_markerstring = ",\""
+			str2_markerstring = "\",\"{"
+			str3_markerstring = ",\\\"{"
+			str4_markerstring = "}"
+	
+			description = control[/#{str1_markerstring}(.*?)#{str2_markerstring}/m, 1]
+			
+			domains = control[/#{str3_markerstring}(.*?)#{str4_markerstring}/m, 1]
+			if(domains  != nil)
+				domains = domains.split ","
+			end
+			%> Domains = <%= domains.inspect %> <br> <% 
+			domains.each do |domain|
+			%> checking domain: <%= domain.inspect %> <br> <%
+				control_implementation = nil
+				the_domain = DomainEnvironment.find_or_create_by(provider: provider, name: domain)
+			 	
+			 	control_implementation = ControlImplementation.find_or_create_by(provider: provider,
+			 	security_policy: the_policy, security_control: security_control, statement: statement, item: item, parent: parent_control_implementation, 
+			 	objective: objective, implementation_method: description, inheritance_type: inheratence, component: component, domain_environment: the_domain)
+				
+				if (control_implementation.persisted?) 
+					%> Created - <%= control_implementation.inspect %> <Br> <%
+				else
+					%> ERROR ErrOR  -<Br><Br><%
+					%> <%= control_implementation.errors.full_messages %> <br> <%
+			    end
+			 %> control - <%= control %> <Br><%
+					%>  provider - <%= provider.name  %> <br> <%
+					%>  component - <%= component.name  %> <br> <%
+					%>  security_control - <%= security_control.control_id  %> <br> <%
+					%>  statement - <%= statement  %> <br> <%
+					%>  item - <%= item  %> <br> <%
+					%>  objective - <%= objective  %> <br> <%
+					%>  inheratence - <%= inheratence   %> <br> <%
+					%>  description - <%= description   %> <br> <%
+					%>  domain - <%= the_domain.name   %> <br>  <br><%
+				 
+			end
+			
+			if (parent_control_implementation == nil)
+					parent_control_implementation = control_implementation
+			end
+			
+				
+			%> <br><br> <%
+		end
+	 end 
+	%> counter <%= counter %> <br<br><%
+	
+
+ end %>
+ 

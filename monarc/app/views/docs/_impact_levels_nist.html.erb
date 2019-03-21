@@ -1,0 +1,53 @@
+  <% cache render_async_cache_key(request.path), :skip_digest => true do %>
+	<%= button_to 'All Docs', docs_path, method: :get  %><br>
+	<% require 'open-uri'
+       path = @doc.grab_file_path
+	  @doc.imported = Time.current
+	  @doc.save
+	  
+	  
+	  policy = @doc.security_policy
+	  
+	  require 'json'
+	  the_file =JSON.parse(File.read(path)) 
+	  controls = the_file["profile"]["imports"][0]["include"]["calls"]
+	  provider = Provider.find_or_create_by(name: "NIST")
+	  overlay = Overlay.find_or_create_by(name: "FISMA", provider: provider)
+	  nist_impact_level = OverlayField.find_or_create_by(overlay: overlay, name: "Baseline" )
+	  
+	  title=  the_file["profile"]["title"]
+	   if (title.include? "MODERATE")
+	   		level = "M"
+	   		option_level  = OverlayFieldOption.set_overlay_option(nist_impact_level, "Low")
+	   elsif (title.include? "LOW")
+	   		level ="L"
+	   		option_level = OverlayFieldOption.set_overlay_option(nist_impact_level, "Moderate")
+	   else
+	   		level = "H"
+	   		option_level = OverlayFieldOption.set_overlay_option(nist_impact_level, "High")
+	   end
+	
+	 controls.each do |control|
+	 		
+	 	if (control["subcontrolId"] != nil)
+	 		control = control["subcontrolId"]
+	 	else
+	 		control = control["controlId"]
+	 	end
+	 	letters = control[0,2]
+	 	control = control.gsub letters, letters.upcase
+	 	
+	 	if control.include? "."
+	 		control = control.gsub ".", " ("
+	 		control  = "#{control})"
+	 	end
+	 	control = control.gsub " ",""
+		the_control = SecurityControl.where(name: control, security_policy: policy).first
+		
+		ControlOverlay.set_control_overlay(the_control, policy, nist_impact_level, "X", option_level )
+		 
+	 	%> Control:<%= control %><Br> <%
+	 	
+	  end
+end 
+ %>

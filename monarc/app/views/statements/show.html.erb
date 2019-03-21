@@ -1,0 +1,35 @@
+<% if (@security_control != nil) %>
+	<strong>Security Control:</strong>
+	<%= @statement.security_control.the_url %>
+	
+<% end %>
+
+<% if (@requirement != nil) %>
+	<strong>Requirement:</strong>
+    <%= @statement.requirement.name %>
+<% end %>
+
+<p>
+  <strong>Statement_id:</strong>
+  <%= @statement.statement_id%>
+</p>
+
+<p>
+  <strong>Description:</strong>
+  <%= @statement.description %>
+</p>
+
+<p>
+  <strong>Items:</strong><br>
+  <%= grab_the_items(@statement) %>
+  <%= button_to 'Add Item', "/statements/#{@statement.id}/add_item" %><br>
+</p>
+
+<p>
+  <strong>Params:</strong><br>
+  <%= grab_params(@statement.security_control) %>
+  <%= button_to 'Add Param', "/statements/#{@statement.id}/add_param" %><br>
+</p>
+
+<%= link_to 'Edit', edit_statement_path(@statement) %> |
+<%= link_to 'Back', statements_path %>

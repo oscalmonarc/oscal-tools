@@ -1,0 +1,22 @@
+<p>
+  <strong>Requirement:</strong>
+  <%= @related_ref.requirement %>
+</p>
+
+<p>
+  <strong>Security control:</strong>
+  <%= @related_ref.security_control %>
+</p>
+
+<p>
+  <strong>Ref:</strong>
+  <%= @related_ref.ref %>
+</p>
+
+<p>
+  <strong>Title:</strong>
+  <%= @related_ref.title %>
+</p>
+
+<%= link_to 'Edit', edit_related_ref_path(@related_ref) %> |
+<%= link_to 'Back', related_refs_path %>

@@ -1,0 +1,47 @@
+<h1> ITEM </h1>
+<p>
+  <strong>Security Control</strong>
+  <%= @item.statement.security_control.the_url %> 
+</p>
+<p>
+  <strong>Statement</strong>
+  <%= link_to @item.statement.description, @item.statement %> 
+</p>
+<% if (@item.parent_id !=nil) %>
+	<p>
+	  <strong>Parent Item</strong>
+	  <%= link_to @item.parent.name, @item.parent %> 
+	</p>
+<% end %>
+
+
+<p>
+  <strong>Item ID:</strong>
+  <%= @item.item_id %>
+</p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @item.name %>
+</p>
+
+<p>
+  <strong>Description:</strong>
+  <%= @item.description %>
+</p>
+<p>
+  <strong>Related Items:</strong><%= link_to 'Add Child Item ', "/item/#{@item.id}/add_item" %> <br>
+  
+  <%= grab_the_items(@item.statement) %>
+   
+</p>
+<p>
+  <strong>Related Objectives:</strong><br>
+  
+  <%= RelatedRef.grab_refs_by_type(@item, "corresp", "referenced") %>
+   
+</p>
+
+
+<%= link_to 'Edit', edit_item_path(@item) %> |
+<%= link_to 'Back', items_path %>

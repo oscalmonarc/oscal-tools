@@ -1,0 +1,46 @@
+Debug purposes only<br>  
+
+ 	   AssessmentObject Count:<%= AssessmentObject.all.count %><br> <%
+    %> Assessment Count:<%= Assessment.all.count %><br> <%
+    %> Component Count:<%= Component.all.count %><br> <%
+    %> Control Overlay Count:<%= ControlOverlay.all.count %><br> <%
+	%> Control Implementation Count<%= ControlImplementation.all.count %>  <br> <%
+	%> Component Domain Count<%= ComponentDomain.all.count %>  <br> <%
+	%> Data Classifications Count<%= DataClassification.all.count %>  <br> <%
+	%> Domain Environments Count<%= DomainEnvironment.all.count %>  <br> <%
+	%> Doc Count:<%= Doc.all.count %><br> <%
+    %> Item Count:<%= Item.all.count %><br> <%
+    %> Guidance Count:<%= Guidance.all.count %><br> <%
+    %> Label Count:<%= Label.all.count %><br> <%
+	%> Overlay Count:<%= Overlay.all.count %><br> <%
+    %> Objective Count:<%= Objective.all.count %><br> <%
+    %> ParamValue Count:<%= ParamValue.all.count %><br> <%
+    %> Param Count:<%= Param.all.count %><br> <%
+    %> Provider Count:<%= Provider.all.count %><br> <%
+    %> Statement Count:<%= Statement.all.count %><br> <%
+    %> Ref Count:<%= Ref.all.count %><br> <%
+    %> RelatedRef Count:<%= RelatedRef.all.count %><br> <%
+    %> RelatedLabel Count:<%= RelatedLabel.all.count %><br> <%
+    %> Requirement Count:<%= Requirement.all.count %><br> <%
+    %> SecurityControl Count:<%= SecurityControl.all.count %><br> <%
+    %> SecurityControlFamily Count:<%= SecurityControlFamily.all.count%> <br> <%
+    %> SecurityPolicy Count:<%= SecurityPolicy.all.count%>  <br> <%
+    %>
+<p id="notice"><%= notice %></p>
+
+
+<%= button_to "Dump All Components", '/components/dump_all', method: :get, data: { confirm: 'Are you sure you want to dump all Components?' } %>
+<%= button_to 'Dump All Control Imlementations', '/control_implementations/dump_all', method: :get, data: { confirm: 'Are you sure you want to dump all Control Implementations?' } %>
+<%= button_to 'Dump All Data Classifications', '/data_classification/dump_all', method: :get, data: { confirm: 'Are you sure you want to dump all Data Classifications?' } %>
+<%= button_to 'Dump All Docs', '/docs/dump_all', method: :get, data: { confirm: 'Are you sure you want to dump all Docs?' } %>
+<%= button_to 'Dump All Domains', '/domain_environments/dump_all', method: :get, data: { confirm: 'Are you sure you want to dump all Domains?' } %>
+<%= button_to 'Dump All Labels', '/labels/dump_all', method: :get, data: { confirm: 'Are you sure you want to dump all Labels?' } %>
+<%= button_to 'Dump All Overlays', '/overlays/dump_all', method: :get, data: { confirm: 'Are you sure you want to dump all Overlays?' } %>
+<%= button_to 'Dump All Providers', '/providers/dump_all', method: :get, data: { confirm: 'Are you sure you want to dump all Providers?' } %>
+<%= button_to 'Dump All Security Controls', '/security_controls/dump_all', method: :get, data: { confirm: 'Are you sure you want to dump all Security Controls?' } %>
+<%= button_to 'Dump All Security Control Families', '/security_control_families/dump_all', method: :get, data: { confirm: 'Are you sure you want to dump all Security Control Families?' } %>
+<%= button_to 'Dump All Security Policies', '/security_Policies/dump_all', method: :get, data: { confirm: 'Are you sure you want to dump all Security Policies?' } %>
+
+
+<%= button_to "Dump it all", '/dump_all', method: :get, data: { confirm: 'Are you sure?' } %><br>
+

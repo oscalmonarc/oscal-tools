@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= content_for?(:title) ? yield(:title) : "Monarc" %></title>
+    <link rel="stylesheet" type="text/css" href="/assets/jquery.dataTables.min.css">
+	<link rel="stylesheet" type="text/css" href="/assets/buttons.dataTables.min.css">
+	<link rel="stylesheet" type="text/css" href="/assets/datatables.css">
+	<link rel="stylesheet" type="text/css" href="/assets/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="/assets/dataTables.bootstrap4.min.css">
+	
+    <script src="/assets/jquery.js" type="text/javascript"></script>
+    <script src="/assets/jquery.dataTables.min.js" type="text/javascript"></script>
+    <script src="/assets/dataTables.buttons.min.js" type="text/javascript"></script>
+    <script src="/assets/buttons.flash.min.js" type="text/javascript"></script>
+    <script src="/assets/pdfmake.min.js" type="text/javascript"></script>
+    <script src="/assets/jszip.min.js" type="text/javascript"></script>
+    <script src="/assets/vfs_fonts.js" type="text/javascript"></script>
+    <script src="/assets/buttons.html5.min.js" type="text/javascript"></script>
+    <script src="/assets/buttons.print.min.js" type="text/javascript"></script>
+    
+	<%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
+	<%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+	<%= csrf_meta_tags %>    
+	<%= csp_meta_tag %>
+	<%= yield(:head) %>
+  </head>
+  <body>
+
+<div class="page">
+  <% if !(request.original_fullpath.include? "show_full") %>
+	  <table valign="top">
+	  	 <tr>
+			<td >
+				<a href ="/" ><%= image_tag("monarc.jpg", :alt => "logo", :size => "400x150") %></a>
+			</td>
+			<td valign="bottom">
+				<%= form_for SecurityControl.new, url: "/find", html: {method: "get"} do |f| %>
+					<strong>Search: </strong><%= f.text_field :name, :size=>"90" %><%= f.submit "Find" %>
+				<% end %>
+			 </td>
+		 </tr>
+	</table>
+	
+ <div class"nav">
+	<%= render 'layouts/nav' %>
+
+ </div><br><br><br>
+
+  
+
+  
+<% end %>
+<div style="align:left;">
+<% 
+if (@security_control_family != nil) && (@security_policy != nil) && (@security_control_family.id != nil)
+		
+		controlslist = ""
+		@security_control_family.security_controls.includes(:security_policy).where(parent: nil).each do |theSC|
+			controlslist = controlslist + "   |   "
+			if @security_control != nil && ((@security_control == theSC) || (@security_control.parent_id == theSC.id))
+				controlslist = controlslist + "<strong style='background-color: rgb(189, 210, 255);'>#{theSC.the_url} </strong>"
+			else
+				controlslist = controlslist + " #{theSC.the_url}"
+			end
+		end
+		controlslist = controlslist + "<br>"
+	
+		%>
+		 <div class"nav" style=' font-size: 13px;'>
+			<%= link_to @security_policy.policy_version, @security_policy.the_url%> |
+			<%= link_to @security_control_family.family, @security_control_family.the_url%> 
+			
+			<%= controlslist.html_safe %>
+			<% if (@security_control != nil) %> 
+				<strong>Control Enhancements:</strong> <% if @security_control.check_active %><%= link_to 'Add', "/security_control/#{@security_control.id}/add_statement" %><% end %>
+				<% if (@security_control.parent_id != nil) %>
+					<%= @security_control.parent.grab_enhancements(@security_control.parent) %>
+				<% else %> 
+				   <%= @security_control.grab_enhancements(@security_control) %>
+				<% end %>
+			<% end %>
+		</div>
+		
+		
+		<% if (@security_control != nil) && (@security_control.control_id != nil) 
+			 if (@security_control.parent_id != nil) %>
+				<p>
+				  <strong>Security Enhancement :</strong> <%= link_to @security_control.control_id, @security_control %> - 
+				  <%= link_to @security_control.title, @security_control%>   <strong>Status:</strong>
+				  <% if @security_control.check_active %>
+				  	<strong style='color: green;'>
+				  <% else %>
+				  	<strong style='color: red;'>
+				  <% end %>
+				  <%= @security_control.status %> 
+				  </strong>
+				  <%= @security_control.get_withdrawn_reason %>
+				
+				<strong>Version:</strong> <%= @security_control.grab_version %> <%= @security_control.show_compare %>
+				</p>
+				<p>
+				  <strong>Parent Control:</strong> <%= @security_control.parent.the_url %> - <%= link_to @security_control.parent.title, @security_control.parent %>
+				</p>
+				
+			<% else%>
+				<p>
+				  <strong>Security Control:</strong> <%= @security_control.control_id %> - <%= link_to @security_control.title, @security_control %>   <strong>Status:</strong> 
+				  <% if @security_control.check_active %>
+				  	<strong style='color: green;'>
+				  <% else %>
+				  	<strong style='color: red;'>
+				  <% end %>
+				  	<%= @security_control.status %> 
+				  </strong>
+				  <%= @security_control.get_withdrawn_reason %>
+				<strong>Version:</strong> <%= @security_control.grab_version %> <%= @security_control.show_compare %>
+				</p>
+			 <% end 
+ 		end
+	end  %>	
+	
+	 <div id="container">
+      <% flash.each do |name, msg| %>
+      	<% if (name == "success") %>
+      		<strong style='color: green;'>
+      	<% else %> 
+      		<strong style='color: red;'>
+      	<% end %> 
+      		 <% content_tag :div, msg, :id => "flash_#{name}" %>
+      		 
+      	</strong>
+      	 
+      	 
+      
+      <% end %>
+      <%= content_tag :h1, yield(:title) if show_title? %>
+       
+    <%= yield %>
+    </div>
+  </div>
+</div>
+
+	<div id="loading"></div>
+ 
+<script>
+	$( document ).ready(function() {
+		if (localStorage.getItem("pageloadcount")) { 
+			$("#loading").hide();
+		}  
+	});
+	
+	function onReady(callback) {
+	  var intervalId = window.setInterval(function() {
+	    if (document.getElementsByTagName('body')[0] !== undefined) {
+	      window.clearInterval(intervalId);
+	      callback.call(this);
+	    }
+	  }, 1000);
+	}
+	
+	function setVisible(selector, visible) {
+	  document.querySelector(selector).style.display = visible ? 'block' : 'none';
+	}
+	
+	onReady(function() {
+		if (localStorage.getItem("pageloadcount")) { 
+			$("#loading").hide();
+		}  else {
+			setVisible('.page', true);
+		  	setVisible('#loading', false);
+		}
+		  
+  		localStorage.setItem("pageloadcount", "1");
+		
+	});
+</script>
+</body>
+</html>

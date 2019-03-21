@@ -1,0 +1,51 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Params</h1>
+<%= will_paginate @params %>
+<table border=1>
+  <thead>
+    <tr>
+      <th>Param ID </th>
+      <th>Security Control / Requirement</th>
+      <th>Description</th>
+      <th>Values</th>
+      <th colspan="2"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @params.where(parent_id: nil).each do |param| %>
+      <tr>
+        <td width="10%"><%= link_to param.params_id, param %></td>
+        <td width="10%">
+	        <% if (param.security_control_id!= nil) %>
+		        <%= link_to param.security_control.control_id, param.security_control %>
+        	<%end %>
+   	        <% if (param.requirement!= nil) %>
+		        <%= link_to param.requirement.name, param.requirement %><br>
+        	<%end %>
+    	</td>
+        <td width="20%">
+            <%= param.description %><br>
+            <%  optioncounter = 1
+			Param.where(parent_id: param).each do |child_param| %>
+				Option <%= optioncounter %>: <%= child_param.description %> <br>
+        	<% optioncounter = optioncounter +1
+        	end %>
+        </td>
+         <td>
+         	<%= param.grab_values %> - <%= param.value_url %><br>
+			<% Param.where(parent_id: param).each do |child_param| %>
+				<%= child_param.grab_values %> - <%= param.value_url  %><br>
+			<% end %>
+       	</td>
+        <td><%= link_to 'Edit', edit_param_path(param) %></td>
+        <td><%= link_to 'Destroy', param, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+    <% end %>
+  </tbody>
+</table>
+<%= will_paginate @params %>
+<br>
+
+<%= button_to 'New Param', new_param_path, method: :get  %>
+

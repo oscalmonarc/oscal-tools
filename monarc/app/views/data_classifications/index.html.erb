@@ -1,0 +1,27 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Data Classifications</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @data_classifications.each do |data_classification| %>
+      <tr>
+        <td><%= data_classification.name %></td>
+        <td><%= link_to 'Show', data_classification %></td>
+        <td><%= link_to 'Edit', edit_data_classification_path(data_classification) %></td>
+        <td><%= link_to 'Destroy', data_classification, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= button_to 'New Data Classification', new_data_classification_path, method: :get  %>

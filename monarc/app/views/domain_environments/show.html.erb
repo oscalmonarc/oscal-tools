@@ -1,0 +1,132 @@
+<% content_for :title, "Domain Environment - #{@domain_environment.name}" %>
+<%= show_tree(@domain_environment) %>
+<p>
+  <strong>Name:</strong>
+  <%= @domain_environment.name %> - <%= link_to 'Edit', edit_domain_environment_path(@domain_environment) %>
+</p>
+
+<p>
+  <strong>Description:</strong>
+  <%= @domain_environment.description %>
+</p>
+
+<p>
+  <strong>Data classification:</strong>
+  <% if (@domain_environment.data_classification != nil ) %>
+  	<%= @domain_environment.data_classification.name %>
+  <% end %>
+  
+  
+</p>
+
+<p>
+  <strong>Provider:</strong>
+  <%= @domain_environment.provider.name %>
+</p>
+<% 
+children_domains = @domain_environment.children
+
+if has_data?(children_domains ) 
+
+%>
+
+	<p>
+	  <strong>Children Domains </strong>
+	  
+	<table id="myDataTable"  class="table table-striped table-bordered"  style="width:101%">
+  <thead>
+    <tr>
+      <th>Domain </th>
+      <th>Region</th>
+      <th>Description</th>
+      <th>Data classification</th>
+      <th>Location</th>
+      <th>Provider</th>
+      
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% children_domains.each do |domain_environment| %>
+    
+      <tr>
+        <td><% if (domain_environment.parent != nil) %> <%= domain_environment.parent.click_link %> > <% end %><%= domain_environment.click_link %></td>
+        <td><%= domain_environment.region %></td>
+        <td><%= domain_environment.description %></td>
+        <td>
+        	<% if (domain_environment.data_classification != nil ) %>
+        		<%= domain_environment.data_classification.name %>
+        	<% end %>
+        </td>
+		<td><%= domain_environment.location %></td>
+        <td><%= domain_environment.provider.click_link %></td>
+        <td><%= link_to 'Edit', edit_domain_environment_path(domain_environment) %></td>
+        <td><%= link_to 'Destroy', domain_environment, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+</p>
+<% end %>
+<br>
+
+<%= link_to 'New Domain Environment', new_domain_environment_path %>
+
+<script>
+    $(document).ready(function() {
+    $('#myDataTable').DataTable( {
+    	"aaSorting": [],
+    	dom: 'Bfrtip',
+        buttons: [
+            'copy', 'csv', 'excel', 'pdf', 'print'
+        ]
+    } );
+} );
+</script>
+
+<p>
+  <strong>Control Implementations:</strong><br>
+  <% implementations = ControlImplementation.unique_control_implementations(@domain_environment)
+  
+  if has_data?(implementations) %>
+  
+    <table id="myDataTable"  class="table table-striped table-bordered"  style="width:100%">
+		  <thead>
+		    <tr>
+		      <th >Component</th>
+		      <th >Provider</th>
+		      <th >Security Control</th>
+		      <th >Security Policy</th>
+		      <th >Objectives</th>
+		      <th >Statements</th>
+		      <th >Inheritance Type</th>
+		      <th >Implementation method</th>
+		      <th >Required</th>
+		    </tr>
+		  </thead>
+		  
+		  <tbody>
+		
+		  <% implementations.each do |the_method| %>
+		  		<tr>
+				  <td><%= the_method[:component].html_safe%></td>
+				  <td><%= the_method[:provider].html_safe %></td>
+				  <td><%= the_method[:security_control].html_safe %></td>
+				  <td><%= the_method[:security_policy].html_safe %></td>
+			      <td><%= the_method[:objective]%></td>
+			      <td><%= the_method[:statement] %></td>
+			      <td><%= the_method[:inheritance_type].html_safe %></td>
+			      <td><%= the_method[:implementation_method].html_safe %></td>
+			      <td><%= the_method[:required] %></td>
+				</tr>
+		
+		  <% end %>
+		  </body>
+		</table>
+   <% end %>
+</p>
+
+<%= link_to 'Edit', edit_domain_environment_path(@domain_environment) %> |
+<%= link_to 'Back', domain_environments_path %>

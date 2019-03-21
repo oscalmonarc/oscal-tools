@@ -1,0 +1,76 @@
+<%= form_with(model: objective, local: true) do |form| %>
+  <% if objective.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(objective.errors.count, "error") %> prohibited this objective from being saved:</h2>
+
+      <ul>
+      <% objective.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+  
+  
+  <% if (@new_objective != nil) %>
+		<div class="field"> 
+			<b>Parent Objective:</b> ID: <%=@new_objective.id %> <%=@new_objective.name %> - <%=@new_objective.description %><br>
+		</div>
+		<%= form.hidden_field(:parent_id, :value => @new_objective.id) %>
+		
+		<% if (@security_control != nil) %>
+			<div class="field">
+			    <%= form.label :security_control %>
+			    <%= @new_objective.security_control.control_id %>
+			    <%= form.hidden_field(:security_control_id, :value => @new_objective.security_control.id) %>
+			</div>
+		<% end %>
+		<% if (@requirement != nil) %>
+			<div class="field">
+			    <%= form.label :requirement %>
+			    <%= @requirement.name %>
+			    <%= form.hidden_field(:requirement_id, :value => @new_objective.requirement.id) %>
+			</div>
+		<% end %>
+		
+	<% else %>
+		<% if (@security_control != nil) %>
+			<div class="field">
+			    <%= form.label :security_control %>
+			    <%= @security_control.control_id %>
+			    <%= form.hidden_field(:security_control_id, :value => @security_control.id) %>
+			</div>
+		<% end %>
+		
+		<% if (@requirement != nil) %>
+			<div class="field">
+			    <%= form.label :requirement %>
+			    <%= @requirement.name %>
+			    <%= form.hidden_field(:requirement_id, :value => @requirement.id) %>
+			</div>
+		<% end %>
+	
+<% end %>
+
+
+
+
+  <div class="field">
+    <b> Objective ID </b>(ac-1.a_obj)<br>
+    <%= form.text_field :objective_id %>
+  </div>
+
+  <div class="field">
+    <b> Name </b>AC-1(a)<br>
+    <%= form.text_field :name %>
+  </div>
+
+  <div class="field">
+    <%= form.label :description %>
+    <%= form.text_field :description %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<% end %>

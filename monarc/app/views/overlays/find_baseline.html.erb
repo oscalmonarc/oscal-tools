@@ -1,0 +1,138 @@
+ <h1>Select Security Control Baseline and Overlays</h1>
+ <%= form_for :overlay, { action: "find_baseline", method: :get  }  do |f| %>
+	 
+	 <table>
+	 		<tr> 
+	 			<td> Security Policy </td>
+	 			<td></td>
+	 			<td><%= f.select :policy, options_for_select(@security_policies_array, @policy) %></td>
+	 		</tr>
+	 		<tr>	
+	 			<td> Is this an National Security System?</td>
+	 			<td></td>
+	 			<td><%= f.check_box("nss", {checked: @nss_option}) %> </td>
+			</tr>
+			<tr><td></td></tr>
+	 		<tr>
+	 			<td>Name</td>
+	 			<td>Fields</td>
+
+			</tr>	 		
+	 		<% if (@overlays != nil )
+		 		@overlays.each do |overlay|	%> 
+			 		<tr>
+			 			<td><%= overlay.name %> </td>
+			 				<% if (overlay.overlay_fields != nil)
+			 					overlay.overlay_fields.each do |overlay_field|
+			 						select_option = overlay_field.full_name
+									overlay_selected = nil
+									if (params[:overlay] != nil)
+			 							overlay_selected = params[:overlay][select_option]
+			 							if (overlay_selected != nil) && (overlay_selected != "")
+			 								@selected_options << {overlay_field_option: overlay_selected}
+			 							end  
+			 						end
+			 					%>
+			 						<td> <%= overlay_field.name %> </td> 
+			 						<td> <%= f.select select_option, options_for_select(overlay_field.select_options, overlay_selected)  %> </td>
+								<% end %>					 			
+			 				<% end %>
+			 			</td>
+					</tr>		
+		 		<% end %>
+		 		<td><%= f.submit "Find" %></td>
+		 	<% end %>
+	 </table>
+<% end %>
+ 
+<% if (@selected_options != nil) && (params[:overlay] != nil)
+	nss = false
+	if (params[:overlay] != nil) && (params[:overlay][:nss] != nil)
+		nss = true
+	end
+	controls = ControlOverlay.find_control_options(@selected_options, @policy)
+	aggrigated_controls = ControlOverlay.aggrigate_controls(controls, nss)
+	
+	
+	full_list = aggrigated_controls[:full_list]
+	required_controls = aggrigated_controls[:add_controls]
+	remove_controls = aggrigated_controls[:remove_controls]
+	
+	con_value = "1"
+	int_value = "2"
+	avail_value = "3"
+		
+	
+	if (required_controls.count == 0) && (remove_controls.count) %>
+		<strong style="color: red"> Data was not imported, please import overlays for the selected overlay and policy. <Br></strong>
+	<% else 
+		%> Required Controls:<%= required_controls.count %> <br> <%
+		%> Removed Controls: <%= remove_controls.count %> <br> <%
+		content_for :title, "Overlay Baseline Controls with Overlays Rev-#{@policy} C-#{con_value} I-#{int_value} A-#{avail_value}"
+	end
+	
+end
+%>
+
+
+ 
+ <% if has_data?(full_list) %>
+ <table id="myDataTable"  class="table table-striped table-bordered"  style="width:100%">  
+ 	<thead>  
+ 		<tr>
+ 			<th>Control ID</th>
+ 			<th>Control Title</th>
+ 			<th>Control Family</th>
+ 			<th>Components</th>
+ 			<th>Reason</th>
+ 		</tr>
+ 	</thead> 
+ 	<tbody>
+ 	<% full_list.each do |tmp_control|
+ 	control = tmp_control[:control]
+ 		%><tr>
+ 			
+ 		<td><%= control.click_link %></td>
+ 		<td><%= control.title %></td>
+ 		<td><%= control.security_control_family.title%></td>
+ 		<td>
+ 			<% implementations = ControlImplementation.unique_control_implementations(control) 
+ 			if has_data?(implementations)
+ 			%> <table>
+ 				<tr>
+ 					<td>Component</td>
+ 					<td width = "20%">Domain </td>
+ 					<td>Inheritance</td>
+ 					<td>Method </td>
+ 				<% implementations.each do |the_method| 
+ 				
+ 				puts "the_method - #{the_method.inspect}"
+ 				%>
+ 					<Tr>
+ 						<td><%= the_method[:component].html_safe %> </td>
+ 						<td><% if (the_method[:domain_environment] != nil ) %> <%= the_method[:domain_environment].html_safe %> <% end %></td> 
+ 						<td><%= the_method[:inheritance_type] %> </td>
+ 						<td><%= the_method[:implementation_method].html_safe %></td>
+ 					</tr>
+ 				<% end %>
+ 				</table>
+ 			<% end %>
+ 		</td>	
+ 		<td><%= tmp_control[:reason] %> </td></tr> 
+ 	<% end %>
+ 	</tbody>
+ </table> 
+<% end %> 	
+
+<script>
+    $(document).ready(function() {
+    $('#myDataTable').DataTable( {
+    	"order": [[ 2, "asc" ]],
+    	dom: 'Bfrtip',
+        buttons: [
+            'copy', 'csv', 'excel', 'pdf', 'print'
+        ]
+    } );
+} );
+</script>
+ 

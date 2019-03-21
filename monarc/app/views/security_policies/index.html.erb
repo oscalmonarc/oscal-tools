@@ -1,0 +1,91 @@
+<p id="notice"><%= notice %></p>
+<header>
+	<h1>Security Policies</h1>
+	<div id="showSearch">
+		<i class="fa fa-search" aria-hidden="true"></i>
+		Filter <button id="displaySearch" onclick="displaySearchBar()">+</button>
+	</div>
+</header>
+
+<%= render 'search' %>
+
+<br>
+
+<table id="myDataTable"  class="table table-striped table-bordered"  style="width:100%">
+
+  <thead>
+    <tr>
+      <th>Version </th>
+      <th>Provider </th>
+      <th>Security Control Families</th>
+	  <th>Compare With </th>
+	  <th>Export</th>
+	  <th></th>
+	  <th></th>	
+	  <th></th>		
+      
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @security_policies.each do |security_policy| 
+    
+    %>
+    
+      <tr>
+        <td valign="top"><%= link_to security_policy.policy_version , security_policy %></td>
+        
+        <td valign="top"><%= security_policy.provider.click_link %>
+        	
+        </td>
+		<td valign="top"><% count = 1
+	  		if (security_policy.security_control_families != nil) 
+	  			security_policy.security_control_families.each do |security_control_family| %>
+					<%= link_to security_control_family.abv, security_control_family%>
+					<% if (count < security_policy.security_control_families.count) %>
+						--
+						<% if (count % 5 == 0) %>
+							<br>
+						<% end %>
+						<% count = count +1 %>
+					<% end %>
+				<% end %>	
+			<% end %> 
+        </td>
+        <td>
+        <% if security_policy.other_versions != nil
+			security_policy.other_versions.each do |the_SP| %>
+				<%= button_to "Compare to #{the_SP.version}", "/policy/#{security_policy.name}/version/#{security_policy.version}/compare/#{the_SP.version}" %>
+			<% end 
+		 end %>
+        </td>
+        <td>
+        	<a href='api/v1/policy/<%= security_policy.name %>/version/<%= security_policy.version %>/all/oscal' target='_blank' > Export OSCAL </a> <br>
+        	<a href='api/v1/policy/<%= security_policy.name %>/version/<%= security_policy.version %>/all' target='_blank' > Export OSCAL with Monarc ID's</a> <br>
+        </td>	
+        
+        <td><%= link_to 'View All Controls', "policy/#{security_policy.name}/version/#{security_policy.version}/security_control/show_all/", method: :get %></td> 
+        <td><%= link_to 'Edit', edit_security_policy_path(security_policy) %></td>
+        <td>
+        	<%= link_to 'Delete All Items', "policy/#{security_policy.name}/version/#{security_policy.version}/dump_me", method: :post, data: { confirm: 'Are you sure?' } %><br>
+        	<%= link_to 'Delete policy', "security_policies/#{security_policy.id}", method: :delete, data: { confirm: 'Are you sure you want to destroy the policy?' } %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Security Policy', new_security_policy_path %>
+<script>
+    $(document).ready(function() {
+    $('#myDataTable').DataTable( {
+    	"order": [[ 0, "asc" ]],
+    	dom: 'Bfrtip',
+        buttons: [
+            'copy', 'csv', 'excel', 'pdf', 'print'
+        ]
+    } );
+} );
+</script>

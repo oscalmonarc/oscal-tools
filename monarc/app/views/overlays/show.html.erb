@@ -1,0 +1,95 @@
+<p>
+	<strong>Overlay: </strong><%= @overlay.name %> - <%= link_to 'Edit', edit_overlay_path(@overlay) %> 
+</p>
+<br>
+<p>
+  <% security_controls = @overlay.security_controls
+  	control_overlays = @overlay.control_overlays
+  	overlay_fields = @overlay.overlay_fields
+  	options = []
+	if has_data? (security_controls) %>
+  		<table id="OverlayDataTable" class="table table-striped table-bordered"  style="width:100%">
+	  		 <thead>
+			    <tr>
+			      <th>Security Control</th>
+			      <th>Security Policy</th>
+			      <th>
+			      	<table style="margin: 0 0px 0px 0px; padding: 0; border-collapse: collapse" width="100%">
+							 <tr>Overlays</tr>
+							 <tr>
+								<% overlay_fields.each do |the_field| 
+									options = the_field.overlay_field_options
+									options_count = options.count
+									if (options_count < 1 )
+										options_count = 1
+									end %>
+									<td colspan="<%= options_count %>" align="center"> <%= the_field.name %> </td>
+								<% end %>
+							 </tr>
+							 <tr>
+								<% overlay_fields.each do |the_field| 
+									options = the_field.overlay_field_options
+									options.each do |option| %>
+										<td align = "center"><%= option.name %></td>
+									<% end %>	
+								<% end %>
+							</tr>
+					</table>
+			      </th>
+			    </tr>
+			  </thead>
+			 <tbody>
+	  		<% security_controls.each do |security_control|
+	  		control_overlays = security_control.control_overlays
+	  		 %>	
+	  			 
+		  		<tr>
+		      		<td> <%= security_control.click_link %> </td>
+		      		<td> <%= security_control.security_policy.click_link %> </td>
+	      			<td>
+	      				<table width="100%" style="margin: 0 0px 0px 0px; border-collapse: collapse; padding: 0; align: center; ">
+		      				<tr>
+			      				<% overlay_fields.each do |overlay_field| %>
+			      					<td width ="33%" align = "center"  style = "padding: 0; height = "100%"">
+			      					<% options = overlay_field.overlay_field_options %>
+				      					<table class="table-striped" style="margin: 0 0px 0px 0px; padding: 0; border-collapse: collapse" width="100%">
+				      				
+					      				<tr height = "100%">
+						      				<% options.each do |the_option| %>
+											<td height = "100%" width ="33%" align = "center">
+												<% control_overlays.each do |control_overlay|
+													if (the_option == control_overlay.overlay_field_option)  %> 
+												 		<%= control_overlay.overlay_value %>
+												 	<% else %>
+												 		&nbsp;
+												<%  end	
+												end %> 
+											</td>
+											<% end %>
+										</tr>
+										</table>
+									</td>
+								<% end %>
+							</tr>
+						</table>
+					</td>
+	        	</tr>
+	        <% end %>
+	        </tbody>
+	   </table>
+	<% end %>
+</p>		
+
+<%= link_to 'Edit', edit_overlay_path(@overlay) %> |
+<%= link_to 'Back', overlays_path %>
+<script>
+	$(document).ready(function() {
+	    $('#OverlayDataTable').DataTable( {
+	    	"aaSorting": [],
+	    	dom: 'Bfrtip',
+	        buttons: [
+	            'copy', 'csv', 'excel', 'pdf', 'print'
+	        ]
+	    } );
+	} );
+</script>

@@ -1,0 +1,37 @@
+<%= form_with(model: related_ref, local: true) do |form| %>
+  <% if related_ref.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(related_ref.errors.count, "error") %> prohibited this related_ref from being saved:</h2>
+
+      <ul>
+      <% related_ref.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= form.label :requirement_id %>
+    <%= form.text_field :requirement_id %>
+  </div>
+
+  <div class="field">
+    <%= form.label :security_control_id %>
+    <%= form.text_field :security_control_id %>
+  </div>
+
+  <div class="field">
+    <%= form.label :ref_id %>
+    <%= form.text_field :ref_id %>
+  </div>
+
+  <div class="field">
+    <%= form.label :title %>
+    <%= form.text_field :title %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<% end %>

@@ -1,0 +1,80 @@
+	
+	Components: 
+	<button id="component_clear" class="filter">Clear</button>
+	<% @all_components.each do |component| %>
+		<button id="component<%= component.id %>" class="filter"><%= component.name %></button>
+	<% end %><br>
+	
+	Domains:
+	<button id="domain_clear" class="filter">Clear</button> 
+	<% @all_domains.each do |domain| %>
+		<button id="domain<%= domain.id %>" class="filter"><%= domain.name %></button>
+	<% end %><br>
+    
+    Providers: 
+    <button id="provider_clear" class="filter">Clear</button>
+    <% @all_providers.each do |provider| %>
+		<button id="provider<%= provider.id %>" class="filter"><%= provider.name %></button>
+	<% end %><br>
+    
+    Filters:
+    <div id="filter_options" style="display: inline">
+    	<div id="provider-filters" style="display: inline"></div>
+    	<div id="component-filters" style="display: inline"></div>
+    	<div id="domain-filters" style="display: inline"></div>
+    </div>
+    
+<h1>Control Implementations</h1>
+	<% if has_data? (@methods) %>	
+			<%= render 'show_tables', methods: @methods %>
+	<% end %>
+
+
+<br>
+
+<%= button_to 'New Control Implementation', new_control_implementation_path, method: :get %>
+<script>
+	
+	<% @all_components.each do |component| %>
+		$('#component<%= component.id %>').on('click', function () {
+			component_name = "<%= component.name %>";
+			filter_text = "Domain " + component_name 
+			$('#control_implementations_table').DataTable().column(2).search(component_name).draw();
+			$("#component-filters").html(filter_text);
+		});
+	<% end %>
+	
+	$('#component_clear').on('click', function () {
+	    	$('#control_implementations_table').DataTable().column(2).search("").draw();
+	    	$("#component-filters").html("");
+	});
+	
+	
+	<% @all_domains.each do |domain| %>
+		$('#domain<%= domain.id %>').on('click', function () {
+			domain_name = "<%= domain.name %>";
+			filter_text = "Domain " + domain_name 
+			$('#control_implementations_table').DataTable().column(4).search(domain_name).draw();
+			$("#domain-filters").html(filter_text);  
+
+		});
+	<% end %>
+	$('#domain_clear').on('click', function () {
+	    	$('#control_implementations_table').DataTable().column(4).search("").draw();
+	    	$("#domain-filters").html("");  
+	});
+	
+	<% @all_providers.each do |provider| %>
+		$('#provider<%= provider.id %>').on('click', function () {
+			provider_name = "<%= provider.name %>"
+			$('#control_implementations_table').DataTable().column(3).search(provider_name).draw();
+			filter_text = "Provider " + provider_name
+			$("#provider-filters").html(filter_text);
+		});
+	<% end %>
+	$('#provider_clear').on('click', function () {
+	    	$('#control_implementations_table').DataTable().column(3).search("").draw();
+	    	$("#provider-filters").html("");
+	});
+	
+</script>

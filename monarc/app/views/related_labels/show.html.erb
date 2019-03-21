@@ -1,0 +1,18 @@
+<p>
+  <strong>Label:</strong>
+  <%= @related_label.label.click_link %>
+</p>
+
+
+<p>
+  <strong>Object:</strong>
+  <%= grab_object(@related_label.object_id, @related_label.object_type).click_link %>
+</p>
+
+<p>
+  <strong>Provider:</strong>
+  <%= @related_label.provider.click_link if @related_label.provider %>
+</p>
+
+<%= link_to 'Edit', edit_related_label_path(@related_label) %> |
+<%= link_to 'Back', related_labels_path %>

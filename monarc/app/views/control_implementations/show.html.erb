@@ -1,0 +1,42 @@
+<p>
+  <strong>Component:</strong>
+  <%= @control_implementation.component.click_link %>
+</p>
+
+<p>
+  <strong>Domain environment:</strong>
+  <%= @control_implementation.domain_environment %>
+</p>
+
+<p>
+  <strong>Provider:</strong>
+  <%= @control_implementation.provider.click_link %>
+</p>
+
+<p>
+  <strong>Security control:</strong>
+  <%= @control_implementation.security_control.click_link %>
+</p>
+
+<p>
+  <strong>Security policy:</strong>
+  <%= @control_implementation.security_policy.click_link %>
+</p>
+
+<p>
+  <strong>Inheritance Type:</strong>
+  <%= @control_implementation.inheritance_type %>
+</p>
+
+<p>
+  <strong>Implementation method:</strong>
+  <%= @control_implementation.implementation_method %>
+</p>
+
+<p>
+  <strong>Required:</strong>
+  <%= @control_implementation.required %>
+</p>
+
+<%= link_to 'Edit', edit_control_implementation_path(@control_implementation) %> |
+<%= link_to 'Back', control_implementations_path %>

@@ -1,0 +1,71 @@
+region,name,location,endpoint,provider,parent,dataclassification,label
+,aws-commercial,,,Amazon,,
+US West,us-west-2,Oregon,https://rds.us-west-2.amazonaws.com,Amazon,aws-commercial,UNCLASSIFIED
+US West,us-west-1,N. California,https://rds.us-west-1.amazonaws.com,Amazon,aws-commercial,UNCLASSIFIED
+US East,us-east-2,Ohio,https://rds.us-east-2.amazonaws.com,Amazon,aws-commercial,UNCLASSIFIED
+US East,us-east-1,N. Virginia,https://rds.us-east-1.amazonaws.com,Amazon,aws-commercial,UNCLASSIFIED
+Asia Pacific South,ap-south-1,Mumbai,https://rds.ap-south-1.amazonaws.com,Amazon,aws-commercial,UNCLASSIFIED
+Asia Pacific North East,ap-northeast-2,Seoul,https://rds.ap-northeast-2.amazonaws.com,Amazon,aws-commercial,UNCLASSIFIED
+Asia Pacific South East,ap-southeast-1,Singapore,https://rds.ap-southeast-1.amazonaws.com,Amazon,aws-commercial,UNCLASSIFIED
+Asia Pacific South East,ap-southeast-2,Sydney,https://rds.ap-southeast-2.amazonaws.com,Amazon,aws-commercial,UNCLASSIFIED
+Asia Pacific North East,ap-northeast-1,Tokyo,https://rds.ap-northeast-1.amazonaws.com,Amazon,aws-commercial,UNCLASSIFIED
+Canada Central,ca-central-1,Central,https://rds.ca-central-1.amazonaws.com,Amazon,aws-commercial,UNCLASSIFIED
+China North,cn-north-1,Beijing,https://rds.cn-north-1.amazonaws.com.cn,Amazon,aws-commercial,UNCLASSIFIED
+Eurpoe Central,eu-central-1,Frankfurt,https://rds.eu-central-1.amazonaws.com,Amazon,aws-commercial,UNCLASSIFIED
+Eurpoe West,eu-west-1,Ireland,https://rds.eu-west-1.amazonaws.com,Amazon,aws-commercial,UNCLASSIFIED
+Eurpoe West,eu-west-2,London,https://rds.eu-west-2.amazonaws.com,Amazon,aws-commercial,UNCLASSIFIED
+Eurpoe West,eu-west-3,London,https://rds.eu-west-3.amazonaws.com,Amazon,aws-commercial,UNCLASSIFIED
+South America East,sa-east-1,S?o Paulo,https://rds.sa-east-1.amazonaws.com,Amazon,aws-commercial,UNCLASSIFIED
+AWS GovCloud,us-gov-west-1,US,https://rds.us-gov-west-1.amazonaws.com,Amazon,aws-commercial,UNCLASSIFIED FOUO
+,azure-commercial,,,Microsoft,,
+US East,east-us,Virginia,,Microsoft,azure-commercial,UNCLASSIFIED
+US East,east-us-2,Virginia,,Microsoft,azure-commercial,UNCLASSIFIED
+US Central,central-us,Iowa,,Microsoft,azure-commercial,UNCLASSIFIED
+US North Central,north-central-us,Illinois,,Microsoft,azure-commercial,UNCLASSIFIED
+US South Central,south-central-us,Texas,,Microsoft,azure-commercial,UNCLASSIFIED
+US West Central,west-central-us,Wyoming,,Microsoft,azure-commercial,UNCLASSIFIED
+US West,west-us,California,,Microsoft,azure-commercial,UNCLASSIFIED
+US West,west-us-2,Washington,,Microsoft,azure-commercial,UNCLASSIFIED
+Canada East,canada-east,Quebec City,,Microsoft,azure-commercial,UNCLASSIFIED
+Canada Central,canada-central,Toronto,,Microsoft,azure-commercial,UNCLASSIFIED
+Brazil South,brazil-south,Sao Paulo State,,Microsoft,azure-commercial,UNCLASSIFIED
+Eurpoe North,north-europe,Ireland,,Microsoft,azure-commercial,UNCLASSIFIED
+Eurpoe West,west-europe,Netherlands,,Microsoft,azure-commercial,UNCLASSIFIED
+France Central,france-central,Paris,,Microsoft,azure-commercial,UNCLASSIFIED
+France South,france-south,Marseille,,Microsoft,azure-commercial,UNCLASSIFIED
+UK West,uk-west,Cardiff,,Microsoft,azure-commercial,UNCLASSIFIED
+UK South,uk-south,London,,Microsoft,azure-commercial,UNCLASSIFIED
+Germany Central,germany-central,Frankfurt,,Microsoft,azure-commercial,UNCLASSIFIED
+Germany Northeast,germany-northeast,Magdeburg,,Microsoft,azure-commercial,UNCLASSIFIED
+Germany North,germany-north,Germany North,,Microsoft,azure-commercial,UNCLASSIFIED
+Germany West Central,germany-west-central,Germany West Central,,Microsoft,azure-commercial,UNCLASSIFIED
+Switzerland North,switzerland-north,Zurich,,Microsoft,azure-commercial,UNCLASSIFIED
+Switzerland West,switzerland-west,Geneva,,Microsoft,azure-commercial,UNCLASSIFIED
+Norway East,norway-east,Norway,,Microsoft,azure-commercial,UNCLASSIFIED
+Norway West,norway-west,Norway,,Microsoft,azure-commercial,UNCLASSIFIED
+Southeast Asia,southeast-asia,Singapore,,Microsoft,azure-commercial,UNCLASSIFIED
+East Asia,east-asia,Hong Kong,,Microsoft,azure-commercial,UNCLASSIFIED
+Australia East,australia-east,New South Wales,,Microsoft,azure-commercial,UNCLASSIFIED
+Australia Southeast,australia-southeast,Victoria,,Microsoft,azure-commercial,UNCLASSIFIED
+Australia Central,australia-central,Canberra,,Microsoft,azure-commercial,UNCLASSIFIED
+Australia Central 2,australia-central-2,Canberra,,Microsoft,azure-commercial,UNCLASSIFIED
+China East,china-east,Shanghai,,Microsoft,azure-commercial,UNCLASSIFIED
+China North,china-north,Beijing,,Microsoft,azure-commercial,UNCLASSIFIED
+China East 2,china-east-2,Shanghai,,Microsoft,azure-commercial,UNCLASSIFIED
+China North 2,china-north-2,Beijing,,Microsoft,azure-commercial,UNCLASSIFIED
+Central India,central-india,Pune,,Microsoft,azure-commercial,UNCLASSIFIED
+West India,west-india,Mumbai,,Microsoft,azure-commercial,UNCLASSIFIED
+South India,south-india,Chennai,,Microsoft,azure-commercial,UNCLASSIFIED
+Japan East,japan-east,"Tokyo, Saitama",,Microsoft,azure-commercial,UNCLASSIFIED
+Japan West,japan-west,Osaka,,Microsoft,azure-commercial,UNCLASSIFIED
+Korea Central,korea-central,Seoul,,Microsoft,azure-commercial,UNCLASSIFIED
+Korea South,korea-south,Busan,,Microsoft,azure-commercial,UNCLASSIFIED
+US Gov Virginia,us-gov-virginia,Virginia,,Microsoft,azure-commercial,UNCLASSIFIED FOUO
+US Gov Iowa,us-gov-iowa,Iowa,,Microsoft,azure-commercial,UNCLASSIFIED FOUO
+US Gov Arizona,us-gov-arizona,Arizona,,Microsoft,azure-commercial,UNCLASSIFIED FOUO
+US Gov Texas,us-gov-texas,Texas,,Microsoft,azure-commercial,UNCLASSIFIED FOUO
+US DoD East,us-dod-east,Virginia,,Microsoft,azure-commercial,UNCLASSIFIED FOUO
+US DoD Central,us-dod-central,Iowa,,Microsoft,azure-commercial,UNCLASSIFIED FOUO
+,azure-secret,,,Microsoft,azure-secret,SECRET
+US Sec East,us-sec-east,Undisclosed,,Microsoft,azure-commercial,SECRET
+US Sec West,us-sec-west,Undisclosed,,Microsoft,azure-commercial,SECRET

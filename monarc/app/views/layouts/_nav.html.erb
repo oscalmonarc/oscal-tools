@@ -1,0 +1,89 @@
+<% if !(request.original_fullpath.include? "show_full") %>
+	<ul id="sample-menu-1" class="sf-menu">
+			<li >
+				<a href="<%=security_policies_path%>" >Security Policies</a>
+			</li>
+			<li>
+						<a href="<%= security_control_families_path %>">Security Control Families</a>
+					</li>
+					<li>
+						<a href="<%= security_controls_path %>">Security Controls</a>
+					</li>
+			<li>
+				<a href="" >API's</a>
+				<ul>
+					<li>
+						<a href="/api_examples">API Examples</a>
+					</li>
+					<li>
+						<a href="/search_params">API Search Params</a>
+					</li>
+				</ul>
+			</li>
+			
+			<li>
+				<a href="<%=docs_path %>">Documents</a>
+			</li>
+
+			<li>
+				<a href="" >Control Checker</a>
+				<ul>
+					<li>
+						<a href="/overlays/find_baseline/">Control Baseline & Overlays</a>
+					</li>
+					<li>
+						<a href="/overlays/compare_overlays/">Migration Control Checker</a>
+					</li>
+					
+				</ul>
+			</li>
+			<li>
+				<a href="<%= components_path %>">Components</a>
+			</li>
+			<li>
+				<a href="<%= providers_path %>">Providers</a>
+				<ul>
+				
+				<li>
+					<a href="/providers/name/nsa">NSA</a>
+				</li>
+				<li>
+					<a href="/providers/name/amazon">Amazon</a>
+				</li>
+				<li>
+					<a href="/providers/name/microsoft">Microsoft</a>
+				</li>
+				</ul>
+			</li>
+			<li>
+				<a href="<%= control_implementations_path %>">Control Implementations</a>
+			</li>
+			
+			<li>
+				<a href="<%= domain_environments_path %>">Domains</a>
+			</li>
+			<li>
+				<a href="/db_count">DB Counts (debug)</a>
+			</li>
+			<li>	
+				<a href="">Other</a>
+				<ul>
+					<li>
+						<a href="<%= labels_path %>">Labels</a>
+					</li>
+					<li>
+						<a href="<%=data_classifications_path %>">Classifications</a>
+					</li>
+					<li>
+						<a href="<%=refs_path %>">References</a>
+					</li>
+					<li>
+						<a href="<%=overlays_path %>">Overlays</a>
+					</li>
+					
+					
+				</ul>
+			</li>
+			
+	</ul>
+<% end %>

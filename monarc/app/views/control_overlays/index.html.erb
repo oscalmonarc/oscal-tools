@@ -1,0 +1,19 @@
+<h1>Control Overlays</h1>
+
+<table class="responsive nowrap table table-hover" id="dttb-control_overlays" data-sort="true" data-source="<%= url_for(format: :json)%>">
+  <thead>
+    <tr>
+      <th data-data="security_policy">Security policy</th>
+      <th data-data="domain_environment">Domain environment</th>
+      <th data-data="overlay_field">Overlay field</th>
+      <th data-data="overlay_value">Overlay value</th>
+      <th data-data="security_control">Security control</th>
+      <th data-data="url" data-orderable="false" data-class-name="all" data-searchable="false" class="skip-export" width="100px"></th>
+    </tr>
+  </thead>
+
+</table>
+
+<br>
+
+<%= button_to 'New Control Overlay', new_control_overlay_path, method: :get  %>

@@ -1,0 +1,18 @@
+<h1>Related Labels</h1>
+
+<table class="responsive nowrap table table-hover" id="dttb-related_labels" data-sort="true" data-source="<%= url_for(format: :json)%>">
+  <thead>
+    <tr>
+      <th data-data="label">Label</th>
+      <th data-data="object_type">Object type</th>
+      <th data-data="object_id">Object</th>
+      <th data-data="bigint">Bigint</th>
+      <th data-data="url" data-orderable="false" data-class-name="all" data-searchable="false" class="skip-export" width="100px"></th>
+    </tr>
+  </thead>
+
+</table>
+
+<br>
+
+<%= button_to 'New Related Label', new_related_label_path, method: :get  %>

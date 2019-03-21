@@ -1,0 +1,209 @@
+<% cache render_async_cache_key(request.path), :skip_digest => true do %>
+
+<%= button_to 'All Docs', docs_path, method: :get  %><br>
+<%  require 'open-uri' 
+	require 'json'
+	require "json-schema"
+	@doc.imported = Time.current
+	@doc.save
+
+def start_import 
+	path = @doc.grab_file_path
+	the_file =JSON.parse(File.read(path)) 
+	schemaSet = false
+	schemaCorrect = false
+	if (@doc.grab_declaration != nil)
+		schema = @doc.grab_declaration 
+		schemaSet = true
+		schemaCorrect = JSON::Validator.validate(schema, the_file)
+		%> Verify Schema = <%=  schemaCorrect %> <br> <%
+	end
+	title =  the_file["catalog"]["title"]
+	 
+	the_policy = @doc.security_policy
+	version = the_policy.version
+	
+	title_parsed = title.strip.split /\s+/
+	
+	
+	policy_name = the_policy.name
+	 
+	%> title - <%= title %> <br> <%
+	 
+	
+	
+	
+	 
+	if (schemaSet) && !(schemaCorrect)
+		%> The file importing does not match the schema / declaration file linked to it. Please review. <br><%
+	else
+		 
+		refereneces = the_file["catalog"]["references"]["refs"]
+		importRefs(refereneces)
+		
+		control_families = the_file["catalog"]["groups"]
+		importControlFamilies(control_families, the_policy)
+	end
+end
+	
+	
+def importRefs(refs)
+	refs.each do |ref|
+		ref_id = nil
+		ref_url = nil
+		if (ref["id"] != nil)
+			ref_id = ref["id"]
+		end
+		ref_citation = ref["citations"]
+		if (ref_citation[0]["href"] != nil)
+			ref_url = ref_citation[0]["href"]
+		end
+		ref_title = ref_citation[0]["value"]
+		the_ref = Ref.find_or_create_by(ref_id: ref_id, title: ref_title, url: ref_url)
+	end
+	%> Imported Refferences <br> <%
+end
+
+def importControlFamilies(control_families, the_policy)
+	%> Control Families Count - <%= control_families.size %> <br> <%
+	control_families.each do |control_family|
+		title = control_family["title"].upcase
+		%>control_family - <%= control_family["title"] %> <br> <%
+		
+		if (title == "AUDIT AND ACCOUNTABILITY")
+			the_scf = SecurityControlFamily.find_or_create_by(family: "AUDIT AND ACCOUNTABILITY" ,  abv: "AU" ,   security_policy: the_policy)
+		elsif (title == "ACCESS CONTROL")
+			the_scf = SecurityControlFamily.find_or_create_by(family: "ACCESS CONTROL" ,  abv: "AC" ,  security_policy:  the_policy)
+		elsif (title == "AWARENESS AND TRAINING")
+			the_scf = SecurityControlFamily.find_or_create_by(family: "AWARENESS AND TRAINING" ,  abv: "AT" ,  security_policy:  the_policy)
+		elsif (title == "CONFIGURATION MANAGEMENT")
+			the_scf = SecurityControlFamily.find_or_create_by(family: "CONFIGURATION MANAGEMENT" ,  abv: "CM" ,  security_policy:  the_policy)
+		elsif (title == "CONTINGENCY PLANNING")
+			the_scf = SecurityControlFamily.find_or_create_by(family: "CONTINGENCY PLANNING" ,  abv: "CP" ,  security_policy:  the_policy)
+		elsif (title == "IDENTIFICATION AND AUTHENTICATION")
+			the_scf = SecurityControlFamily.find_or_create_by(family: "IDENTIFICATION AND AUTHENTICATION" ,  abv: "IA" ,  security_policy:  the_policy)
+		elsif (title == "INCIDENT RESPONSE")
+			the_scf = SecurityControlFamily.find_or_create_by(family: "INCIDENT RESPONSE" ,  abv: "IR" ,  security_policy:  the_policy)
+		elsif (title == "MAINTENANCE")
+			the_scf = SecurityControlFamily.find_or_create_by(family: "MAINTENANCE" ,  abv: "MA" ,  security_policy:  the_policy)
+		elsif (title == "MEDIA PROTECTION")
+			the_scf = SecurityControlFamily.find_or_create_by(family: "MEDIA PROTECTION" ,  abv: "MP" ,  security_policy:  the_policy)
+		elsif (title == "PERSONNEL SECURITY")
+			the_scf = SecurityControlFamily.find_or_create_by(family: "PERSONNEL SECURITY" ,  abv: "PS" ,  security_policy:  the_policy)
+		elsif (title == "PHYSICAL AND ENVIRONMENTAL PROTECTION")
+			the_scf = SecurityControlFamily.find_or_create_by(family: "PHYSICAL AND ENVIRONMENTAL PROTECTION" ,  abv: "PE" ,  security_policy:  the_policy)
+		elsif (title == "PLANNING")
+			the_scf = SecurityControlFamily.find_or_create_by(family: "PLANNING" ,  abv: "PL" ,  security_policy:  the_policy)
+		elsif (title == "PROGRAM MANAGEMENT")
+			the_scf = SecurityControlFamily.find_or_create_by(family: "PROGRAM MANAGEMENT" ,  abv: "PM" ,  security_policy:  the_policy)
+		elsif (title == "RISK ASSESSMENT")
+			the_scf = SecurityControlFamily.find_or_create_by(family: "RISK ASSESSMENT" ,  abv: "RA" ,  security_policy:  the_policy)
+		elsif (title == "SECURITY ASSESSMENT AND AUTHORIZATION")
+			the_scf = SecurityControlFamily.find_or_create_by(family: "SECURITY ASSESSMENT AND AUTHORIZATION" ,  abv: "CA" ,  security_policy:  the_policy)
+		elsif (title == "SYSTEM AND COMMUNICATIONS PROTECTION")
+			the_scf = SecurityControlFamily.find_or_create_by(family: "SYSTEM AND COMMUNICATIONS PROTECTION" ,  abv: "SC" ,  security_policy:  the_policy)
+		elsif (title == "SYSTEM AND INFORMATION INTEGRITY")
+			the_scf = SecurityControlFamily.find_or_create_by(family: "SYSTEM AND INFORMATION INTEGRITY" ,  abv: "SI" ,  security_policy:  the_policy)
+		elsif (title == "SYSTEM AND SERVICES ACQUISITION")
+			the_scf = SecurityControlFamily.find_or_create_by(family: "SYSTEM AND SERVICES ACQUISITION" ,  abv: "SA" ,  security_policy:  the_policy)
+		else
+			%> Error- Title not found, and possibly new. <%= title %> <%
+		end
+		controls = control_family["controls"]
+		importControls(controls,  the_policy, the_scf, nil)
+	end
+		%> Imported Control Families <br> <%
+end
+
+def importControls(controls,  the_policy, the_scf, parent)
+	controls.each do |the_control|
+		the_id = the_control["id"]
+		first2letters2 = the_id.chars.first(2).join
+		security_control_id = the_id.sub! first2letters2, first2letters2.upcase
+		the_class =	the_control["class"]
+		title = the_control["title"]
+		name = the_control["props"][0]["value"]
+		name = name.sub! first2letters2, first2letters2.upcase
+		
+		control_status = "Active"
+		if (the_control["props"][1] != nil) 
+			control_status = the_control["props"][1]["value"]
+		end
+		
+		the_sc = SecurityControl.find_or_create_by(control_id: the_id ,parent: parent, control_class: the_class, name: name,  title: title, security_policy:  the_policy, security_control_family: the_scf, status: control_status)
+		%> Created Control <%= the_sc.name %> - <%= the_id %> class <%= the_class %>  title <%= title %> name <%= name %> Status - <%= control_status %><br> <br><%
+	
+		params = the_control["params"]
+		if (params != nil)
+			importParams(params,  the_policy, the_scf, the_sc)
+		end
+		parts = the_control["parts"]
+		parts.each do |part|
+			%> part - <%= part["class"] %> <br><%
+			if (part["class"] == "statement")
+			 importStatements(part,  the_policy, the_scf, the_sc)
+			end
+			
+			statements = part["statement"]
+			guidance = part["guidance"]
+			objective = part["objective"]
+			assessment = part["assessment"]
+			if (statements != nil) 
+				
+			end				
+		end
+		
+	end
+end
+
+def importParams(params,  the_policy, the_scf, the_sc)
+	params.each do |param|
+		
+		param_id = param["id"]
+		label = param["label"]
+		dependsOn = nil
+		choices = nil
+		selection_type = nil
+		has_children = false
+		if (param["dependsOn"] != nil)
+			dependsOn = param["dependsOn"]
+		end
+		
+		if (label.starts_with? "SELECTION")
+			has_children = true
+			if (label == "SELECTION (one or more)")
+				selection_type = "one or more"
+			else 
+				selection_type = "one"
+			end 
+			
+			selectID = param["select"]["id"]
+			howMany = param["select"]["HowMany"]
+			if (param["select"]["choices"] != nil)
+				choices = param["select"]["choices"]
+			end
+		end
+		
+		#%> Param - <%= param %> - id <%= param_id %> label = <%= label %> <br><%
+		
+		the_param = Param.find_or_create_by(params_id: param_id, description: label,  security_control: the_sc, depends_on_id: dependsOn, selection_type: selection_type)
+	
+		if (has_children) && (choices != nil)
+			choices.each do |choice|
+				label = choice["Value"] 
+				option_param = Param.find_or_create_by(params_id: param_id, description: label, security_control: the_sc, parent: the_param)
+			end
+			
+		end
+	end
+end
+
+def importStatements(statements,  the_policy, the_scf, the_sc)
+	statements.each do |statement|
+		%> statement - <%= statement %> <br> <%
+	end
+end
+	start_import
+	 
+end
+%>   

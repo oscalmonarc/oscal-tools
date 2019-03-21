@@ -1,0 +1,29 @@
+<% if @search_status %>
+	<div id="search_table" style="display: block;">
+<% else %>
+	<div id="search_table" style="display: none;">
+<% end %>
+	<button id="showAPI" onclick="showAPI()"> Switch to API </button>	
+	<%= search_form_for @q do |f| %>
+		<table>
+			<tr>
+		  		<td>
+				  	<%= f.label "Policy Name" %>
+				  	<%= f.search_field :name_cont %>
+				</td>
+				<td>
+		  			<%= f.label "Version" %>
+		  			<%= f.search_field :version_cont %>
+		  		</td>
+				<td>
+		  			<%= f.label "Provider Name" %>
+		  			<%= f.search_field :provider_name_cont %>
+		  		</td>
+				<td>
+		  			<br>
+		  			<%= f.submit "search" %>
+		  		</td>
+		  	</tr>
+		</table>
+	<% end %>
+ </div>

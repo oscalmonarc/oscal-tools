@@ -1,0 +1,67 @@
+<%= form_with(model: security_control_family, local: true) do |form| %>
+  <% if security_control_family.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(security_control_family.errors.count, "error") %> prohibited this security_control_family from being saved:</h2>
+
+      <ul>
+      <% security_control_family.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= form.label :abv %>
+    <%= form.text_field :abv %>
+  </div>
+
+  <div class="field">
+    <%= form.label :family %>
+    <%= form.text_field :family %>
+  </div>
+
+  
+<div class="field">
+  	<% 
+  	provider_id = nil 
+  	show_select = true
+  	if (@security_policy.provider_id != nil)
+  		provider_id = @security_policy.provider_id
+  	elsif ( params[:provider_id] != nil)
+  		provider = Provider.find(params[:provider_id])
+  		if (has_data?(provider))  %>
+  			<%= form.hidden_field :provider_id, value: provider.id %> <%
+  			show_select = false
+  		end
+  	end
+  	
+  	if (show_select) %>
+  	    <%= form.label :provider_id %>
+	    <% provider_array = Provider.all.map { |provider| [provider.name , provider.id] } %>
+	    <%= form.select :provider_id, options_for_select(provider_array , provider_id) %> <%
+	 end %>
+	    
+  </div>
+  
+  <div class="field">
+	<% 
+  	security_policy_id = nil 
+  	if (@security_policy != nil ) 
+  		security_policy_id = @security_policy.id  
+  	elsif (security_control_family.security_policy != nil)
+  		security_policy_id = security_control_family.security_policy.id
+  	end
+  	%>
+  	    
+  	  <%= form.label :security_policy_id %>
+	  <% security_policy_array = SecurityPolicy.all.map { |security_policy| [security_policy.name , security_policy.id] } %>
+	  <%= form.select :security_policy_id, options_for_select(security_policy_array , security_policy_id) %> 
+	</div>
+
+
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<% end %>

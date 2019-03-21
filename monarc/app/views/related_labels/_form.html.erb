@@ -1,0 +1,61 @@
+<%= form_with(model: related_label, local: true) do |form| %>
+  <% if related_label.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(related_label.errors.count, "error") %> prohibited this related_label from being saved:</h2>
+
+      <ul>
+      <% related_label.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+<% if (@the_object != nil) %>
+    	Label For: <%= @the_object.click_link %>
+ <% end %>
+  <div class="field">
+    <%= form.label :label_id %>
+    <% tmparray = Label.all.map { |label| [label.name , label.id] } %>
+    
+    <%= form.select :label_id, options_for_select(tmparray, @related_label.label_id) %>
+    <input type="text" id="label_filter">
+    
+  </div>
+
+  <div class="field">
+    <%= form.label :object_type %>
+    <% if (@related_label.object_type != nil) %>
+    	<%= @related_label.object_type %>
+    	<%= form.hidden_field :object_type %>
+    	<%= form.hidden_field :provider_id %>
+    <% else %>
+    	<%= form.text_field :object_type %>
+    <% end %>
+  </div>
+
+  <div class="field">
+    <%= form.label :object_id %>
+    <% if (@related_label.object_id != nil) %>
+    	<%= @related_label.object_id %>
+    	<%= form.hidden_field :object_id %>
+    <% else %>
+    	    <%= form.text_field :object_id %>
+    <% end %>
+
+
+  </div>
+
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<% end %>
+<script>
+	
+	
+	// You could use it like this:
+	
+	$(function() {
+	  $('#related_label_label_id').filterByText($('#label_filter'));
+	});
+</script>

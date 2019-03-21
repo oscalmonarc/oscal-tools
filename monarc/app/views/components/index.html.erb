@@ -1,0 +1,70 @@
+<% content_for :title, "Components" %>
+<h1>Components</h1>
+<% labels = Label.all.sort_by {|label| label.name} %>
+	
+	Labels<Br>
+	<button id="all" class="filter">All</button>
+	<% labels.each do |label|
+		if has_data?(label.components)   %>
+			<button id="<%= label.id %>" class="filter"><%= label.name %>:<%= label.component_count %></button>
+		<% end %> 
+	<% end %>
+		
+		
+<Br><Br>
+<table id="myDataTable"  class="table table-striped table-bordered"  style="width:100%">
+  <thead>
+    <tr>
+      <th >Name</th>
+      <th >Provider</th>
+      <th >Labels</th>
+      <th >Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @components.each do |component| %>
+      <tr>
+        <td><%= component.click_link %></td>
+      	<td><%= component.provider.click_link %></td>
+
+        <td><% if has_data?(component.labels)
+        		component.labels.each do |label| %>
+        			<%= label.label.click_link %>
+        		<% end %>
+        	<% end %>
+        </td>
+        <td><%= component.description %></td>        
+       </tr>
+       <% end %>
+   </body>
+</table>
+
+<br>
+
+<%= button_to 'New Component', new_component_path, method: :get  %>
+
+<script>
+    $(document).ready(function() {
+    	$('#myDataTable').DataTable( {
+    		"order": [[ 1, "asc" ], [ 0, "asc" ]],
+    		dom: 'Bfrtip',
+        	buttons: [
+            	'copy', 'csv', 'excel', 'pdf', 'print'
+        ]
+    } );
+} );
+
+	<% labels.each do |label| %>
+		$('#<%= label.id %>').on('click', function () {
+			$('#myDataTable').DataTable().column(2).search("<%= label.name %>" ).draw();
+	    	
+		});
+	<% end %>
+	
+	$('#all').on('click', function () {
+	    	$('#myDataTable').DataTable().column(2).search("").draw();
+	    	
+		});
+	
+	
+</script>

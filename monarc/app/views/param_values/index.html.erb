@@ -1,0 +1,29 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Param Values</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Param</th>
+      <th>Param value</th>
+      <th>The value</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @param_values.each do |param_value| %>
+      <tr>
+        <td><%= param_value.param %></td>
+        <td><%= param_value.param_value %></td>
+        <td><%= param_value.the_value %></td>
+        <td><%= link_to 'Show', param_value %></td>
+        <td><%= link_to 'Edit', edit_param_value_path(param_value) %></td>
+        <td><%= link_to 'Destroy', param_value, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+<br>
+<%= button_to 'New Param Value', new_param_value_path, method: :get %>

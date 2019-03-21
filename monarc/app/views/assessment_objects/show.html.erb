@@ -1,0 +1,28 @@
+<% if (@security_control != nil) %>
+	<p>
+		<strong>Secuirty Control:</strong>
+		<%= @security_control.the_url %>
+	</p>
+	
+<% end %>
+
+<% if (@requirement != nil) %>
+	<p>
+		<strong>Requirement:</strong>
+		<%= link_to @requirement.name, @requirement %>
+	</p>
+<% end %>
+<p>
+  <strong>Assessment Method:</strong>
+  <%= link_to @assessment_object.assessment.method, @assessment_object.assessment %>
+  
+</p>
+
+<p>
+  <strong>Description:</strong>
+  <%= @assessment_object.description %>
+</p>
+
+
+<%= link_to 'Edit', edit_assessment_object_path(@assessment_object) %> |
+<%= link_to 'Back', assessment_objects_path %>

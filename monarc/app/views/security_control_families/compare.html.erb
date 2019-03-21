@@ -1,0 +1,162 @@
+<%	
+def getstatus (list, control_id)
+	status = nil
+	control_found = false
+	
+	list.each do |tmpControl|
+	
+		if (control_id == tmpControl.control_id)
+			status = tmpControl.check_active
+			control_found = true
+		end
+		break if (control_found)
+	end
+	return status 
+end
+		
+		if (@security_control_family.security_policy.version.to_i > @security_control_family2.security_policy.version.to_i ) 
+			control1_vesion = @security_control_family.security_policy
+			control2_vesion = @security_control_family2.security_policy
+			controls1 = @security_control_family.security_controls
+			controls2 = @security_control_family2.security_controls
+		else 
+			control1_vesion = @security_control_family2.security_policy
+			control2_vesion = @security_control_family.security_policy
+			controls1 = @security_control_family2.security_controls
+			controls2 = @security_control_family.security_controls
+		end
+		
+		controls = controls1 + controls2
+		controls = controls.sort_by{|e| e.control_id}
+		control_list = []
+		activeControls = ""
+		newControls = ""
+		withdrawnControls = ""
+		stillWithdrawn = ""
+		noLongerWithdrawn = ""
+		missing = ""
+		aCount = 0
+		nCount = 0
+		wCount = 0
+		swCount = 0
+		nlwCount = 0
+		missingCount = 0
+		controls.each do |this_control|
+			
+			if !(control_list.any? {|h| h[:control_id] == this_control.control_id })
+				control1 = getstatus(controls1, this_control.control_id)
+				control2 = getstatus(controls2, this_control.control_id)
+				if (control1 == nil ) 
+					#%> control1 nil for <%= this_control[:control_id] %> <br> <%
+					missing = missing + this_control[:control_id] + " "
+					missingCount = missingCount + 1
+					if (missingCount % 6 == 0)
+						missing = missing + "<br>"
+					end
+				end
+				
+				tmpControl = {control_id: this_control.control_id, control1: control1, control2: control2}
+				control_list << tmpControl
+			end
+		end
+		control_list.each do |the_Control|
+			
+			if (the_Control[:control1] == true) && (the_Control[:control2] == true)
+				activeControls = activeControls + the_Control[:control_id] + " " 
+				aCount = aCount + 1
+				if (aCount % 6 == 0)
+					activeControls = activeControls + "<br>"
+				end
+				
+			elsif (the_Control[:control1] == false) && (the_Control[:control2] == true)
+			    withdrawnControls = withdrawnControls +  the_Control[:control_id] + " "
+			    wCount = wCount + 1
+			    if (wCount % 6 == 0)
+					withdrawnControls = withdrawnControls + "<br>"
+				end 
+			elsif (the_Control[:control1] == false) && (the_Control[:control2] == false)
+				stillWithdrawn = stillWithdrawn + the_Control[:control_id] + " "
+				swCount = swCount +1
+				if (swCount % 6 == 0)
+					stillWithdrawn = stillWithdrawn + "<br>"
+				end
+			elsif (the_Control[:control1] == true) && (the_Control[:control2] == nil)
+				newControls = newControls + the_Control[:control_id] + " "
+				nCount = nCount + 1
+				if (nCount % 6 == 0)
+					newControls = newControls + "<br>"
+				end
+			elsif (the_Control[:control1] == true) && (the_Control[:control2] == false)
+				noLongerWithdrawn = noLongerWithdrawn + the_Control[:control_id] + " "
+				nlwCount = nlwCount + 1
+				if (nlwCount % 6 == 0)
+					noLongerWithdrawn = noLongerWithdrawn + "<br>"
+				end
+			end
+		end
+%>
+	<p id="notice"><%= notice %></p>
+<p>
+	<table><tr><td>
+    <strong>Security policy:</strong>
+  	<%= link_to @security_control_family.security_policy.policy_version, @security_control_family.security_policy %></td>
+	<% if @other_security_families != nil %>
+ 		<td>Other versions - </td>		
+		<% @other_security_families.each do |the_SFC| 
+			version = the_SFC.security_policy.version 
+			viewURL = "#{the_SFC.the_url.html_safe}"
+			viewURL = clean_url(viewURL)
+			compareURL = "#{@security_control_family.grab_compare_url(the_SFC.security_policy.version)}"
+			compareURL  = clean_url(compareURL) 
+			
+			%>
+			<td><%= button_to "View rev #{version}", viewURL,  method: :get %></td><td><%= button_to "Compare rev #{version}", compareURL, method: :get %></td>
+		<% end %>
+	</tr></table>
+	<% end %>
+</p>
+
+<p>
+  <strong>Family:</strong>
+  <%= @security_control_family.family %>
+  <strong>Abv:</strong>
+  <%= @security_control_family.abv %>
+  <strong>Class:</strong>
+  <%= @security_control_family.family_class %>
+</p>
+
+	
+	
+<table>
+	<tr>
+		
+		<td> <%= nCount %> New controls added since rev <%= control2_vesion.version %></td>
+		<td> <%= aCount %> Controls Remaining Active from rev <%= control2_vesion.version %></td>
+		<td> <%= nlwCount %> Back from the Dead <br>( no longer withdrawn) </td>
+		<td> <%= wCount %> Withdrawn Controls after rev <%= control2_vesion.version %> </td>
+		<td> <%= swCount %> Withdrawn during rev <%= control2_vesion.version %></td>
+		<td> <%= missingCount %> Missing in rev <%= control1_vesion.version %> <br>(Probably error importing)</td>
+	</tr>  
+	<tr>
+	
+		<td valign="top">
+			<strong style='color: darkblue;'><%= newControls.html_safe %></strong>
+		</td>
+		
+		<td valign="top">
+			<strong style='color: green;'><%= activeControls.html_safe %></strong>
+		</td>
+		<td valign="top">
+			<strong style='color: black;'><%= noLongerWithdrawn.html_safe %></strong></td>
+		</td>
+		<td valign="top">
+			<strong style='color: darkred;'><%= withdrawnControls.html_safe %></strong></td>
+		</td>
+		<td valign="top">
+			<strong style='color: black;'><%= stillWithdrawn.html_safe %></strong></td>
+		</td>
+  		
+		<td valign="top">
+			<strong style='color: darkred;'><%= missing.html_safe %></strong></td>
+		</td>
+</tr>

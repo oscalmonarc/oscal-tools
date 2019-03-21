@@ -1,0 +1,564 @@
+<% cache render_async_cache_key(request.path), :skip_digest => true do %>
+<%= button_to 'All Docs', docs_path, method: :get  %><br>
+<% require 'open-uri'  
+ parent_id_list = Array.new
+ #loads the file into memory
+ 
+the_file = Nokogiri::XML(@doc.the_doc.download)
+@doc.imported = Time.current
+@doc.save
+
+
+def create_family(security_control_family, parent_id_list)
+	  title = security_control_family.search("title").first.inner_text.upcase 
+		 %> Creating Security Family - <%= title %><br> <%
+	
+		if (title == "AUDIT AND ACCOUNTABILITY")
+			the_scf = SecurityControlFamily.find_or_create_by(family: "AUDIT AND ACCOUNTABILITY" ,  abv: "AU" ,  security_policy: @the_policy)
+		elsif (title == "ACCESS CONTROL")
+			the_scf = SecurityControlFamily.find_or_create_by(family: "ACCESS CONTROL" ,  abv: "AC" , security_policy:  @the_policy)
+		elsif (title == "AWARENESS AND TRAINING")
+			the_scf = SecurityControlFamily.find_or_create_by(family: "AWARENESS AND TRAINING" ,  abv: "AT" , security_policy:  @the_policy)
+		elsif (title == "CONFIGURATION MANAGEMENT")
+			the_scf = SecurityControlFamily.find_or_create_by(family: "CONFIGURATION MANAGEMENT" ,  abv: "CM" , security_policy:  @the_policy)
+		elsif (title == "CONTINGENCY PLANNING")
+			the_scf = SecurityControlFamily.find_or_create_by(family: "CONTINGENCY PLANNING" ,  abv: "CP" , security_policy:  @the_policy)
+		elsif (title == "IDENTIFICATION AND AUTHENTICATION")
+			the_scf = SecurityControlFamily.find_or_create_by(family: "IDENTIFICATION AND AUTHENTICATION" ,  abv: "IA" , security_policy:  @the_policy)
+		elsif (title == "INCIDENT RESPONSE")
+			the_scf = SecurityControlFamily.find_or_create_by(family: "INCIDENT RESPONSE" ,  abv: "IR" , security_policy:  @the_policy)
+		elsif (title == "MAINTENANCE")
+			the_scf = SecurityControlFamily.find_or_create_by(family: "MAINTENANCE" ,  abv: "MA" , security_policy:  @the_policy)
+		elsif (title == "MEDIA PROTECTION")
+			the_scf = SecurityControlFamily.find_or_create_by(family: "MEDIA PROTECTION" ,  abv: "MP" , security_policy:  @the_policy)
+		elsif (title == "PERSONNEL SECURITY")
+			the_scf = SecurityControlFamily.find_or_create_by(family: "PERSONNEL SECURITY" ,  abv: "PS" , security_policy:  @the_policy)
+		elsif (title == "PHYSICAL AND ENVIRONMENTAL PROTECTION")
+			the_scf = SecurityControlFamily.find_or_create_by(family: "PHYSICAL AND ENVIRONMENTAL PROTECTION" ,  abv: "PE" , security_policy:  @the_policy)
+		elsif (title == "PLANNING")
+			the_scf = SecurityControlFamily.find_or_create_by(family: "PLANNING" ,  abv: "PL" , security_policy:  @the_policy)
+		elsif (title == "PROGRAM MANAGEMENT")
+			the_scf = SecurityControlFamily.find_or_create_by(family: "PROGRAM MANAGEMENT" ,  abv: "PM" , security_policy:  @the_policy)
+		elsif (title == "RISK ASSESSMENT")
+			the_scf = SecurityControlFamily.find_or_create_by(family: "RISK ASSESSMENT" ,  abv: "RA" , security_policy:  @the_policy)
+		elsif (title == "SECURITY ASSESSMENT AND AUTHORIZATION")
+			the_scf = SecurityControlFamily.find_or_create_by(family: "SECURITY ASSESSMENT AND AUTHORIZATION" ,  abv: "CA" , security_policy:  @the_policy)
+		elsif (title == "SYSTEM AND COMMUNICATIONS PROTECTION")
+			the_scf = SecurityControlFamily.find_or_create_by(family: "SYSTEM AND COMMUNICATIONS PROTECTION" ,  abv: "SC" , security_policy:  @the_policy)
+		elsif (title == "SYSTEM AND INFORMATION INTEGRITY")
+			the_scf = SecurityControlFamily.find_or_create_by(family: "SYSTEM AND INFORMATION INTEGRITY" ,  abv: "SI" , security_policy:  @the_policy)
+		elsif (title == "SYSTEM AND SERVICES ACQUISITION")
+			the_scf = SecurityControlFamily.find_or_create_by(family: "SYSTEM AND SERVICES ACQUISITION" ,  abv: "SA" , security_policy:  @the_policy)
+		else
+			 
+			%> Error- Title not found, and possibly new. <%= title %> <%
+		end 
+		 
+		#Starting the Security Controls 
+		security_controls = security_control_family.search("control")
+	if (title == "ACCESS CONTROL")  || (true)
+	
+		security_controls.each do |security_control|
+			parent_id_list = Array.new
+			create_secrutiy_control(security_control,nil, the_scf, parent_id_list)
+			
+		end
+		%> Count - <%= the_scf.security_controls.count %> <br><br><%
+	end
+end
+
+def create_items(the_part, the_statement)
+	items = the_part.search("part")
+	parent_item = nil
+	items.each do |tmp_item|
+		item_id = tmp_item.attributes["id"].value 
+	 	item_name = tmp_item.search("prop").first.text
+	 	description = tmp_item.search("p").first.text
+	 	if(tmp_item.parent.attributes["class"].value != "item")
+			tmp_item = Item.find_or_create_by(item_id: item_id, name: item_name, description: description, statement: the_statement)
+			parent_item = tmp_item
+		else
+			tmp_item = Item.find_or_create_by(item_id: item_id, name: item_name, description: description, statement: the_statement, parent: parent_item)
+		end
+	end
+end
+
+def create_statements(the_part, the_sc, control_class)
+	statements = the_part.search("p")
+	statements.each do |tmp_statement| 
+			
+		if (tmp_statement.parent.attributes["class"].value != "item") && (tmp_statement.parent.parent.attributes["class"].value == control_class)
+			statement_id = tmp_statement.parent.attributes["id"].value.to_s
+			#Create Statement
+			the_statement = Statement.find_or_create_by(security_control: the_sc, description: tmp_statement.text, statement_id: statement_id) 
+			
+			#now check for items  
+			create_items(the_part, the_statement)
+	   end
+	end
+end
+
+def create_guidances(the_part, the_sc)
+	policy_name = the_sc.security_policy.name
+	policy_version = the_sc.security_policy.version
+	guidances= the_part.search("p")
+	guidance_id = the_part.attributes["id"].value
+	description = "No Guidance"
+	the_guidance_id = nil
+	thelink = nil
+	
+	guidances.each do |tmp_guidance|
+		description = tmp_guidance.text
+		the_guidance = Guidance.find_or_create_by(security_control: the_sc, description: description, guidance_id: guidance_id)
+		the_guidance_id = the_guidance.id 
+	end
+	guidances_refs = the_part.search("link")
+	create_related_refs(guidances_refs, the_sc, nil)
+end
+
+def create_assessments(the_part, the_sc)
+	method = the_part.search("prop").first.text.upcase
+	the_assessment = Assessment.find_or_create_by(method: method, security_control: the_sc)
+	assessment_objects = the_part.search("p")
+	assessment_objects.each do |the_ao|
+		the_ao = AssessmentObject.find_or_create_by(description: the_ao.text, assessment_id: the_assessment.id)
+	end 
+	
+end
+
+def create_objectives(the_part, the_sc, parent_id_list)
+	#Set primary objective		
+	description = the_part.search("p").first.text
+	verify_list = parent_id_list.select { |hash_element| hash_element[:object_id] == nil && hash_element[:the_sc] == the_sc.id}
+	if (verify_list.count == 0)
+		the_objective = Objective.find_or_create_by(security_control: the_sc, description: description)
+		parent_object_id = the_objective.id
+		parent_id_list.push({object_id: nil, the_id: parent_object_id, the_sc: the_sc.id})
+	else
+		temp = verify_list.first
+		parent_object_id = temp[:the_id]
+	end
+	master_id = parent_object_id
+	
+	#Set Child objectives
+	child_objectives = the_part.search("part")
+	
+	child_objectives.each do |tmp_objective|
+		child_id = nil
+		parent_id = nil
+		child_name = nil
+		child_description = nil
+		child_id = tmp_objective.attributes["id"].value
+		parent_id = child_id.sub(/\.[^.]*$/, '')
+		parent_object_id = nil
+		if (tmp_objective.parent.attributes["id"] != nil)
+			newlist = []		  
+			newlist = parent_id_list.select { |hash_element| hash_element[:object_id] == parent_id && hash_element[:the_sc] == the_sc.id }
+			if (newlist.count > 0 )
+				theparent = newlist.first
+				parentID = theparent[:the_id]
+				newlist.each do |elem|
+					parent_object_id = elem[:the_id]
+				end
+			end
+		end
+		if (parent_object_id == nil)
+			parent_object_id = master_id
+		end
+
+		tmp_child_name = tmp_objective.search("prop").first
+		if (tmp_child_name.parent.attributes["id"] != nil) && (tmp_child_name.parent.attributes["id"].value == child_id)
+			child_name = tmp_child_name.text
+		end
+		
+		tmp_child_description = tmp_objective.search("p").first
+		if (tmp_child_description.parent.attributes["id"] != nil) && (tmp_child_description.parent.attributes["id"].value == child_id)
+			child_description = tmp_child_description.text
+		end
+		if (child_description == nil ) && (parent_object_id == nil)
+			parent_object_id = master_id
+		end
+		
+		verify_list = parent_id_list.select { |hash_element| hash_element[:object_id] == child_id && hash_element[:the_sc] == the_sc.id}
+		if (verify_list.count == 0)
+			child_objective = Objective.find_or_create_by(security_control: the_sc, description: child_description, name: child_name, objective_id: child_id, parent_id: parent_object_id)	
+			parent_id_list.push({object_id: child_id, the_id: child_objective.id , the_sc: the_sc.id})
+		end
+	end
+end
+
+def create_params(params, the_sc, control_class)
+	if !(params.nil?)
+		params.each do |the_param|
+			if (the_param.parent.attributes["class"] != nil)
+				
+				
+				parent_class = the_param.parent.attributes["class"].value
+				if (parent_class == control_class)
+					param_id = the_param.attributes["id"].value
+					if (the_param.search("label").first != nil)
+						param_description = the_param.search("label").first.text
+					end
+					selection_type = nil
+					choices = nil
+					depends_on = nil
+					
+					if (the_param.attributes["depends-on"] != nil)
+						depends_on_param = the_param.attributes["depends-on"].value
+						
+						depends_on = Param.where(params_id: depends_on_param).first
+					end
+					selection = the_param.search("select").first
+					if ((selection != nil) || (param_description.include? "SELECTION"))
+						if (selection.attributes["how-many"] != nil)
+							param_description = "Select many from"
+							selection_type = selection.attributes["how-many"].value
+						else
+							param_description = "Select one from"
+							selection_type = "one"
+						end
+						choices = selection.search("choice")
+						
+					end
+					parent_param = Param.find_or_create_by(params_id: param_id, description: param_description,  security_control: the_sc, depends_on_id: depends_on, selection_type: selection_type)
+					if (choices != nil)
+						choices.each do |choice|
+							choice = choice.to_s
+							option = choice.gsub "\<choice\>", ""
+							option = option.gsub "\<\/choice\>", "" 
+							option_param = Param.find_or_create_by(params_id: param_id, description: option, security_control: the_sc, parent: parent_param)
+						end
+					
+					end
+				end
+			end
+		end
+	end
+end
+
+def create_parts(parts, the_sc, control_class, parent_id_list)
+	parts.each do |the_part| 
+		parent_class = the_part.parent.attributes["class"].value
+		if (parent_class == control_class) 
+			part_class = the_part.attributes["class"].value
+		    if (part_class == "statement") 
+	    		create_statements(the_part, the_sc, control_class)
+		    	
+			elsif (part_class == "guidance")
+  				create_guidances(the_part, the_sc)
+  				
+			elsif (part_class == "objective")
+				create_objectives(the_part, the_sc, parent_id_list)
+				
+			elsif (part_class == "assessment")
+				create_assessments(the_part, the_sc)
+				
+			end
+		end
+	end
+end
+
+def create_subcontrols(subcontrols, the_sc, the_scf, parent_id_list)
+	
+	subcontrols.each do |sub_control|
+		create_secrutiy_control(sub_control, the_sc, the_scf, parent_id_list)
+	end
+end 
+
+def create_related_refs(references, control_id, requirement)
+	
+	references.each do |ref|
+	
+	owner_object_type = get_parent_object_type(ref, control_id)
+	owner_object_id = get_parent_object_id(ref, owner_object_type, control_id)
+	
+		ref_id = nil
+		if (ref.attributes["rel"] != nil)
+			rel = ref.attributes["rel"].value
+		end
+		
+		ref_title = ref.text
+		the_ref = Ref.where(ref_id: ref_id).first
+
+		if (ref.attributes["href"] != nil)
+				old_ref_id = ref.attributes["href"].value
+				ref_id = old_ref_id.gsub "\#", ""
+		end
+
+		create_ref = false
+
+		if (rel == "reference")
+			object_type = "Ref"
+			tmp_ref = Ref.where(title: ref_title).first
+			if (tmp_ref != nil)
+				owner_object_type = "SecurityControl"
+				owner_object_id = control_id
+				the_ref = tmp_ref.id 
+				create_ref = true
+			end					
+		elsif (rel == "related")
+			if (owner_object_type == "guidance")
+				owner_object_type = "Guidance"
+				object_type = "SecurityControl"
+			elsif (owner_object_type == "objective")
+				owner_object_type = "Objective"
+				object_type = "Item"
+			elseif (owner_object_type == "SP800-53-enhancement") 
+				owner_object_type = "SecurityControl"
+				object_type = "SecurityControl"
+			end
+			
+			if(ref_id != nil)
+				ref_id = fix_control_id(ref_id)
+				ref_id = ref_id.gsub " ", ""
+			
+				related_control = SecurityControl.where(control_id: ref_id, security_policy_id: @the_policy.id).first
+				
+				if (related_control != nil)
+					the_ref = related_control.id
+					create_ref = true
+				else
+					tmp_ref = [ref, control_id, requirement]
+					@stored_refs << tmp_ref  	
+					create_ref = false 
+				end
+			end
+		elsif (rel == "corresp")
+			object_type = "Item"
+			owner_object_type = "Objective"
+			
+			items = Item.includes(statement: :security_control).where(item_id: ref_id)
+			
+			if has_data?(items)
+				items.each do |item|
+					if (item.security_control.id == control_id)
+						create_ref = true 
+						the_ref = item.id
+						object_type = "Item"
+					else
+						create_ref = false
+						tmp_ref = [ref, control_id, requirement]
+						@stored_refs << tmp_ref
+					end
+				end	
+			else
+			 	tmp_ref = [ref, control_id, requirement]
+				@stored_refs << tmp_ref
+			end
+			
+		elsif (rel == "incorporated-into")
+			if (control_id == owner_object_id ) 
+				object_type = "SecurityControl"
+				owner_object_id = control_id
+				owner_object_type = "SecurityControl"
+				related_control = SecurityControl.where(control_id: ref_id, security_policy_id: @the_policy.id).first
+				
+				if (related_control != nil)
+					the_ref = related_control.id
+					create_ref = true
+				else
+					tmp_ref = [ref, control_id, requirement]
+					@stored_refs << tmp_ref
+				end
+			end
+			
+		else
+			tmp_ref = [ref, control_id, requirement]
+			@stored_refs << tmp_ref
+			
+		end
+		
+		if (create_ref)
+			
+			the_related_ref = RelatedRef.find_or_create_by(owner_object_type: owner_object_type, owner_object_id: owner_object_id, 
+			object_id: the_ref, object_type: object_type, title: ref_title, rel: rel)
+		end
+			
+	end
+end
+
+def create_secrutiy_control(security_control, parent, the_scf, parent_id_list)
+	%> - security_control <%= security_control%> <br><br><br> <%
+	
+	security_control_id = security_control.attributes["id"].value
+	
+	#Converts the letters to uppercase, while not losing non Letters
+	first2letters2 = security_control_id.chars.first(2).join
+	security_control_id = security_control_id.sub! first2letters2, first2letters2.upcase
+
+	control_class = security_control.attributes["class"].value
+	security_control_title = security_control.search("title").first.inner_text
+	
+	security_control_name_prop = security_control.search 'prop[class="label"]'
+	security_control_name = security_control_name_prop.first.text
+	
+	subcontrols = security_control.search("subcontrol")
+	control_status = "Active"
+	props = security_control.search("prop")
+	parts = security_control.search("part")
+	params = security_control.search("param")
+	
+	references = security_control.search("link")
+	tmp_refs = []
+	
+	
+	#checking status of control
+	status_found = false
+	counter1 = 0
+	status_prop = props.search 'prop[class="status"]'
+	
+	if (status_prop.first != nil) && check_parent(status_prop.first, security_control_id)
+	 	control_status = status_prop.first.text
+	end
+	
+	
+
+	the_sc = SecurityControl.find_or_create_by(control_id: security_control_id ,parent: parent,control_class: control_class, name: security_control_name,  title: security_control_title, security_policy:  @the_policy, security_control_family: the_scf, status: control_status) 
+	%> Creating Security Control - <%= security_control_id %> - <%= security_control_title %> Status - <%= control_status %> - control_class = <%= control_class%><br> <%
+	
+	create_params(params, the_sc, control_class)
+	create_parts(parts, the_sc, control_class, parent_id_list)
+	create_subcontrols(subcontrols, the_sc, the_scf, parent_id_list)
+	create_related_refs(references, the_sc.id, nil) 
+	
+end
+def get_parent_object_id(the_element, type, control_id)
+	parent_object_id = nil
+	if (the_element.parent != nil)
+		parent = the_element.parent
+		
+		if (parent.attributes["id"] != nil)
+			parent_object_id = parent.attributes["id"]
+		else
+			if (parent.to_s.starts_with? ("<references>"))
+				control_parent = the_element.parent.parent
+				parent_object_id = control_parent.attributes["id"].value.to_s
+			end
+			
+		end
+	end
+	parent_object_id = parent_object_id.to_s
+
+	tmp = nil
+	
+	if (parent_object_id.end_with?("_gdn"))
+		tmp = Guidance.where(security_control_id: control_id, guidance_id: parent_object_id).first
+		if (tmp != nil )
+			parent_object_id = tmp.id
+		end 
+	elsif (parent_object_id.end_with?("_obj"))
+		tmp = Objective.where(security_control_id: control_id, objective_id: parent_object_id).first
+		if (tmp != nil)
+			parent_object_id = tmp.id
+		end
+	else
+		if (type == "SP800-53-enhancement") || (type == "reference")
+			first2letters2 = parent_object_id.chars.first(2).join
+			parent_object_id = parent_object_id.sub! first2letters2, first2letters2.upcase
+			tmp = SecurityControl.where(control_id: parent_object_id, security_policy: @the_policy).first
+			if (tmp != nil)
+				parent_object_id = tmp.id
+			end
+		end
+		
+			
+	end
+	
+	return parent_object_id
+end
+
+def get_parent_object_type(the_element, security_control_id)
+	parent_object = nil 
+	 
+	if (the_element.parent.attributes["value"] != nil)
+		parent_object = the_element.parent.attributes["value"].value
+	elsif (the_element.parent.attributes["class"] != nil)
+		parent_object = the_element.parent.attributes["class"].value
+	elsif (the_element.attributes["rel"] != nil)
+	 	parent_object = the_element.attributes["rel"].to_s
+	end
+	if (parent_object != nil)
+		parent_object = parent_object.gsub " ", ""
+	end
+	return parent_object 
+end
+
+def fix_control_id(control)
+ 	if (control != nil)
+ 		control_id = control
+ 		first2letters2 = control_id.chars.first(2).join
+		control_id = control_id.sub! first2letters2, first2letters2.upcase
+		return control_id
+	else
+		return nil
+	end
+end
+
+def check_parent(the_element, the_control_id)
+	status = false
+	parentID1 = fix_control_id(the_element.parent.attributes["id"].value)
+ 	
+ 	if (parentID1 == the_control_id) 
+		status = true 
+ 	end
+	return status
+end
+
+def cleanup_stored_refs
+
+	the_refs = @stored_refs
+	@stored_refs = []
+	if (the_refs != nil) && (the_refs.count > 0)
+		the_refs.each do |the_ref|
+			references = []
+		 	references << the_ref[0]
+			control_id = the_ref[1]
+			requirement = the_ref[2]
+			create_related_refs(references, control_id, requirement)
+		end
+	end
+end
+
+
+#Sets the fields for the security policy
+title = the_file.search("title").first.inner_text
+title_parsed = title.strip.split /\s+/
+@the_policy = @doc.security_policy
+version = @the_policy.version
+
+policy_name = @the_policy.name
+
+	#Search for security families 
+	security_families= the_file.search("group")
+	references = the_file.search("references")
+	refs = references.search("ref")
+	#Display count of families 
+	
+	%> references = <%= references.count %>  --- refs = <%= refs.count %> <br> <%
+	refs.each do |ref|
+		ref_id = nil
+		if (ref.attributes["id"] != nil)
+			ref_id = ref.attributes["id"].value
+		end
+		ref_citation = ref.search("citation").first
+		ref_url = ""
+		if (ref_citation.attributes["href"] != nil)
+			ref_url = ref_citation.attributes["href"].value
+		end
+		ref_title = ref_citation.text
+		the_ref = Ref.find_or_create_by(ref_id: ref_id, title: ref_title, url: ref_url)
+		
+		
+	
+	end
+	
+	%> Security Control Families = <%= security_families.count %> <br> <%
+	#Interate through families
+	@stored_refs = []
+	security_families.each do |security_control_family|
+		create_family(security_control_family, parent_id_list)
+	end
+	cleanup_stored_refs
+ 	check_missing_related_controls 
+end
+%> 
