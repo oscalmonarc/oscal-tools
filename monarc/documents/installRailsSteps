@@ -6,9 +6,9 @@ sudo gpg2 --keyserver hkp://pool.sks-keyservers.net --recv-keys 409B6B1796C27546
 curl -sSL https://get.rvm.io | bash -s stable --gems=rails,puma
 source /etc/profile.d/rvm.sh
 
-sudo adduser espresso
+sudo adduser monarc
 sudo groupadd rvm
-sudo usermod -a -G rvm monarch
+sudo usermod -a -G rvm monarc
 sudo usermod -a -G rvm "$USER"
 rvm user gemsets
 rvm get head
@@ -17,11 +17,11 @@ rvm reload
 #install nodejs bases on OS. https://nodejs.org/en/download/package-manager/
 npm install yarn -g
 
-sudo tar -zxvf monarch.tar -C /home/monarch/
-sudo chown -R monarch: /home/monarch/
+sudo tar -zxvf monarc.tar -C /home/monarc/
+sudo chown -R monarc: /home/monarc/
 
-sudo su monarch
-	cd /home/monarch/monarch
+sudo su monarc
+	cd /home/monarc/monarc
 	unset rvm_path
 	curl -sSL https://get.rvm.io | bash -s stable --gems=rails,puma
 	rvm group add rvm "$USER"
