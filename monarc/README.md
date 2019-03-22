@@ -1,6 +1,8 @@
 # Monarc
 
-Monarc is an application to better manage RMF Step 3, Security Control Implementation. 
+Monarc is an application to better manage security control implementation and verification of systems.
+
+This is currently under development and not ready for production usage.
 
 Monarc guides users through the security authorization process more quickly by reusing and crowdsourcing how commonly used tools and services satisfy the security controls; through a repository of profiles.
 
