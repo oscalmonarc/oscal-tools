@@ -14,6 +14,7 @@ rvm user gemsets
 rvm get head
 rvm reload
 
+#install nodejs bases on OS. https://nodejs.org/en/download/package-manager/
 npm install yarn -g
 
 sudo tar -zxvf monarch.tar -C /home/monarch/
